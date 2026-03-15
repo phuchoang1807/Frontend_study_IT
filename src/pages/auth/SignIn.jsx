@@ -1,37 +1,58 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import BrandLogo from "../../components/BrandLogo";
 
 export default function SignIn() {
-  const [showPassword, setShowPassword] = useState(false);
+
 
   return (
-    <div className="flex flex-col items-center justify-center h-full">
+    <div className="auth-form-wrap">
+      <BrandLogo />
 
-      <h1 className="text-3xl font-bold">Sign In</h1>
+      <header className="auth-header">
+        <h1>Welcome back</h1>
+        <p>Please enter your details to sign in.</p>
+      </header>
 
-      <input
-        type="email"
-        placeholder="Email"
-        className="border p-3 mt-4 w-[300px]"
-      />
+      <form className="auth-form" onSubmit={(event) => event.preventDefault()}>
+        <label htmlFor="signin-email">Email</label>
+        <input id="signin-email" type="email" placeholder="user@example.com" />
 
-      <input
-        type={showPassword ? "text" : "password"}
-        placeholder="Password"
-        className="border p-3 mt-4 w-[300px]"
-      />
+        <label htmlFor="signin-password">Password</label>
+        <div className="input-with-icon">
+          <input id="signin-password" type="password" placeholder="Enter your password" />
+          <span aria-hidden="true">👁</span>
+        </div>
 
-      <button className="bg-blue-500 text-white p-3 mt-4 w-[300px]">
-        Sign In
-      </button>
+        <div className="auth-form__row">
+          <label className="remember-check">
+            <input type="checkbox" />
+            Remember me
+          </label>
 
-      <Link to="/forgot-password" className="mt-3 text-blue-500">
-        Forgot password?
-      </Link>
+          <Link to="/forgot-password" className="text-link">
+            Forgot password?
+          </Link>
+        </div>
 
-      <Link to="/sign-up" className="mt-3 text-blue-500">
-        Sign Up
-      </Link>
+        <button type="submit" className="primary-button">
+          Sign In
+        </button>
+
+        <div className="divider">Or continue with</div>
+
+        <div className="social-row">
+          <button type="button" className="social-button">
+            <span>G</span> Google
+          </button>
+          <button type="button" className="social-button">
+            <span></span> GitHub
+          </button>
+        </div>
+      </form>
+
+      <p className="auth-footer-text">
+        Don&apos;t have an account? <Link to="/sign-up">Sign up</Link>
+      </p>
 
     </div>
   );

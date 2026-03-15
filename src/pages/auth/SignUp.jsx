@@ -1,95 +1,59 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import BrandLogo from "../../components/BrandLogo";
 
 export default function SignUp() {
 
-  const [showPassword, setShowPassword] = useState(false);
+
 
   return (
-    <div className="bg-white flex flex-col items-center justify-center h-full px-12">
+    <div className="auth-form-wrap">
+      <BrandLogo />
 
-      <div className="max-w-[400px] w-full flex flex-col gap-8">
+          <header className="auth-header">
+        <h1>Create your account</h1>
+        <p>Join our community of developers today.</p>
+      </header>
 
-        <div>
-          <h1 className="text-3xl font-bold text-[#111418]">
-            Create Account
-          </h1>
+            <form className="auth-form" onSubmit={(event) => event.preventDefault()}>
+        <label htmlFor="signup-name">Full Name</label>
+        <input id="signup-name" type="text" placeholder="Enter your full name" />
 
-          <p className="text-[#637588] mt-3">
-            Join us today! Please fill in your details.
-          </p>
+          <label htmlFor="signup-email">Email</label>
+        <input id="signup-email" type="email" placeholder="user@example.com" />
+
+        <label htmlFor="signup-confirm-password">Confirm Password</label>
+        <div className="input-with-icon">
+          <input id="signup-confirm-password" type="password" placeholder="Confirm your password" />
+          <span aria-hidden="true">👁</span>
+
         </div>
 
-        <div className="flex flex-col gap-6">
+        <label htmlFor="signup-password">Password</label>
+        <div className="input-with-icon">
+          <input id="signup-password" type="password" placeholder="Enter your password" />
+          <span aria-hidden="true">👁</span>
+        </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium">
-              Full Name
-            </label>
+          <button type="submit" className="primary-button">
+          Sign Up
+        </button>
 
-            <input
-              type="text"
-              placeholder="John Doe"
-              className="h-12 border border-[#dbe0e6] rounded-lg px-4 outline-none focus:border-blue-500"
-            />
-          </div>
+          <div className="divider">Or continue with</div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium">
-              Email Address
-            </label>
-
-            <input
-              type="email"
-              placeholder="user@example.com"
-              className="h-12 border border-[#dbe0e6] rounded-lg px-4 outline-none focus:border-blue-500"
-            />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium">
-              Password
-            </label>
-
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                className="h-12 border border-[#dbe0e6] rounded-lg px-4 w-full outline-none focus:border-blue-500"
-              />
-
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-sm text-gray-500"
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
-            </div>
-          </div>
-
-          <button className="bg-[#137fec] text-white h-12 rounded-lg hover:bg-[#0f6fd4] transition">
-            Sign Up
+        <div className="social-row">
+          <button type="button" className="social-button">
+            <span>G</span> Google
+          </button>
+          <button type="button" className="social-button">
+            <span></span> GitHub
           </button>
 
         </div>
+         </form>
 
-        <div className="text-center text-sm">
-
-          <span className="text-[#637588]">
-            Already have an account?
-          </span>
-
-          <Link
-            to="/"
-            className="text-[#137fec] font-semibold ml-1 hover:underline"
-          >
-            Sign In
-          </Link>
-
-        </div>
-
-      </div>
+      <p className="auth-footer-text">
+        Already have an account? <Link to="/">Sign in</Link>
+      </p>
 
     </div>
   );

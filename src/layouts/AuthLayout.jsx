@@ -2,14 +2,11 @@ import Background from "../components/Background";
 
 export default function AuthLayout({ children }) {
   return (
-    <div className="flex h-screen w-screen">
-      <div className="hidden lg:flex lg:w-1/2">
+    <div className="auth-layout">
+      <section className="auth-panel">{children}</section>
+      <aside className="auth-visual-panel">
         <Background />
-      </div>
-
-      <div className="w-full lg:w-1/2">
-        {children}
-      </div>
+      </aside>
     </div>
   );
 }
