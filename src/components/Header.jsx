@@ -1,5 +1,5 @@
 import { BellIcon, SearchIcon, UploadIcon } from "./icons";
-import studyItLogo from "../assets/StudyIT.jpg";
+import studyItLogo from "/favicon.svg";
 export default function Header() {
   return (
     <div
