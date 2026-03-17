@@ -1,4 +1,5 @@
 import { BellIcon, SearchIcon, UploadIcon } from "./icons";
+import studyItLogo from "../assets/StudyIT.jpg";
 export default function Header() {
   return (
     <div
@@ -30,8 +31,8 @@ export default function Header() {
         }}
       >
         <img
-        style={{ width: "151.21px", height: "56px", objectFit: "contain" }}
-          src="/StudyIT.jpg"
+          style={{ width: "151.21px", height: "56px", objectFit: "contain" }}
+          src={studyItLogo}
           alt="StudyIT Logo"
         />
 
@@ -55,10 +56,38 @@ export default function Header() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <div style={{ padding: "8px", position: "relative", borderRadius: "9999px", color: "#64748B" }}>
-            <BellIcon size={20} />
-            <div style={{ width: "8px", height: "8px", background: "#EF4444", borderRadius: "9999px", border: "2px solid white", position: "absolute", left: "14px", top: "8px" }}></div>
-          </div>
+ <button
+            type="button"
+            aria-label="Notifications"
+            style={{
+              width: "36px",
+              height: "36px",
+              padding: "0",
+              position: "relative",
+              border: "none",
+              background: "transparent",
+              borderRadius: "9999px",
+              color: "#1E2A78",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            <BellIcon size={20} strokeWidth={1.7} />
+            <span
+              style={{
+                width: "8px",
+                height: "8px",
+                background: "#EF4444",
+                borderRadius: "9999px",
+                border: "2px solid white",
+                position: "absolute",
+                right: "6px",
+                top: "6px",
+              }}
+            />
+          </button>
 
           <div style={{ padding: "8px 16px", background: "#007BFF", borderRadius: "12px", position: "relative", display: "flex", alignItems: "center", gap: "8px" }}>
             <div style={{ color: "white" }}><UploadIcon size={12} /></div>

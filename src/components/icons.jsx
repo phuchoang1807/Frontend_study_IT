@@ -10,13 +10,29 @@ export function SearchIcon({ size = 18, color = "currentColor" }) {
     </svg>
   );
 }
-
-export function BellIcon({ size = 18, color = "currentColor" }) {
+export function BellIcon({ size = 18, color = "currentColor", strokeWidth = 1.8 }) {
   return (
     <svg style={baseSvgStyle} width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M15 17H9C7.9 17 7 16.1 7 15V11C7 8.24 9.24 6 12 6C14.76 6 17 8.24 17 11V15C17 16.1 16.1 17 15 17Z" stroke={color} strokeWidth="2" />
-      <path d="M10 18C10.4 19.2 11.2 20 12 20C12.8 20 13.6 19.2 14 18" stroke={color} strokeWidth="2" strokeLinecap="round" />
-      <path d="M9 6C9 4.9 9.9 4 11 4H13C14.1 4 15 4.9 15 6" stroke={color} strokeWidth="2" strokeLinecap="round" />
+      <path
+        d="M12 3.8V5"
+        stroke={color}
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M17 9.8C17 7.05 14.75 4.8 12 4.8C9.25 4.8 7 7.05 7 9.8V13.2L5.5 16H18.5L17 13.2V9.8Z"
+        stroke={color}
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10 18.2C10.45 19.25 11.2 20 12 20C12.8 20 13.55 19.25 14 18.2"
+        stroke={color}
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
