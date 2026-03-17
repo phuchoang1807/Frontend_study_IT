@@ -49,6 +49,8 @@ const lineClampTitle = {
   WebkitLineClamp: 2,
   WebkitBoxOrient: "vertical",
   overflow: "hidden",
+  lineHeight: "24px",
+  minHeight: "48px",
 };
 
 export default function LatestDocuments() {
