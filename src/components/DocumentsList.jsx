@@ -1,27 +1,29 @@
 // src/pages/DocumentsList.jsx
+import Header from "./Header";
+import Footer from "./Footer";
 
 export default function DocumentsList() {
   return (
     <div
       style={{
-        width: "1280px",
-        height: "1211px",
-        position: "relative",
+         width: "100%",
+        minHeight: "100vh",
         background: "#F5F7F8",
-        margin: "0 auto",
+        
       }}
     >
+       <Header />
       {/* Main container */}
       <div
         style={{
-          width: "1280px",
+          width: "100%",
           maxWidth: "1280px",
+          margin: "0 auto",
+          paddingTop: "32px",
           paddingBottom: "32px",
           paddingLeft: "16px",
           paddingRight: "16px",
-          position: "absolute",
-          left: 0,
-          top: "65px",
+          boxSizing: "border-box",
           justifyContent: "flex-start",
           alignItems: "flex-start",
           gap: "32px",
@@ -2285,6 +2287,7 @@ export default function DocumentsList() {
 
       {/* Footer chung (dùng component Footer đã có) */}
       {/* <Footer />  // Nếu bạn muốn footer ở đây thì uncomment */}
+      <Footer />
     </div>
   );
 }
