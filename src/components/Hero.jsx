@@ -1,4 +1,5 @@
 import { SearchIcon } from "./icons";
+
 export default function Hero() {
   return (
     <div
@@ -31,22 +32,77 @@ export default function Hero() {
           style={{
             width: "100%",
             height: "100%",
-            background: "linear-gradient(174deg, #007BFF 0%, rgba(0,123,255,0) 50%, #9333EA 100%)",
+            background:
+              "linear-gradient(174deg, #007BFF 0%, rgba(0,123,255,0) 50%, #9333EA 100%)",
           }}
         />
       </div>
 
-      <div style={{ width: "768px", maxWidth: "768px", display: "flex", flexDirection: "column", gap: "24px", zIndex: 1 }}>
+      {/* ✅ CHỈ SỬA CHỖ NÀY: gap từ 24 -> 40 */}
+      <div
+        style={{
+          width: "768px",
+          maxWidth: "768px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "40px",
+          zIndex: 1,
+        }}
+      >
         <div style={{ textAlign: "center" }}>
-          <div style={{ height: "120px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <span style={{ color: "white", fontSize: "60px", fontWeight: 900, lineHeight: "60px" }}>Knowledge Treasure</span>
-            <span style={{ color: "#007BFF", fontSize: "60px", fontWeight: 900 }}>Trove</span>
-            <span style={{ color: "white", fontSize: "60px", fontWeight: 900, lineHeight: "60px" }}>Open for Community</span>
+          <div
+            style={{
+              height: "120px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <span
+              style={{
+                color: "white",
+                fontSize: "60px",
+                fontWeight: 900,
+                lineHeight: "60px",
+              }}
+            >
+              Knowledge Treasure
+            </span>
+            <span
+              style={{
+                color: "#007BFF",
+                fontSize: "60px",
+                fontWeight: 900,
+              }}
+            >
+              Trove
+            </span>
+            <span
+              style={{
+                color: "white",
+                fontSize: "60px",
+                fontWeight: 900,
+                lineHeight: "60px",
+              }}
+            >
+              Open for Community
+            </span>
           </div>
         </div>
 
-        <div style={{ textAlign: "center", color: "#E2E8F0", fontSize: "18px", fontWeight: 500, lineHeight: "28px" }}>
-          Search, download and share thousands of academic, economic and technology<br />documents completely free.
+        <div
+          style={{
+            textAlign: "center",
+            color: "#E2E8F0",
+            fontSize: "18px",
+            fontWeight: 500,
+            lineHeight: "28px",
+          }}
+        >
+          Search, download and share thousands of academic, economic and
+          technology
+          <br />
+          documents completely free.
         </div>
 
         <div
@@ -82,8 +138,17 @@ export default function Hero() {
               gap: "12px",
             }}
           >
-            <div style={{ color: "#94A3B8" }}><SearchIcon size={18} /></div>
-            <div style={{ flex: 1, padding: "14px 12px", color: "#6B7280", fontSize: "16px" }}>
+            <div style={{ color: "#94A3B8" }}>
+              <SearchIcon size={18} />
+            </div>
+            <div
+              style={{
+                flex: 1,
+                padding: "14px 12px",
+                color: "#6B7280",
+                fontSize: "16px",
+              }}
+            >
               Enter document name, topic or keyword...
             </div>
           </div>
@@ -105,9 +170,14 @@ export default function Hero() {
           </div>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" }}>
-        
-        </div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            justifyContent: "center",
+          }}
+        ></div>
       </div>
     </div>
   );
