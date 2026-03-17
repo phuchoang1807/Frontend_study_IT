@@ -184,14 +184,7 @@ export default function PopularDocuments() {
                 </div>
               </div>
 
-              <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
-                <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ color: "#94A3B8" }}><StarIcon size={11} /></div>
-                </div>
-                <div style={{ width: "18.08px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 600, lineHeight: "16px" }}>
-                  4.7
-                </div>
-              </div>
+
             </div>
           </div>
         </div>

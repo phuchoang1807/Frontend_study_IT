@@ -1,5 +1,5 @@
 // src/components/Footer.jsx
-import { FacebookIcon, GlobeIcon, LanguageIcon, LinkedinIcon, YoutubeIcon } from "./icons";
+import { FacebookIcon, GlobeIcon, LanguageIcon, LinkedinIcon, UsersIcon, YoutubeIcon } from "./icons";
 export default function Footer() {
   return (
     <div
@@ -25,7 +25,7 @@ export default function Footer() {
           margin: "0 auto",
           display: "block",
         }}
-        src="https://placehold.co/172x32"
+        src="/StudyIT.jpg"
         alt="StudyIT Logo"
       />
 
@@ -131,7 +131,7 @@ export default function Footer() {
                 }}
               >
                 <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "20px", height: "10px", background: "#475569" }}></div>
+                  <div style={{ color: "#475569" }}><UsersIcon size={17} /></div>
                 </div>
               </div>
 

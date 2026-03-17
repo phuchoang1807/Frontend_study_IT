@@ -30,9 +30,8 @@ export default function Header() {
         }}
       >
         <img
-        style={{ width: "151.21px", height: "116.15px", paddingBottom: "24px", transform: "rotate(-1deg)", transformOrigin: "top left" }}
-
-          src="https://placehold.co/151x116"
+        style={{ width: "151.21px", height: "56px", objectFit: "contain" }}
+          src="/StudyIT.jpg"
           alt="StudyIT Logo"
         />
 
