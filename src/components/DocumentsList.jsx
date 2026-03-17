@@ -2,7 +2,7 @@
 import Header from "./Header";
 import Footer from "./Footer";
 import { useState } from "react";
-import { BookmarkIcon, ChevronRightIcon, EyeIcon, UsersIcon } from "./icons";
+import { BookmarkIcon, ChevronLeftIcon, ChevronRightIcon, EyeIcon, UsersIcon } from "./icons";
 
 export default function DocumentsList() {
     const [isSortOpen, setIsSortOpen] = useState(false);
@@ -756,8 +756,8 @@ export default function DocumentsList() {
                   Home
                 </div>
               </div>
-              <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "4.32px", height: "7px", background: "#64748B" }}></div>
+              <div style={{ display: "inline-flex", alignItems: "center" }}>
+                <ChevronRightIcon size={12} color="#64748B" />
               </div>
               <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
                 <div
@@ -1015,7 +1015,7 @@ export default function DocumentsList() {
 
                   <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "inline-flex" }}>
                     <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                      <div style={{ width: "9.33px", height: "9.33px", background: "#64748B" }}></div>
+                       <UsersIcon size={12} color="#64748B" />
                     </div>
                     <div
                       style={{
@@ -1049,7 +1049,7 @@ export default function DocumentsList() {
                   <div style={{ justifyContent: "flex-start", alignItems: "flex-start", gap: "16px", display: "flex" }}>
                     <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
                       <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                        <div style={{ width: "12.83px", height: "8.75px", background: "#64748B" }}></div>
+                          <EyeIcon size={14} color="#64748B" />
                       </div>
                       <div
                         style={{
@@ -1080,7 +1080,7 @@ export default function DocumentsList() {
 
                     <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
                       <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                        <div style={{ width: "9.33px", height: "9.33px", background: "#64748B" }}></div>
+                        <UsersIcon size={12} color="#64748B" />
                       </div>
                       <div
                         style={{
@@ -1112,7 +1112,7 @@ export default function DocumentsList() {
 
                   <div style={{ padding: "8px", borderRadius: "8px", justifyContent: "center", alignItems: "center", display: "flex" }}>
                     <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "center", display: "inline-flex" }}>
-                      <div style={{ width: "16px", height: "16px", background: "#007BFF" }}></div>
+                      <BookmarkIcon size={16} color="#007BFF" />
                     </div>
                   </div>
                 </div>
@@ -1300,7 +1300,7 @@ export default function DocumentsList() {
 
                   <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "inline-flex" }}>
                     <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                      <div style={{ width: "9.33px", height: "9.33px", background: "#64748B" }}></div>
+                      <UsersIcon size={12} color="#64748B" />
                     </div>
                     <div
                       style={{
@@ -1334,7 +1334,7 @@ export default function DocumentsList() {
                   <div style={{ justifyContent: "flex-start", alignItems: "flex-start", gap: "16px", display: "flex" }}>
                     <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
                       <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                        <div style={{ width: "12.83px", height: "8.75px", background: "#64748B" }}></div>
+                        <EyeIcon size={14} color="#64748B" />
                       </div>
                       <div
                         style={{
@@ -1365,7 +1365,7 @@ export default function DocumentsList() {
 
                     <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
                       <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                        <div style={{ width: "9.33px", height: "9.33px", background: "#64748B" }}></div>
+                        <UsersIcon size={12} color="#64748B" />
                       </div>
                       <div
                         style={{
@@ -1397,7 +1397,7 @@ export default function DocumentsList() {
 
                   <div style={{ padding: "8px", borderRadius: "8px", justifyContent: "center", alignItems: "center", display: "flex" }}>
                     <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "center", display: "inline-flex" }}>
-                      <div style={{ width: "16px", height: "16px", background: "#007BFF" }}></div>
+                      <BookmarkIcon size={16} color="#007BFF" />
                     </div>
                   </div>
                 </div>
@@ -1579,7 +1579,7 @@ export default function DocumentsList() {
 
                   <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "inline-flex" }}>
                     <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                      <div style={{ width: "9.33px", height: "9.33px", background: "#64748B" }}></div>
+                       <UsersIcon size={12} color="#64748B" />
                     </div>
                     <div
                       style={{
@@ -1613,7 +1613,7 @@ export default function DocumentsList() {
                   <div style={{ justifyContent: "flex-start", alignItems: "flex-start", gap: "16px", display: "flex" }}>
                     <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
                       <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                        <div style={{ width: "12.83px", height: "8.75px", background: "#64748B" }}></div>
+                      <EyeIcon size={14} color="#64748B" />
                       </div>
                       <div
                         style={{
@@ -1644,7 +1644,7 @@ export default function DocumentsList() {
 
                     <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "3.99px", display: "flex" }}>
                       <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                        <div style={{ width: "9.33px", height: "9.33px", background: "#64748B" }}></div>
+                       <UsersIcon size={12} color="#64748B" />
                       </div>
                       <div
                         style={{
@@ -1676,7 +1676,7 @@ export default function DocumentsList() {
 
                   <div style={{ padding: "8px", borderRadius: "8px", justifyContent: "center", alignItems: "center", display: "flex" }}>
                     <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "center", display: "inline-flex" }}>
-                      <div style={{ width: "16px", height: "16px", background: "#007BFF" }}></div>
+                      <BookmarkIcon size={16} color="#007BFF" />
                     </div>
                   </div>
                 </div>
@@ -1864,7 +1864,7 @@ export default function DocumentsList() {
 
                   <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "inline-flex" }}>
                     <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                      <div style={{ width: "9.33px", height: "9.33px", background: "#64748B" }}></div>
+                      <UsersIcon size={12} color="#64748B" />
                     </div>
                     <div
                       style={{
@@ -1898,7 +1898,7 @@ export default function DocumentsList() {
                   <div style={{ justifyContent: "flex-start", alignItems: "flex-start", gap: "16px", display: "flex" }}>
                     <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
                       <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                        <div style={{ width: "12.83px", height: "8.75px", background: "#64748B" }}></div>
+                       <EyeIcon size={14} color="#64748B" />
                       </div>
                       <div
                         style={{
@@ -1929,7 +1929,7 @@ export default function DocumentsList() {
 
                     <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
                       <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                        <div style={{ width: "9.33px", height: "9.33px", background: "#64748B" }}></div>
+                        <UsersIcon size={12} color="#64748B" />
                       </div>
                       <div
                         style={{
@@ -1961,7 +1961,7 @@ export default function DocumentsList() {
 
                   <div style={{ padding: "8px", borderRadius: "8px", justifyContent: "center", alignItems: "center", display: "flex" }}>
                     <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "center", display: "inline-flex" }}>
-                      <div style={{ width: "16px", height: "16px", background: "#007BFF" }}></div>
+                      <BookmarkIcon size={16} color="#007BFF" />
                     </div>
                   </div>
                 </div>
@@ -1993,7 +1993,7 @@ export default function DocumentsList() {
               }}
             >
               <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "center", display: "inline-flex" }}>
-                <div style={{ width: "7.40px", height: "12px", background: "#0F172A" }}></div>
+                <ChevronLeftIcon size={14} color="#0F172A" />
               </div>
             </div>
 
@@ -2152,7 +2152,7 @@ export default function DocumentsList() {
               }}
             >
               <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "center", display: "inline-flex" }}>
-                <div style={{ width: "7.40px", height: "12px", background: "#0F172A" }}></div>
+                <ChevronRightIcon size={14} color="#0F172A" />
               </div>
             </div>
           </div>
