@@ -43,6 +43,10 @@ export default function SignIn() {
           value={password}
           onChange={(e)=>setPassword(e.target.value)}
         />
+        <div className="auth-form__row">
+          <span />
+          <Link to="/forgot-password" className="text-link">Forgot password?</Link>
+        </div>
 
         <button type="submit" className="primary-button">
           Sign In
