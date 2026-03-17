@@ -1,402 +1,151 @@
 import { useNavigate } from "react-router-dom";
 import { BookmarkIcon, ChevronRightIcon, EyeIcon } from "./icons";
+
+const documents = [
+  {
+    category: "Technology",
+    categoryColor: "#6366F1",
+    image: "https://placehold.co/174x192",
+    imageAlt: "React Fullstack",
+    title: "React Fullstack Programming Guide from A-Z",
+    author: "Nguyen Van A",
+    date: "10/10/2023",
+    views: "1.2k",
+  },
+  {
+    category: "C#",
+    categoryColor: "#F97316",
+    image: "https://placehold.co/192x192",
+    imageAlt: "C#",
+    title: "C# Programming Guide",
+    author: "Tran Thi B",
+    date: "09/10/2023",
+    views: "850",
+  },
+  {
+    category: "HTML",
+    categoryColor: "#22C55E",
+    image: "https://placehold.co/192x192",
+    imageAlt: "HTML",
+    title: "Self-study HTML",
+    author: "Le Van C",
+    date: "08/10/2023",
+    views: "2.1k",
+  },
+  {
+    category: "Book",
+    categoryColor: "#A855F7",
+    image: "https://placehold.co/131x189",
+    imageAlt: "IT Life",
+    title: "IT Life",
+    author: "Pham Minh D",
+    date: "07/10/2023",
+    views: "3.4k",
+  },
+];
+
+const lineClampTitle = {
+  display: "-webkit-box",
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+};
+
 export default function LatestDocuments() {
   const navigate = useNavigate();
+
   return (
-    <div style={{ alignSelf: "stretch", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", gap: "24px", display: "flex" }}>
-      <div style={{ alignSelf: "stretch", justifyContent: "space-between", alignItems: "center", display: "inline-flex" }}>
-        <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-          <div style={{ alignSelf: "stretch", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "flex" }}>
-            <div style={{ alignSelf: "stretch", height: "32px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#0F172A", fontSize: "24px", fontWeight: 700, lineHeight: "32px" }}>
-              Latest Documents
-            </div>
+    <div style={{ alignSelf: "stretch", display: "flex", flexDirection: "column", gap: "24px" }}>
+      
+      {/* HEADER */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ color: "#0F172A", fontSize: "24px", fontWeight: 700 }}>
+            Latest Documents
           </div>
-          <div style={{ alignSelf: "stretch", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "flex" }}>
-            <div style={{ width: "203.69px", height: "20px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "14px", fontWeight: 400, lineHeight: "20px" }}>
-              Continuously updated by the community
-            </div>
+          <div style={{ color: "#64748B", fontSize: "14px" }}>
+            Continuously updated by the community
           </div>
         </div>
 
         <div
-          style={{ justifyContent: "flex-start", alignItems: "center", display: "flex", cursor: "pointer" }}
+          style={{ display: "flex", alignItems: "center", cursor: "pointer" }}
           onClick={() => navigate("/documents")}
         >
-          <div style={{ width: "71.75px", height: "20px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#007BFF", fontSize: "14px", fontWeight: 600, lineHeight: "20px" }}>
-            
+          <div style={{ color: "#007BFF", fontSize: "14px", fontWeight: 600 }}>
             View All
           </div>
-          <div style={{ paddingLeft: "4px", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-              <div style={{ color: "#007BFF" }}><ChevronRightIcon size={14} /></div>
+          <div style={{ paddingLeft: "4px", color: "#007BFF" }}>
+            <ChevronRightIcon size={14} />
           </div>
         </div>
       </div>
 
-      <div style={{ alignSelf: "stretch", justifyContent: "center", alignItems: "flex-start", gap: "24px", display: "inline-flex" }}>
-        {/* Card 1 - React Fullstack */}
-        <div
-          style={{
-            flex: "1 1 0",
-            alignSelf: "stretch",
-            background: "white",
-            boxShadow: "0px 1px 2px rgba(0,0,0,0.05)",
-            overflow: "hidden",
-            borderRadius: "16px",
-            outline: "1px solid #F1F5F9",
-            outlineOffset: "-1px",
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            alignItems: "flex-start",
-            display: "inline-flex",
-          }}
-        >
-          <div style={{ alignSelf: "stretch", height: "192px", position: "relative", background: "#E2E8F0", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-            <img style={{ width: "174px", height: "192px" }} src="https://placehold.co/174x192" alt="React Fullstack" />
-            <div
-              style={{
-                padding: "2.5px 8px",
-                position: "absolute",
-                left: "12px",
-                top: "9px",
-                background: "#007BFF",
-                borderRadius: "4px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-              }}
-            >
-              <div style={{ width: "63.53px", height: "15px", justifyContent: "center", display: "flex", flexDirection: "column", color: "white", fontSize: "10px", fontWeight: 700, textTransform: "uppercase", lineHeight: "15px", letterSpacing: "0.25px" }}>
-                Technology
+      {/* LIST */}
+      <div style={{ display: "flex", gap: "24px" }}>
+        {documents.map((doc) => (
+          <div
+            key={`${doc.title}-${doc.author}`}
+            style={{
+              flex: 1,
+              background: "white",
+              borderRadius: "16px",
+              border: "1px solid #F1F5F9",
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+            }}
+          >
+            {/* IMAGE */}
+            <div style={{ height: "192px", position: "relative", background: "#E2E8F0", display: "flex", justifyContent: "center", alignItems: "center" }}>
+              <img src={doc.image} alt={doc.imageAlt} />
+
+              <div
+                style={{
+                  position: "absolute",
+                  top: "10px",
+                  left: "10px",
+                  padding: "4px 8px",
+                  background: doc.categoryColor,
+                  color: "white",
+                  fontSize: "10px",
+                  fontWeight: 700,
+                  borderRadius: "4px",
+                }}
+              >
+                {doc.category}
               </div>
+            </div>
+
+            {/* CONTENT */}
+            <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "12px", flex: 1 }}>
+              
+              <div style={{ fontWeight: 700, fontSize: "16px", ...lineClampTitle }}>
+                {doc.title}
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", color: "#64748B" }}>
+                <img src="https://placehold.co/24x24" style={{ borderRadius: "50%" }} />
+                <span>{doc.author}</span>
+                <span>•</span>
+                <span>{doc.date}</span>
+              </div>
+
+              <div style={{ marginTop: "auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                
+                <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "12px", color: "#94A3B8" }}>
+                  <EyeIcon size={13} />
+                  {doc.views}
+                </div>
+
+                <div style={{ color: "#007BFF" }}>
+                  <BookmarkIcon size={14} />
+                </div>
+              </div>
+
             </div>
           </div>
-
-          <div style={{ alignSelf: "stretch", padding: "20px", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", gap: "12px", display: "flex" }}>
-            <div style={{ alignSelf: "stretch", overflow: "hidden", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "flex" }}>
-              <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#0F172A", fontSize: "16px", fontWeight: 700, lineHeight: "24px" }}>
-                React Fullstack Programming Guide from A-Z
-              </div>
-            </div>
-
-            <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "8px", display: "inline-flex" }}>
-              <img style={{ width: "24px", height: "24px", borderRadius: "9999px" }} src="https://placehold.co/24x24" alt="Author" />
-              <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "81.47px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "12px", fontWeight: 400, lineHeight: "16px" }}>
-                  Nguyen Van A
-                </div>
-              </div>
-              <div style={{ padding: "0 4px", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "6.75px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "12px", fontWeight: 400, lineHeight: "16px" }}>•</div>
-              </div>
-              <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "63.17px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "12px", fontWeight: 400, lineHeight: "16px" }}>
-                  10/10/2023
-                </div>
-              </div>
-            </div>
-
-            <div
-              style={{
-                alignSelf: "stretch",
-                paddingTop: "12px",
-                borderTop: "1px solid #F8FAFC",
-                justifyContent: "space-between",
-                alignItems: "center",
-                display: "inline-flex",
-              }}
-            >
-              <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
-                <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                       <div style={{ color: "#94A3B8" }}><EyeIcon size={13} /></div>
-                </div>
-                <div style={{ width: "22.73px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 500, lineHeight: "16px" }}>
-                  1.2k
-                </div>
-              </div>
-
-              <div style={{ padding: "6px", borderRadius: "8px", flexDirection: "column", justifyContent: "center", alignItems: "center", display: "inline-flex" }}>
-                <div style={{ justifyContent: "center", alignItems: "flex-start", display: "inline-flex" }}>
-                    <div style={{ color: "#007BFF" }}><BookmarkIcon size={14} /></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 2 - C# Guide */}
-        <div
-          style={{
-            flex: "1 1 0",
-            alignSelf: "stretch",
-            background: "white",
-            boxShadow: "0px 1px 2px rgba(0,0,0,0.05)",
-            overflow: "hidden",
-            borderRadius: "16px",
-            outline: "1px solid #F1F5F9",
-            outlineOffset: "-1px",
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            alignItems: "flex-start",
-            display: "inline-flex",
-          }}
-        >
-          <div style={{ alignSelf: "stretch", height: "192px", position: "relative", background: "#E2E8F0", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-            <img style={{ width: "192px", height: "192px", boxShadow: "0px 4px 4px rgba(0,0,0,0.25)", border: "1px solid rgba(0,0,0,0)" }} src="https://placehold.co/192x192" alt="C#" />
-            <div
-              style={{
-                padding: "2.5px 8px",
-                position: "absolute",
-                left: "12px",
-                top: "9px",
-                background: "#F97316",
-                borderRadius: "4px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-              }}
-            >
-              <div style={{ width: "41.97px", height: "15px", textAlign: "center", justifyContent: "center", display: "flex", flexDirection: "column", color: "white", fontSize: "10px", fontWeight: 700, textTransform: "uppercase", lineHeight: "15px", letterSpacing: "0.25px" }}>
-                C#
-              </div>
-            </div>
-          </div>
-
-          <div style={{ alignSelf: "stretch", padding: "20px", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", gap: "12px", display: "flex" }}>
-            <div style={{ alignSelf: "stretch", overflow: "hidden", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "flex" }}>
-              <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#0F172A", fontSize: "16px", fontWeight: 700, lineHeight: "24px" }}>
-                C# Programming Guide
-              </div>
-            </div>
-
-            <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "8px", display: "inline-flex" }}>
-              <img style={{ width: "24px", height: "24px", borderRadius: "9999px" }} src="https://placehold.co/24x24" alt="Author" />
-              <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "57.77px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "12px", fontWeight: 400, lineHeight: "16px" }}>
-                  Tran Thi B
-                </div>
-              </div>
-              <div style={{ padding: "0 4px", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "6.75px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "12px", fontWeight: 400, lineHeight: "16px" }}>•</div>
-              </div>
-              <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "65.73px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "12px", fontWeight: 400, lineHeight: "16px" }}>
-                  09/10/2023
-                </div>
-              </div>
-            </div>
-
-            <div
-              style={{
-                alignSelf: "stretch",
-                paddingTop: "12px",
-                borderTop: "1px solid #F8FAFC",
-                justifyContent: "space-between",
-                alignItems: "center",
-                display: "inline-flex",
-              }}
-            >
-              <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
-                <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                 <div style={{ color: "#94A3B8" }}><EyeIcon size={13} /></div>
-                </div>
-                <div style={{ width: "22.55px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 500, lineHeight: "16px" }}>
-                  850
-                </div>
-              </div>
-
-              <div style={{ padding: "6px", borderRadius: "8px", flexDirection: "column", justifyContent: "center", alignItems: "center", display: "inline-flex" }}>
-                <div style={{ justifyContent: "center", alignItems: "flex-start", display: "inline-flex" }}>
-                 <div style={{ color: "#007BFF" }}><BookmarkIcon size={14} /></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 3 - HTML Self-study */}
-        <div
-          style={{
-            flex: "1 1 0",
-            alignSelf: "stretch",
-            background: "white",
-            boxShadow: "0px 1px 2px rgba(0,0,0,0.05)",
-            overflow: "hidden",
-            borderRadius: "16px",
-            outline: "1px solid #F1F5F9",
-            outlineOffset: "-1px",
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            alignItems: "flex-start",
-            display: "inline-flex",
-          }}
-        >
-          <div style={{ alignSelf: "stretch", height: "192px", position: "relative", background: "#E2E8F0", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-            <img style={{ width: "192px", height: "192px" }} src="https://placehold.co/192x192" alt="HTML" />
-            <div
-              style={{
-                padding: "2.5px 8px",
-                position: "absolute",
-                left: "12px",
-                top: "9px",
-                background: "#22C55E",
-                borderRadius: "4px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-              }}
-            >
-              <div style={{ width: "68.36px", height: "15px", textAlign: "center", justifyContent: "center", display: "flex", flexDirection: "column", color: "white", fontSize: "10px", fontWeight: 700, textTransform: "uppercase", lineHeight: "15px", letterSpacing: "0.25px" }}>
-                HTML
-              </div>
-            </div>
-          </div>
-
-          <div style={{ alignSelf: "stretch", padding: "20px", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", gap: "12px", display: "flex" }}>
-            <div style={{ alignSelf: "stretch", overflow: "hidden", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "flex" }}>
-              <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#0F172A", fontSize: "16px", fontWeight: 700, lineHeight: "24px" }}>
-                Self-study HTML
-              </div>
-            </div>
-
-            <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "8px", display: "inline-flex" }}>
-              <img style={{ width: "24px", height: "24px", borderRadius: "9999px" }} src="https://placehold.co/24x24" alt="Author" />
-              <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "51.41px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "12px", fontWeight: 400, lineHeight: "16px" }}>
-                  Le Van C
-                </div>
-              </div>
-              <div style={{ padding: "0 4px", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "6.75px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "12px", fontWeight: 400, lineHeight: "16px" }}>•</div>
-              </div>
-              <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "65.72px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "12px", fontWeight: 400, lineHeight: "16px" }}>
-                  08/10/2023
-                </div>
-              </div>
-            </div>
-
-            <div
-              style={{
-                alignSelf: "stretch",
-                paddingTop: "12px",
-                borderTop: "1px solid #F8FAFC",
-                justifyContent: "space-between",
-                alignItems: "center",
-                display: "inline-flex",
-              }}
-            >
-              <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
-                <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ color: "#94A3B8" }}><EyeIcon size={13} /></div>
-                </div>
-                <div style={{ width: "21.67px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 500, lineHeight: "16px" }}>
-                  2.1k
-                </div>
-              </div>
-
-              <div style={{ padding: "6px", borderRadius: "8px", flexDirection: "column", justifyContent: "center", alignItems: "center", display: "inline-flex" }}>
-                <div style={{ justifyContent: "center", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ color: "#007BFF" }}><BookmarkIcon size={14} /></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Card 4 - IT Life (Book) */}
-        <div
-          style={{
-            flex: "1 1 0",
-            alignSelf: "stretch",
-            background: "white",
-            boxShadow: "0px 1px 2px rgba(0,0,0,0.05)",
-            overflow: "hidden",
-            borderRadius: "16px",
-            outline: "1px solid #F1F5F9",
-            outlineOffset: "-1px",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            display: "inline-flex",
-          }}
-        >
-          <div style={{ alignSelf: "stretch", height: "192px", position: "relative", background: "#E2E8F0", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-            <img style={{ width: "131px", height: "189px" }} src="https://placehold.co/131x189" alt="IT Life Book" />
-            <div
-              style={{
-                width: "77px",
-                padding: "2.5px 8px",
-                position: "absolute",
-                left: "12px",
-                top: "8.81px",
-                background: "#A855F7",
-                borderRadius: "4px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-              }}
-            >
-              <div style={{ width: "62px", height: "15px", textAlign: "center", justifyContent: "center", display: "flex", flexDirection: "column", color: "white", fontSize: "10px", fontWeight: 700, textTransform: "uppercase", lineHeight: "15px", letterSpacing: "0.25px" }}>
-                BOOK
-              </div>
-            </div>
-          </div>
-
-          <div style={{ alignSelf: "stretch", padding: "20px", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", gap: "12px", display: "flex" }}>
-            <div style={{ alignSelf: "stretch", overflow: "hidden", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "flex" }}>
-              <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#0F172A", fontSize: "16px", fontWeight: 700, lineHeight: "24px" }}>
-                IT Life
-              </div>
-            </div>
-
-            <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "8px", display: "inline-flex" }}>
-              <img style={{ width: "24px", height: "24px", borderRadius: "9999px" }} src="https://placehold.co/24x24" alt="Author" />
-              <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "75.36px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "12px", fontWeight: 400, lineHeight: "16px" }}>
-                  Pham Minh D
-                </div>
-              </div>
-              <div style={{ padding: "0 4px", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "6.75px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "12px", fontWeight: 400, lineHeight: "16px" }}>•</div>
-              </div>
-              <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "64.86px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "12px", fontWeight: 400, lineHeight: "16px" }}>
-                  07/10/2023
-                </div>
-              </div>
-            </div>
-
-            <div
-              style={{
-                alignSelf: "stretch",
-                paddingTop: "12px",
-                borderTop: "1px solid #F8FAFC",
-                justifyContent: "space-between",
-                alignItems: "center",
-                display: "inline-flex",
-              }}
-            >
-              <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
-                <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ color: "#94A3B8" }}><EyeIcon size={13} /></div>
-                </div>
-                <div style={{ width: "25.48px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 500, lineHeight: "16px" }}>
-                  3.4k
-                </div>
-              </div>
-
-              <div style={{ padding: "6px", borderRadius: "8px", flexDirection: "column", justifyContent: "center", alignItems: "center", display: "inline-flex" }}>
-                <div style={{ justifyContent: "center", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ color: "#007BFF" }}><BookmarkIcon size={14} /></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
