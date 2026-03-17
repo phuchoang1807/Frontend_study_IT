@@ -106,10 +106,7 @@ export default function Hero() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" }}>
-          <div style={{ color: "rgba(255,255,255,0.8)", fontSize: "14px" }}>Trending:</div>
-          <div style={{ padding: "4px 12px", background: "rgba(255,255,255,0.1)", borderRadius: "9999px", backdropFilter: "blur(2px)", color: "rgba(255,255,255,0.8)", fontSize: "14px" }}>#ReactJS</div>
-          <div style={{ padding: "4px 12px", background: "rgba(255,255,255,0.1)", borderRadius: "9999px", backdropFilter: "blur(2px)", color: "rgba(255,255,255,0.8)", fontSize: "14px" }}>#GlobalEconomy</div>
-          <div style={{ padding: "4px 12px", background: "rgba(255,255,255,0.1)", borderRadius: "9999px", backdropFilter: "blur(2px)", color: "rgba(255,255,255,0.8)", fontSize: "14px" }}>#IELTS</div>
+        
         </div>
       </div>
     </div>
