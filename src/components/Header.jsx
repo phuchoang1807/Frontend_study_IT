@@ -5,7 +5,7 @@ export default function Header() {
     <div
       style={{
         width: "100%",
-        paddingRight: "32px",
+        padding: "0 32px",
         position: "sticky",
         top: 0,
         background: "rgba(255, 255, 255, 0.80)",
@@ -21,13 +21,13 @@ export default function Header() {
       <div
         style={{
           width: "100%",
-          maxWidth: "1280px",
+          
           height: "64px",
           paddingRight: "0.02px",
           justifyContent: "space-between",
           alignItems: "center",
           display: "inline-flex",
-          margin: "0 auto",
+          
         }}
       >
         <img

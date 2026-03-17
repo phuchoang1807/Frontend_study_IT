@@ -30,7 +30,7 @@ export default function Footer() {
       <div
         style={{
           width: "100%",
-          maxWidth: "1280px",
+          
           paddingLeft: "32px",
           paddingRight: "32px",
           margin: "0 auto",
@@ -45,16 +45,18 @@ export default function Footer() {
         <div
           style={{
             alignSelf: "stretch",
-            justifyContent: "center",
+            justifyContent: "space-between",
             alignItems: "flex-start",
             gap: "48px",
             display: "inline-flex",
+            flexWrap: "wrap",
           }}
         >
           {/* Cột 1 - About */}
           <div
             style={{
-              width: "457.59px",
+              flex: "1 1 0",
+              minWidth: "320px",
               alignSelf: "stretch",
               flexDirection: "column",
               justifyContent: "flex-start",
@@ -67,7 +69,7 @@ export default function Footer() {
 
             <div
               style={{
-                width: "384px",
+                width: "100%",
                 maxWidth: "384px",
                 flexDirection: "column",
                 justifyContent: "flex-start",
@@ -77,8 +79,7 @@ export default function Footer() {
             >
               <div
                 style={{
-                  width: "368.95px",
-                  height: "52px",
+                  maxWidth: "368.95px",
                   justifyContent: "center",
                   display: "flex",
                   flexDirection: "column",
@@ -156,7 +157,8 @@ export default function Footer() {
           {/* Cột 2 - About Us */}
           <div
             style={{
-              width: "204.80px",
+              flex: "0 1 204.80px",
+              minWidth: "180px",
               alignSelf: "stretch",
               flexDirection: "column",
               justifyContent: "flex-start",
@@ -219,7 +221,8 @@ export default function Footer() {
           {/* Cột 3 - Resources */}
           <div
             style={{
-              width: "204.80px",
+              flex: "0 1 204.80px",
+              minWidth: "180px",
               alignSelf: "stretch",
               flexDirection: "column",
               justifyContent: "flex-start",
@@ -282,7 +285,8 @@ export default function Footer() {
           {/* Cột 4 - Support */}
           <div
             style={{
-              width: "204.81px",
+              flex: "0 1 204.81px",
+              minWidth: "180px",
               alignSelf: "stretch",
               flexDirection: "column",
               justifyContent: "flex-start",
@@ -360,6 +364,7 @@ export default function Footer() {
               justifyContent: "flex-start",
               alignItems: "flex-start",
               display: "inline-flex",
+              flexWrap: "wrap",
             }}
           >
             <div
