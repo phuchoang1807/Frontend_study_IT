@@ -29,10 +29,10 @@ export default function DocumentsList() {
           paddingLeft: "16px",
           paddingRight: "16px",
           boxSizing: "border-box",
-          justifyContent: "flex-start",
+          justifyContent: "center",
           alignItems: "flex-start",
           gap: "32px",
-          display: "inline-flex",
+          display: "flex",
         }}
       >
         {/* Sidebar - Bộ lọc tìm kiếm */}
@@ -716,7 +716,7 @@ export default function DocumentsList() {
         </div>
 
         {/* Main content - Danh sách tài liệu */}
-        <div style={{ flex: "1 1 0", alignSelf: "stretch", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", gap: "32px", display: "inline-flex" }}>
+        <div style={{ flex: "1 1 0", maxWidth: "936px", alignSelf: "stretch", flexDirection: "column", justifyContent: "flex-start", alignItems: "center", gap: "32px", display: "inline-flex" }}>
           {/* Breadcrumb */}
           <div
             style={{
@@ -833,7 +833,7 @@ export default function DocumentsList() {
           </div>
 
           {/* Danh sách tài liệu (3 card mẫu) */}
-          <div style={{ alignSelf: "stretch", height: "473px", position: "relative" }}>
+           <div style={{ width: "100%", maxWidth: "936px", height: "473px", position: "relative" }}>
             {/* Card 1 */}
             <div
               style={{
