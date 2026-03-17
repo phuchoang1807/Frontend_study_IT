@@ -40,6 +40,7 @@ export default function DocumentsList() {
           style={{
             width: "272px",
             height: "721px",
+            transform: "translateX(-42px)",
             paddingLeft: "11px",
             paddingRight: "11px",
             position: "relative",
