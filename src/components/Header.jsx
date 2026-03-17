@@ -4,10 +4,9 @@ export default function Header() {
   return (
     <div
       style={{
-        width: "1280px",
+        width: "100%",
         paddingRight: "32px",
-        position: "absolute",
-        left: 0,
+        position: "sticky",
         top: 0,
         background: "rgba(255, 255, 255, 0.80)",
         borderBottom: "1px solid #E2E8F0",
@@ -15,13 +14,14 @@ export default function Header() {
         flexDirection: "column",
         justifyContent: "flex-start",
         alignItems: "flex-start",
-        display: "inline-flex",
+        display: "flex",
         zIndex: 10,
       }}
     >
       <div
         style={{
-          width: "1248px",
+          width: "100%",
+          maxWidth: "1280px",
           height: "64px",
           paddingRight: "0.02px",
           justifyContent: "space-between",

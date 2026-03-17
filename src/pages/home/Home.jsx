@@ -20,27 +20,27 @@ export default function Home() {
   return (
     <div
       style={{
-        width: "1280px",
-        height: "2715px",
-        position: "relative",
+        width: "100%",
+        minHeight: "100vh",
         background: "#F5F7F8",
-        margin: "0 auto",
+       
       }}
     >
       <Header />
 
       <div
         style={{
-          width: "1280px",
+          width: "100%",
+          maxWidth: "1280px",
           padding: "32px",
-          position: "absolute",
-          left: 0,
-          top: "65px",
+          margin: "0 auto",
+          paddingTop: "96px",
+          boxSizing: "border-box",
           flexDirection: "column",
           justifyContent: "flex-start",
           alignItems: "flex-start",
           gap: "48px",
-          display: "inline-flex",
+          display: "flex",
         }}
       >
         <Hero />

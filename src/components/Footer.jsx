@@ -4,18 +4,16 @@ export default function Footer() {
   return (
     <div
       style={{
-        width: "1280px",
+        width: "100%",
         paddingTop: "64px",
         paddingBottom: "32px",
-        position: "absolute",
-        left: 0,
-        top: "2309px",
+        marginTop: "80px",
         background: "white",
         borderTop: "1px solid #E2E8F0",
         flexDirection: "column",
         justifyContent: "flex-start",
         alignItems: "flex-start",
-        display: "inline-flex",
+        display: "flex",
       }}
     >
       <img
@@ -35,6 +33,8 @@ export default function Footer() {
           maxWidth: "1280px",
           paddingLeft: "32px",
           paddingRight: "32px",
+          margin: "0 auto",
+          boxSizing: "border-box",
           flexDirection: "column",
           justifyContent: "flex-start",
           alignItems: "flex-start",
