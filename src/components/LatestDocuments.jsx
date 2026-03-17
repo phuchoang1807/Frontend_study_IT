@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router-dom";
+
 export default function LatestDocuments() {
+  const navigate = useNavigate();
   return (
     <div style={{ alignSelf: "stretch", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", gap: "24px", display: "flex" }}>
       <div style={{ alignSelf: "stretch", justifyContent: "space-between", alignItems: "center", display: "inline-flex" }}>
@@ -15,17 +18,10 @@ export default function LatestDocuments() {
           </div>
         </div>
 
-        <div style={{ justifyContent: "flex-start", alignItems: "center", display: "flex" }}>
-          <div
-          style={{
-            justifyContent: "flex-start",
-            alignItems: "center",
-            display: "flex",
-            cursor: "pointer", // Để con trỏ tay khi hover
-            color: "#007BFF",
-          }}
-          onClick={() => navigate("/DocumentsList")} // Nhảy sang trang danh sách
-        ></div>
+        <div
+          style={{ justifyContent: "flex-start", alignItems: "center", display: "flex", cursor: "pointer" }}
+          onClick={() => navigate("/documents")}
+        >
           <div style={{ width: "71.75px", height: "20px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#007BFF", fontSize: "14px", fontWeight: 600, lineHeight: "20px" }}>
             
             View All

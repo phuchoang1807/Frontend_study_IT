@@ -21,7 +21,7 @@ export default function ForgotPassword() {
       </form>
 
       <p className="auth-footer-text">
-        Remember your password? <Link to="/">Back to Sign In</Link>
+        Remember your password? <Link to="/sign-in">Back to Sign In</Link>
       </p>
 
     </div>

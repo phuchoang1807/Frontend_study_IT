@@ -13,7 +13,7 @@ export default function SignIn() {
     event.preventDefault();
 
     if(email === "phuc1807@gmail.com" && password === "phuc@123"){
-      navigate("/");
+      navigate("/home");
     }else{
       alert("Sai tài khoản hoặc mật khẩu");
     }

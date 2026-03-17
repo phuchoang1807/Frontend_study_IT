@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { Navigate, createBrowserRouter } from "react-router-dom";
 
 import AuthLayout from "../layouts/AuthLayout";
 
@@ -8,7 +8,13 @@ import ForgotPassword from "../pages/auth/ForgotPassword";
 
 import Home from "../pages/home/Home";
 
+import DocumentsList from "../components/DocumentsList";
+
 export const router = createBrowserRouter([
+    {
+    path: "/",
+    element: <Navigate to="/sign-in" replace />,
+  },
   {
     path: "/sign-in",
     element: (
@@ -36,12 +42,12 @@ export const router = createBrowserRouter([
 
   // 👇 trang sau khi login
   {
-    path: "/",
+    path: "/home",
     element: <Home />,
   },
 
   {
-  path: "/documents",
-  element: <DocumentsList />,
-},
+    path: "/documents",
+    element: <DocumentsList />,
+  },
 ]);

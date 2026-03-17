@@ -52,7 +52,7 @@ export default function SignUp() {
          </form>
 
       <p className="auth-footer-text">
-        Already have an account? <Link to="/">Sign in</Link>
+        Already have an account? <Link to="/sign-in">Sign in</Link>
       </p>
 
     </div>
