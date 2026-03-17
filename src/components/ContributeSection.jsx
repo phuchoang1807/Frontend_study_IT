@@ -1,3 +1,4 @@
+import { GiftIcon, ShieldIcon } from "./icons";
 export default function ContributeSection() {
   return (
     <div
@@ -44,7 +45,7 @@ export default function ContributeSection() {
               }}
             >
               <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "22px", height: "21px", background: "#007BFF" }}></div>
+                <div style={{ color: "#007BFF" }}><ShieldIcon size={22} /></div>
               </div>
               <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
                 <div style={{ width: "158.56px", height: "20px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#0F172A", fontSize: "14px", fontWeight: 600, lineHeight: "20px" }}>
@@ -68,7 +69,7 @@ export default function ContributeSection() {
               }}
             >
               <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "20px", height: "20px", background: "#007BFF" }}></div>
+                <div style={{ color: "#007BFF" }}><GiftIcon size={20} /></div>
               </div>
               <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
                 <div style={{ width: "173px", height: "20px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#0F172A", fontSize: "14px", fontWeight: 600, lineHeight: "20px" }}>

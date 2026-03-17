@@ -1,3 +1,5 @@
+import { DocumentIcon, DownloadIcon, TrophyIcon, UsersIcon } from "./icons";
+
 export default function Stats() {
   return (
     <div style={{ alignSelf: "stretch", display: "flex", gap: "16px", justifyContent: "center", alignItems: "flex-start" }}>
@@ -17,7 +19,7 @@ export default function Stats() {
         }}
       >
         <div style={{ padding: "12px", background: "#EFF6FF", borderRadius: "12px" }}>
-          <div style={{ width: "16px", height: "20px", background: "#2563EB" }} />
+          <div style={{ color: "#2563EB" }}><DocumentIcon size={20} /></div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <div style={{ color: "#64748B", fontSize: "12px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.6px" }}>Documents</div>
@@ -41,7 +43,7 @@ export default function Stats() {
         }}
       >
         <div style={{ padding: "12px", background: "#F0FDF4", borderRadius: "12px" }}>
-          <div style={{ width: "22px", height: "16px", background: "#16A34A" }} />
+          <div style={{ color: "#16A34A" }}><UsersIcon size={20} /></div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <div style={{ color: "#64748B", fontSize: "12px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.6px" }}>Members</div>
@@ -65,7 +67,7 @@ export default function Stats() {
         }}
       >
         <div style={{ padding: "12px", background: "#FFF7ED", borderRadius: "12px" }}>
-          <div style={{ width: "16px", height: "16px", background: "#EA580C" }} />
+            <div style={{ color: "#EA580C" }}><DownloadIcon size={18} /></div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <div style={{ color: "#64748B", fontSize: "12px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.6px" }}>Downloads</div>
@@ -89,7 +91,7 @@ export default function Stats() {
         }}
       >
         <div style={{ padding: "12px", background: "#FAF5FF", borderRadius: "12px" }}>
-          <div style={{ width: "20px", height: "19px", background: "#9333EA" }} />
+           <div style={{ color: "#9333EA" }}><TrophyIcon size={20} /></div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
           <div style={{ color: "#64748B", fontSize: "12px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.6px" }}>Contributions</div>

@@ -1,5 +1,5 @@
 // src/components/Footer.jsx
-
+import { FacebookIcon, GlobeIcon, LanguageIcon, LinkedinIcon, YoutubeIcon } from "./icons";
 export default function Footer() {
   return (
     <div
@@ -115,7 +115,7 @@ export default function Footer() {
                 }}
               >
                 <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "16.64px", height: "16.60px", background: "#475569" }}></div>
+                  <div style={{ color: "#475569" }}><FacebookIcon size={17} /></div>
                 </div>
               </div>
 
@@ -147,7 +147,7 @@ export default function Footer() {
                 }}
               >
                 <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "16.64px", height: "16.64px", background: "#475569" }}></div>
+                  <div style={{ color: "#475569" }}><LinkedinIcon size={14} /></div>
                 </div>
               </div>
             </div>
@@ -391,7 +391,7 @@ export default function Footer() {
               }}
             >
               <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "11.65px", height: "11.65px", background: "#94A3B8" }}></div>
+                <div style={{ color: "#94A3B8" }}><LanguageIcon size={12} /></div>
               </div>
               <div
                 style={{
@@ -421,7 +421,7 @@ export default function Footer() {
               }}
             >
               <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "11.65px", height: "11.65px", background: "#94A3B8" }}></div>
+                <div style={{ color: "#94A3B8" }}><GlobeIcon size={12} /></div>
               </div>
               <div
                 style={{

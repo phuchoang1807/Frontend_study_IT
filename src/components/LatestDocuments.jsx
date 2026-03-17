@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-
+import { BookmarkIcon, ChevronRightIcon, EyeIcon } from "./icons";
 export default function LatestDocuments() {
   const navigate = useNavigate();
   return (
@@ -27,7 +27,7 @@ export default function LatestDocuments() {
             View All
           </div>
           <div style={{ paddingLeft: "4px", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-            <div style={{ width: "9.33px", height: "9.33px", background: "#007BFF" }}></div>
+              <div style={{ color: "#007BFF" }}><ChevronRightIcon size={14} /></div>
           </div>
         </div>
       </div>
@@ -108,7 +108,7 @@ export default function LatestDocuments() {
             >
               <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
                 <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "12.83px", height: "8.75px", background: "#94A3B8" }}></div>
+                       <div style={{ color: "#94A3B8" }}><EyeIcon size={13} /></div>
                 </div>
                 <div style={{ width: "22.73px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 500, lineHeight: "16px" }}>
                   1.2k
@@ -117,7 +117,7 @@ export default function LatestDocuments() {
 
               <div style={{ padding: "6px", borderRadius: "8px", flexDirection: "column", justifyContent: "center", alignItems: "center", display: "inline-flex" }}>
                 <div style={{ justifyContent: "center", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "14px", height: "18px", background: "#007BFF" }}></div>
+                    <div style={{ color: "#007BFF" }}><BookmarkIcon size={14} /></div>
                 </div>
               </div>
             </div>
@@ -199,7 +199,7 @@ export default function LatestDocuments() {
             >
               <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
                 <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "12.83px", height: "8.75px", background: "#94A3B8" }}></div>
+                 <div style={{ color: "#94A3B8" }}><EyeIcon size={13} /></div>
                 </div>
                 <div style={{ width: "22.55px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 500, lineHeight: "16px" }}>
                   850
@@ -208,7 +208,7 @@ export default function LatestDocuments() {
 
               <div style={{ padding: "6px", borderRadius: "8px", flexDirection: "column", justifyContent: "center", alignItems: "center", display: "inline-flex" }}>
                 <div style={{ justifyContent: "center", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "14px", height: "18px", background: "#007BFF" }}></div>
+                 <div style={{ color: "#007BFF" }}><BookmarkIcon size={14} /></div>
                 </div>
               </div>
             </div>
@@ -290,7 +290,7 @@ export default function LatestDocuments() {
             >
               <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
                 <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "12.83px", height: "8.75px", background: "#94A3B8" }}></div>
+                  <div style={{ color: "#94A3B8" }}><EyeIcon size={13} /></div>
                 </div>
                 <div style={{ width: "21.67px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 500, lineHeight: "16px" }}>
                   2.1k
@@ -299,7 +299,7 @@ export default function LatestDocuments() {
 
               <div style={{ padding: "6px", borderRadius: "8px", flexDirection: "column", justifyContent: "center", alignItems: "center", display: "inline-flex" }}>
                 <div style={{ justifyContent: "center", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "17.77px", height: "18.38px", background: "#007BFF" }}></div>
+                  <div style={{ color: "#007BFF" }}><BookmarkIcon size={14} /></div>
                 </div>
               </div>
             </div>
@@ -382,7 +382,7 @@ export default function LatestDocuments() {
             >
               <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
                 <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "12.83px", height: "8.75px", background: "#94A3B8" }}></div>
+                  <div style={{ color: "#94A3B8" }}><EyeIcon size={13} /></div>
                 </div>
                 <div style={{ width: "25.48px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 500, lineHeight: "16px" }}>
                   3.4k
@@ -391,7 +391,7 @@ export default function LatestDocuments() {
 
               <div style={{ padding: "6px", borderRadius: "8px", flexDirection: "column", justifyContent: "center", alignItems: "center", display: "inline-flex" }}>
                 <div style={{ justifyContent: "center", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "14px", height: "18px", background: "#007BFF" }}></div>
+                  <div style={{ color: "#007BFF" }}><BookmarkIcon size={14} /></div>
                 </div>
               </div>
             </div>

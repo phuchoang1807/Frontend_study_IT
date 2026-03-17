@@ -1,3 +1,4 @@
+import { SearchIcon } from "./icons";
 export default function Hero() {
   return (
     <div
@@ -81,7 +82,7 @@ export default function Hero() {
               gap: "12px",
             }}
           >
-            <div style={{ width: "18px", height: "18px", background: "#94A3B8" }} />
+            <div style={{ color: "#94A3B8" }}><SearchIcon size={18} /></div>
             <div style={{ flex: 1, padding: "14px 12px", color: "#6B7280", fontSize: "16px" }}>
               Enter document name, topic or keyword...
             </div>

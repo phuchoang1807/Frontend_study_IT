@@ -1,3 +1,4 @@
+import { ChevronLeftIcon, ChevronRightIcon, EyeIcon, StarIcon } from "./icons";
 export default function PopularDocuments() {
   return (
     <div style={{ alignSelf: "stretch", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", gap: "24px", display: "flex" }}>
@@ -29,7 +30,7 @@ export default function PopularDocuments() {
             }}
           >
             <div style={{ justifyContent: "center", alignItems: "flex-start", display: "inline-flex" }}>
-              <div style={{ width: "7.40px", height: "12px", background: "#0F172A" }}></div>
+               <div style={{ color: "#0F172A" }}><ChevronLeftIcon size={14} /></div>
             </div>
           </div>
 
@@ -46,7 +47,7 @@ export default function PopularDocuments() {
             }}
           >
             <div style={{ justifyContent: "center", alignItems: "flex-start", display: "inline-flex" }}>
-              <div style={{ width: "7.40px", height: "12px", background: "#0F172A" }}></div>
+               <div style={{ color: "#0F172A" }}><ChevronRightIcon size={14} /></div>
             </div>
           </div>
         </div>
@@ -105,7 +106,7 @@ export default function PopularDocuments() {
             <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "12px", display: "inline-flex" }}>
               <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
                 <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "9.33px", height: "9.33px", background: "#94A3B8" }}></div>
+                  <div style={{ color: "#94A3B8" }}><EyeIcon size={12} /></div>
                 </div>
                 <div style={{ width: "25.73px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 600, lineHeight: "16px" }}>
                   4.2k
@@ -114,7 +115,7 @@ export default function PopularDocuments() {
 
               <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
                 <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "11.67px", height: "11.08px", background: "#94A3B8" }}></div>
+                   <div style={{ color: "#94A3B8" }}><StarIcon size={11} /></div>
                 </div>
                 <div style={{ width: "18.97px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 600, lineHeight: "16px" }}>
                   4.9
@@ -176,7 +177,7 @@ export default function PopularDocuments() {
             <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "11.99px", display: "inline-flex" }}>
               <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "3.99px", display: "flex" }}>
                 <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "9.33px", height: "9.33px", background: "#94A3B8" }}></div>
+                  <div style={{ color: "#94A3B8" }}><EyeIcon size={12} /></div>
                 </div>
                 <div style={{ width: "25.50px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 600, lineHeight: "16px" }}>
                   2.8k
@@ -185,7 +186,7 @@ export default function PopularDocuments() {
 
               <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
                 <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "11.67px", height: "11.08px", background: "#94A3B8" }}></div>
+                  <div style={{ color: "#94A3B8" }}><StarIcon size={11} /></div>
                 </div>
                 <div style={{ width: "18.08px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 600, lineHeight: "16px" }}>
                   4.7
@@ -249,7 +250,7 @@ export default function PopularDocuments() {
             <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "12px", display: "inline-flex" }}>
               <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "3.99px", display: "flex" }}>
                 <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "9.33px", height: "9.33px", background: "#94A3B8" }}></div>
+                  <div style={{ color: "#94A3B8" }}><EyeIcon size={12} /></div>
                 </div>
                 <div style={{ width: "21.73px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 600, lineHeight: "16px" }}>
                   5.1k
@@ -258,7 +259,7 @@ export default function PopularDocuments() {
 
               <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "3.99px", display: "flex" }}>
                 <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                  <div style={{ width: "11.67px", height: "11.08px", background: "#94A3B8" }}></div>
+                  <div style={{ color: "#94A3B8" }}><StarIcon size={11} /></div>
                 </div>
                 <div style={{ width: "18.47px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 600, lineHeight: "16px" }}>
                   5.0
