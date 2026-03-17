@@ -1,8 +1,13 @@
 // src/pages/DocumentsList.jsx
 import Header from "./Header";
 import Footer from "./Footer";
+import { useState } from "react";
+import { BookmarkIcon, ChevronRightIcon, EyeIcon, UsersIcon } from "./icons";
 
 export default function DocumentsList() {
+    const [isSortOpen, setIsSortOpen] = useState(false);
+  const [sortBy, setSortBy] = useState("Newest");
+  const sortOptions = ["Popular", "Newest"];
   return (
     <div
       style={{
@@ -638,205 +643,74 @@ export default function DocumentsList() {
                 alignItems: "flex-start",
                 gap: "12px",
                 display: "flex",
+                position: "relative",
               }}
             >
-              <div
-                style={{
-                  alignSelf: "stretch",
-                  flexDirection: "column",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                  display: "flex",
-                }}
-              >
-                <div
-                  style={{
-                    alignSelf: "stretch",
-                    justifyContent: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    color: "#94A3B8",
-                    fontSize: "12px",
-                    fontFamily: "Inter",
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    lineHeight: "16px",
-                    letterSpacing: "0.60px",
-                  }}
-                >
-                  Sort By
-                </div>
+              <div style={{ color: "#94A3B8", fontSize: "12px", fontFamily: "Inter", fontWeight: 700, textTransform: "uppercase", lineHeight: "16px", letterSpacing: "0.60px" }}>
+                Sort By
               </div>
 
-              <div
+               <button
+                type="button"
+                onClick={() => setIsSortOpen((prev) => !prev)}
                 style={{
-                  alignSelf: "stretch",
+                  width: "100%",
                   height: "36px",
-                  position: "relative",
+                  border: "none",
                   background: "#F1F5F9",
                   borderRadius: "8px",
+                   padding: "8px 12px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  color: "#0F172A",
+                  fontSize: "14px",
+                  fontFamily: "Inter",
+                  cursor: "pointer",
                 }}
               >
+                <span>{sortBy}</span>
+                <span style={{ color: "#6B7280" }}>{isSortOpen ? "▴" : "▾"}</span>
+              </button>
+
+              {isSortOpen && (
                 <div
                   style={{
-                    width: "256px",
-                    height: "36px",
-                    paddingTop: "7.50px",
-                    paddingBottom: "7.50px",
-                    paddingLeft: "227px",
-                    paddingRight: "8px",
-                    left: 0,
-                    top: 0,
-                    position: "absolute",
+                   width: "100%",
+                    background: "#FFFFFF",
+                    borderRadius: "8px",
+                    outline: "1px solid #E2E8F0",
+                    boxShadow: "0px 8px 10px -6px rgba(0,0,0,0.10), 0px 20px 25px -5px rgba(0,0,0,0.10)",
                     overflow: "hidden",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "flex-start",
-                    display: "inline-flex",
+                    
                   }}
                 >
-                  <div style={{ width: "21px", height: "21px", position: "relative", overflow: "hidden" }}>
-                    <div
-                      style={{
-                        width: "8.40px",
-                        height: "4.20px",
-                        left: "6.30px",
-                        top: "8.40px",
-                        position: "absolute",
-                        outline: "1.57px solid #6B7280",
-                        outlineOffset: "-0.79px",
+                  {sortOptions.map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      onClick={() => {
+                        setSortBy(option);
+                        setIsSortOpen(false);
                       }}
-                    ></div>
-                  </div>
+                      style={{
+                        width: "100%",
+                        border: "none",
+                        background: option === sortBy ? "rgba(0, 123, 255, 0.10)" : "#FFFFFF",
+                        color: option === sortBy ? "#007BFF" : "#0F172A",
+                        textAlign: "left",
+                        padding: "8px 16px",
+                        fontSize: "14px",
+                        lineHeight: "20px",
+                        fontFamily: "Inter",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {option}
+                    </button>
+                  ))}
                 </div>
-
-                <div
-                  style={{
-                    width: "198px",
-                    left: "12px",
-                    top: "8px",
-                    position: "absolute",
-                    overflow: "hidden",
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    alignItems: "flex-start",
-                    display: "inline-flex",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "57.33px",
-                      height: "20px",
-                      justifyContent: "center",
-                      display: "flex",
-                      flexDirection: "column",
-                      color: "#0F172A",
-                      fontSize: "14px",
-                      fontFamily: "Inter",
-                      fontWeight: 400,
-                      lineHeight: "20px",
-                    }}
-                  >
-                    Newest
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Phổ biến / Mới nhất toggle */}
-            <div
-              style={{
-                width: "256px",
-                height: "75px",
-                paddingTop: "4px",
-                paddingBottom: "4px",
-                left: "8px",
-                top: "580px",
-                position: "absolute",
-                background: "white",
-                borderRadius: "8px",
-                outline: "1px solid #E2E8F0",
-                outlineOffset: "-1px",
-                flexDirection: "column",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-                display: "flex",
-              }}
-            >
-              <div
-                style={{
-                  width: "256px",
-                  height: "75px",
-                  left: 0,
-                  top: 0,
-                  position: "absolute",
-                  background: "rgba(255,255,255,0)",
-                  boxShadow: "0px 8px 10px -6px rgba(0,0,0,0.10), 0px 20px 25px -5px rgba(0,0,0,0.10)",
-                  borderRadius: "8px",
-                }}
-              ></div>
-
-              <div
-                style={{
-                  alignSelf: "stretch",
-                  paddingLeft: "16px",
-                  paddingRight: "16px",
-                  paddingTop: "8px",
-                  paddingBottom: "8px",
-                  flexDirection: "column",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                  display: "flex",
-                }}
-              >
-                <div
-                  style={{
-                    alignSelf: "stretch",
-                    justifyContent: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    color: "#0F172A",
-                    fontSize: "14px",
-                    fontFamily: "Inter",
-                    fontWeight: 400,
-                    lineHeight: "20px",
-                  }}
-                >
-                  Popular
-                </div>
-              </div>
-
-              <div
-                style={{
-                  alignSelf: "stretch",
-                  paddingLeft: "16px",
-                  paddingRight: "16px",
-                  paddingTop: "8px",
-                  paddingBottom: "8px",
-                  background: "rgba(0, 123, 255, 0.10)",
-                  flexDirection: "column",
-                  justifyContent: "flex-start",
-                  alignItems: "flex-start",
-                  display: "flex",
-                }}
-              >
-                <div
-                  style={{
-                    width: "72px",
-                    height: "20px",
-                    justifyContent: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    color: "#007BFF",
-                    fontSize: "14px",
-                    fontFamily: "Inter",
-                    fontWeight: 500,
-                    lineHeight: "20px",
-                  }}
-                >
-                  Newest
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
