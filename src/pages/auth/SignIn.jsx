@@ -1,7 +1,24 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import BrandLogo from "../../components/BrandLogo";
+import { useAuth } from "../../context/AuthContext";
 
 export default function SignIn() {
+  const navigate = useNavigate();
+  const { login, loading, error, setError } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      await login({ email, password, rememberMe });
+      navigate("/");
+    } catch {
+      // error đã được set trong context
+    }
+  };
 
 
   return (
@@ -13,19 +30,39 @@ export default function SignIn() {
         <p>Please enter your details to sign in.</p>
       </header>
 
-      <form className="auth-form" onSubmit={(event) => event.preventDefault()}>
+      <form
+        className="auth-form"
+        onSubmit={handleSubmit}
+        onChange={() => error && setError(null)}
+      >
         <label htmlFor="signin-email">Email</label>
-        <input id="signin-email" type="email" placeholder="user@example.com" />
+        <input
+          id="signin-email"
+          type="email"
+          placeholder="user@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
         <label htmlFor="signin-password">Password</label>
         <div className="input-with-icon">
-          <input id="signin-password" type="password" placeholder="Enter your password" />
+          <input
+            id="signin-password"
+            type="password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
           <span aria-hidden="true">👁</span>
         </div>
 
         <div className="auth-form__row">
           <label className="remember-check">
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+            />
             Remember me
           </label>
 
@@ -34,8 +71,10 @@ export default function SignIn() {
           </Link>
         </div>
 
-        <button type="submit" className="primary-button">
-          Sign In
+        {error && <p className="auth-error">{error}</p>}
+
+        <button type="submit" className="primary-button" disabled={loading}>
+          {loading ? "Signing in..." : "Sign In"}
         </button>
 
         <div className="divider">Or continue with</div>
