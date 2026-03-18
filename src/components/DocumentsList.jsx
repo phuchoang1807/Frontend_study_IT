@@ -1,6 +1,6 @@
 // src/pages/DocumentsList.jsx
 import Header from "./Header";
-
+import { useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 import { useState } from "react";
 import {
@@ -15,6 +15,7 @@ import {
 } from "./icons";
 
 export default function DocumentsList() {
+    const navigate = useNavigate();
     const [isSortOpen, setIsSortOpen] = useState(false);
   const [sortBy, setSortBy] = useState("Newest");
   const sortOptions = ["Popular", "Newest"];
@@ -847,6 +848,7 @@ export default function DocumentsList() {
            <div style={{ width: "100%", maxWidth: "936px", height: "473px", position: "relative" }}>
             {/* Card 1 */}
             <div
+              onClick={() => navigate(`/document/1`)}
               style={{
                 width: "452px",
                 left: 0,
@@ -860,6 +862,7 @@ export default function DocumentsList() {
                 justifyContent: "flex-start",
                 alignItems: "flex-start",
                 display: "inline-flex",
+                cursor: "pointer",
               }}
             >
               <div

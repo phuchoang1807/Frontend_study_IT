@@ -88,6 +88,7 @@ export default function LatestDocuments() {
         {documents.map((doc) => (
           <div
             key={`${doc.title}-${doc.author}`}
+            onClick={() => navigate(`/document/1`)}
             style={{
               flex: 1,
               background: "white",
@@ -96,6 +97,7 @@ export default function LatestDocuments() {
               display: "flex",
               flexDirection: "column",
               overflow: "hidden",
+              cursor: "pointer",
             }}
           >
             {/* IMAGE */}

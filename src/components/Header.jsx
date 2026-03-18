@@ -132,48 +132,48 @@ export default function Header() {
             />
           </button>
 
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate("/contributor-request")}
+            onKeyDown={(e) => e.key === "Enter" && navigate("/contributor-request")}
+            style={{
+              padding: "8px 16px",
+              background: "#007BFF",
+              borderRadius: "12px",
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              cursor: "pointer",
+            }}
+          >
+            <div style={{ color: "white" }}>
+              <UploadIcon size={12} />
+            </div>
+            <div
+              style={{
+                color: "white",
+                fontSize: "14px",
+                fontWeight: 600,
+                lineHeight: "20px",
+              }}
+            >
+              Upload
+            </div>
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                boxShadow:
+                  "0px 4px 6px -4px rgba(0,123,255,0.25), 0px 10px 15px -3px rgba(0,123,255,0.25)",
+                borderRadius: "12px",
+              }}
+            />
+          </div>
+
           {isAuthenticated ? (
             <>
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={() => navigate("/documents")}
-                onKeyDown={(e) => e.key === "Enter" && navigate("/documents")}
-                style={{
-                  padding: "8px 16px",
-                  background: "#007BFF",
-                  borderRadius: "12px",
-                  position: "relative",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  cursor: "pointer",
-                }}
-              >
-                <div style={{ color: "white" }}>
-                  <UploadIcon size={12} />
-                </div>
-                <div
-                  style={{
-                    color: "white",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                    lineHeight: "20px",
-                  }}
-                >
-                  Upload
-                </div>
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    boxShadow:
-                      "0px 4px 6px -4px rgba(0,123,255,0.25), 0px 10px 15px -3px rgba(0,123,255,0.25)",
-                    borderRadius: "12px",
-                  }}
-                />
-              </div>
-
               <div
                 title="Profile"
                 style={{

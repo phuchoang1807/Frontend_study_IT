@@ -163,6 +163,17 @@ export function TrophyIcon({ size = 18, color = "currentColor" }) {
   );
 }
 
+
+
+export function LinkIcon({ size = 18, color = "currentColor" }) {
+  return (
+    <svg style={baseSvgStyle} width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function FacebookIcon({ size = 16, color = "currentColor" }) {
   return <span style={{ color, fontSize: size, fontWeight: 700, lineHeight: 1 }}>f</span>;
 }
@@ -173,4 +184,40 @@ export function YoutubeIcon({ size = 16, color = "currentColor" }) {
 
 export function LinkedinIcon({ size = 16, color = "currentColor" }) {
   return <span style={{ color, fontSize: size, fontWeight: 700, lineHeight: 1 }}>in</span>;
+}
+
+export function AlertIcon({ size = 16 }) {
+  return <span style={{ fontSize: size }}>⚠️</span>;
+}
+
+export function MessageIcon({ size = 16 }) {
+  return <span style={{ fontSize: size }}>💬</span>;
+}
+
+export function PlusIcon({ size = 16 }) {
+  return <span style={{ fontSize: size }}>＋</span>;
+}
+
+export function HeartIcon({ size = 16 }) {
+  return <span style={{ fontSize: size }}>❤️</span>;
+}
+
+export function ShareIcon({ size = 16 }) {
+  return <span style={{ fontSize: size }}>🔗</span>;
+}
+
+export function ListIcon({ size = 16 }) {
+  return <span style={{ fontSize: size }}>📋</span>;
+}
+
+export function ClockIcon({ size = 16 }) {
+  return <span style={{ fontSize: size }}>⏰</span>;
+}
+
+export function MaximizeIcon({ size = 16 }) {
+  return <span style={{ fontSize: size }}>⛶</span>;
+}
+
+export function MinusIcon({ size = 16 }) {
+  return <span style={{ fontSize: size }}>➖</span>;
 }

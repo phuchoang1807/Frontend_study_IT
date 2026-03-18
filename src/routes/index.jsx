@@ -10,12 +10,22 @@ import ProtectedRoute from "./ProtectedRoute";
 import GuestRoute from "./GuestRoute";
 import Home from "../pages/home/Home";
 import DocumentsList from "../components/DocumentsList";
+import DocumentDetail from "../pages/document/DocumentDetail";
+import ContributorRequest from "../pages/contributor/ContributorRequest";
 
 export const router = createBrowserRouter([
   // Public
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/document/:id",
+    element: <DocumentDetail />,
+  },
+  {
+    path: "/contributor-request",
+    element: <ContributorRequest />,
   },
   {
     path: "/login",
