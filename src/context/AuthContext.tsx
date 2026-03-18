@@ -3,10 +3,15 @@ import {
   getCurrentUser,
   login as loginApi,
   logout as logoutApi,
+  manualRefresh,
   type LoginRequest,
   type UserInfo,
 } from "../api/authApi";
-import { clearTokens, getAccessToken } from "../api/tokenStorage";
+import {
+  clearTokens,
+  getAccessToken,
+  getRefreshToken,
+} from "../api/tokenStorage";
 
 type AuthContextValue = {
   user: UserInfo | null;
@@ -76,13 +81,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Init auth khi app mount
   useEffect(() => {
-    const token = getAccessToken();
-    if (!token) {
-      setInitializing(false);
-      return;
-    }
+    let cancelled = false;
 
-    fetchMe().finally(() => setInitializing(false));
+    const init = async () => {
+      try {
+        const accessToken = getAccessToken();
+        if (accessToken) {
+          await fetchMe();
+          return;
+        }
+
+        // Mất accessToken sau F5 là bình thường (token in-memory).
+        // Nếu còn refreshToken thì refresh để khôi phục session.
+        const refreshToken = getRefreshToken();
+        if (!refreshToken) {
+          return;
+        }
+
+        const tokenData = await manualRefresh();
+        if (!tokenData) {
+          return;
+        }
+
+        // manualRefresh đã setAccessToken/setRefreshToken; user từ response đủ để mở app ngay
+        if (!cancelled) {
+          setUser(tokenData.user);
+        }
+      } catch {
+        clearTokens();
+        if (!cancelled) {
+          setUser(null);
+        }
+      }
+    };
+
+    init().finally(() => {
+      if (!cancelled) setInitializing(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const value: AuthContextValue = useMemo(

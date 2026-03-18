@@ -2,6 +2,7 @@ import { BellIcon, SearchIcon, UploadIcon } from "./icons";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import studyItLogo from "/favicon.svg";
 import { useAuth } from "../context/AuthContext";
+import { useRef, useState } from "react";
 
 const navLinkBaseStyle = {
   textAlign: "center",
@@ -12,6 +13,8 @@ const navLinkBaseStyle = {
 export default function Header() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const [keyword, setKeyword] = useState("");
+  const inputRef = useRef(null);
 
   return (
     <div
@@ -89,12 +92,70 @@ export default function Header() {
 
         <div style={{ flex: "1 1 0", maxWidth: "512px", paddingLeft: "32px", paddingRight: "32px" }}>
           <div style={{ width: "100%", maxWidth: "448px", position: "relative" }}>
-            <div style={{ padding: "9px 16px 10px 40px", background: "#F1F5F9", borderRadius: "12px", overflow: "hidden" }}>
-              <div style={{ color: "#6B7280", fontSize: "14px", fontWeight: 400 }}>Search documents...</div>
-            </div>
-            <div style={{ position: "absolute", left: "12.4px", top: "12px", color: "#94A3B8" }}>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const k = keyword.trim();
+                navigate(k ? `/documents?keyword=${encodeURIComponent(k)}` : "/documents");
+              }}
+            >
+              <input
+                ref={inputRef}
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape" && keyword) {
+                    e.preventDefault();
+                    setKeyword("");
+                  }
+                }}
+                placeholder="Search documents..."
+                aria-label="Search documents"
+                style={{
+                  width: "100%",
+                  padding: keyword ? "9px 40px 10px 40px" : "9px 16px 10px 40px",
+                  background: "#F1F5F9",
+                  borderRadius: "12px",
+                  border: "none",
+                  outline: "none",
+                  color: "#0F172A",
+                  fontSize: "14px",
+                  fontWeight: 400,
+                  boxSizing: "border-box",
+                }}
+              />
+            </form>
+            <div style={{ position: "absolute", left: "12.4px", top: "12px", color: "#94A3B8", pointerEvents: "none" }}>
               <SearchIcon size={15} />
             </div>
+            {!!keyword && (
+              <button
+                type="button"
+                aria-label="Clear search"
+                onClick={() => {
+                  setKeyword("");
+                  inputRef.current?.focus();
+                }}
+                style={{
+                  position: "absolute",
+                  right: "10px",
+                  top: "8px",
+                  width: "28px",
+                  height: "28px",
+                  border: "none",
+                  borderRadius: "9999px",
+                  background: "transparent",
+                  color: "#94A3B8",
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                title="Clear"
+              >
+                <span style={{ fontSize: "16px", lineHeight: 1, fontWeight: 700 }}>×</span>
+              </button>
+            )}
           </div>
         </div>
 
