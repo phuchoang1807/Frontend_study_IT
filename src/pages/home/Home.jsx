@@ -34,7 +34,7 @@ export default function Home() {
           maxWidth: "1280px",
           padding: "32px",
           margin: "0 auto",
-          paddingTop: "96px",
+          paddingTop: "24px",
           boxSizing: "border-box",
           flexDirection: "column",
           justifyContent: "flex-start",

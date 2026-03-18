@@ -45,14 +45,18 @@ export default function Hero() {
           maxWidth: "768px",
           display: "flex",
           flexDirection: "column",
-          gap: "40px",
+          gap: "24px",
+          paddingTop: "24px",
+          justifyContent: "center",
+          alignItems: "center",
           zIndex: 1,
         }}
       >
-        <div style={{ textAlign: "center" }}>
+        <div style={{ textAlign: "center", width: "100%" }}>
           <div
             style={{
-              height: "120px",
+              alignItems: "center",
+              gap: "4px",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
@@ -63,7 +67,7 @@ export default function Hero() {
                 color: "white",
                 fontSize: "60px",
                 fontWeight: 900,
-                lineHeight: "60px",
+                lineHeight: "1.05",
               }}
             >
               Knowledge Treasure
@@ -73,6 +77,7 @@ export default function Hero() {
                 color: "#007BFF",
                 fontSize: "60px",
                 fontWeight: 900,
+                lineHeight: "1.05",
               }}
             >
               Trove
@@ -82,7 +87,7 @@ export default function Hero() {
                 color: "white",
                 fontSize: "60px",
                 fontWeight: 900,
-                lineHeight: "60px",
+                lineHeight: "1.05",
               }}
             >
               Open for Community
@@ -97,6 +102,7 @@ export default function Hero() {
             fontSize: "18px",
             fontWeight: 500,
             lineHeight: "28px",
+            width: "100%",
           }}
         >
           Search, download and share thousands of academic, economic and
