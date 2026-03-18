@@ -20,7 +20,6 @@ export default function SignIn() {
     }
   };
 
-
   return (
     <div className="auth-form-wrap">
       <BrandLogo />
@@ -55,7 +54,6 @@ export default function SignIn() {
           />
           <span aria-hidden="true">👁</span>
         </div>
-
         <div className="auth-form__row">
           <label className="remember-check">
             <input
@@ -77,16 +75,6 @@ export default function SignIn() {
           {loading ? "Signing in..." : "Sign In"}
         </button>
 
-        <div className="divider">Or continue with</div>
-
-        <div className="social-row">
-          <button type="button" className="social-button">
-            <span>G</span> Google
-          </button>
-          <button type="button" className="social-button">
-            <span></span> GitHub
-          </button>
-        </div>
       </form>
 
       <p className="auth-footer-text">

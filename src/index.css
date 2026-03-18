@@ -1,3 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #F5F7F8;
+}
 * {
   box-sizing: border-box;
 }
@@ -15,18 +27,18 @@ body {
 .auth-layout {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 400px 1fr;
+  grid-template-columns: 40% 60%;
 }
 
 .auth-panel {
   background: #ffffff;
   display: flex;
-    justify-content: center;
+  justify-content: center;
   align-items: center;
   padding: 24px 22px;
 }
 
-body {.auth-visual-panel {
+.auth-visual-panel {
   background: #eef2fb;
   border-left: 1px solid #e4e7f1;
   display: flex;
@@ -66,7 +78,7 @@ body {.auth-visual-panel {
 }
 
 .auth-form-wrap {
-  width: min(330px, 100%);
+   width: min(480px, 100%);
 }
 
 .auth-form-wrap--compact {
@@ -277,5 +289,4 @@ align-items: center;
   .primary-button {
     font-size: 17px;
   }
-}
 }

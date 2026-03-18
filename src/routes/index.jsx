@@ -1,35 +1,40 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import AuthLayout from "../layouts/AuthLayout";
+
 import SignIn from "../pages/auth/SignIn";
 import SignUp from "../pages/auth/SignUp";
 import ForgotPassword from "../pages/auth/ForgotPassword";
-import Dashboard from "../pages/Dashboard";
+
 import ProtectedRoute from "./ProtectedRoute";
+import GuestRoute from "./GuestRoute";
+import Home from "../pages/home/Home";
+import DocumentsList from "../components/DocumentsList";
 
 export const router = createBrowserRouter([
+  // Public
   {
     path: "/",
-    element: (
-      <ProtectedRoute>
-        <Dashboard />
-      </ProtectedRoute>
-    ),
+    element: <Home />,
   },
   {
     path: "/login",
     element: (
-      <AuthLayout>
-        <SignIn />
-      </AuthLayout>
+      <GuestRoute>
+        <AuthLayout>
+          <SignIn />
+        </AuthLayout>
+      </GuestRoute>
     ),
   },
   {
     path: "/sign-up",
     element: (
-      <AuthLayout>
-        <SignUp />
-      </AuthLayout>
+      <GuestRoute>
+        <AuthLayout>
+          <SignUp />
+        </AuthLayout>
+      </GuestRoute>
     ),
   },
   {
@@ -38,6 +43,16 @@ export const router = createBrowserRouter([
       <AuthLayout>
         <ForgotPassword />
       </AuthLayout>
+    ),
+  },
+
+  // Protected
+  {
+    path: "/documents",
+    element: (
+      <ProtectedRoute>
+        <DocumentsList />
+      </ProtectedRoute>
     ),
   },
 ]);
