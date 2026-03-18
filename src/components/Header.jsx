@@ -1,14 +1,18 @@
 import { BellIcon, SearchIcon, UploadIcon } from "./icons";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import studyItLogo from "/favicon.svg";
+import { useAuth } from "../context/AuthContext";
+
 const navLinkBaseStyle = {
   textAlign: "center",
   fontSize: "14px",
   lineHeight: "20px",
   textDecoration: "none",
 };
-
 export default function Header() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
   return (
     <div
       style={{
@@ -38,7 +42,11 @@ export default function Header() {
           
         }}
       >
-        <NavLink to="/home" aria-label="Go to home" style={{ display: "inline-flex", alignItems: "center" }}>
+        <NavLink
+          to="/"
+          aria-label="Go to home"
+          style={{ display: "inline-flex", alignItems: "center" }}
+        >
           <img
             style={{ width: "151.21px", height: "56px", objectFit: "contain" }}
             src={studyItLogo}
@@ -55,7 +63,7 @@ export default function Header() {
           }}
         >
           <NavLink
-            to="/home"
+            to="/"
             style={({ isActive }) => ({
               ...navLinkBaseStyle,
               color: isActive ? "#007BFF" : "#475569",
@@ -124,17 +132,103 @@ export default function Header() {
             />
           </button>
 
-          <div style={{ padding: "8px 16px", background: "#007BFF", borderRadius: "12px", position: "relative", display: "flex", alignItems: "center", gap: "8px" }}>
-             <div style={{ color: "white" }}>
-              <UploadIcon size={12} />
-            </div>
-            <div style={{ color: "white", fontSize: "14px", fontWeight: 600, lineHeight: "20px" }}>Upload</div>
-            <div style={{ position: "absolute", inset: 0, boxShadow: "0px 4px 6px -4px rgba(0,123,255,0.25), 0px 10px 15px -3px rgba(0,123,255,0.25)", borderRadius: "12px" }}></div>
-          </div>
+          {isAuthenticated ? (
+            <>
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => navigate("/documents")}
+                onKeyDown={(e) => e.key === "Enter" && navigate("/documents")}
+                style={{
+                  padding: "8px 16px",
+                  background: "#007BFF",
+                  borderRadius: "12px",
+                  position: "relative",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  cursor: "pointer",
+                }}
+              >
+                <div style={{ color: "white" }}>
+                  <UploadIcon size={12} />
+                </div>
+                <div
+                  style={{
+                    color: "white",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    lineHeight: "20px",
+                  }}
+                >
+                  Upload
+                </div>
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    boxShadow:
+                      "0px 4px 6px -4px rgba(0,123,255,0.25), 0px 10px 15px -3px rgba(0,123,255,0.25)",
+                    borderRadius: "12px",
+                  }}
+                />
+              </div>
 
-          <div style={{ width: "40px", height: "40px", borderRadius: "9999px", overflow: "hidden", outline: "2px solid #E2E8F0", outlineOffset: "-2px" }}>
-            <img src="https://placehold.co/36x36" alt="Avatar" style={{ width: "100%", height: "100%" }} />
-          </div>
+              <div
+                title="Profile"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "9999px",
+                  overflow: "hidden",
+                  outline: "2px solid #E2E8F0",
+                  outlineOffset: "-2px",
+                }}
+              >
+                <img
+                  src="https://placehold.co/36x36"
+                  alt="Avatar"
+                  style={{ width: "100%", height: "100%" }}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: "12px",
+                  border: "1px solid #CBD5E1",
+                  background: "white",
+                  color: "#0F172A",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  lineHeight: "20px",
+                  textDecoration: "none",
+                }}
+              >
+                Login
+              </Link>
+              <Link
+                to="/sign-up"
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: "12px",
+                  background: "#007BFF",
+                  color: "white",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  lineHeight: "20px",
+                  textDecoration: "none",
+                  boxShadow:
+                    "0px 4px 6px -4px rgba(0,123,255,0.25), 0px 10px 15px -3px rgba(0,123,255,0.25)",
+                }}
+              >
+                Sign up
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </div>

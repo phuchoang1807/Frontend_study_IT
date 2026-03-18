@@ -1,4 +1,4 @@
-import { Navigate, createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 
 import AuthLayout from "../layouts/AuthLayout";
 
@@ -6,29 +6,35 @@ import SignIn from "../pages/auth/SignIn";
 import SignUp from "../pages/auth/SignUp";
 import ForgotPassword from "../pages/auth/ForgotPassword";
 
+import ProtectedRoute from "./ProtectedRoute";
+import GuestRoute from "./GuestRoute";
 import Home from "../pages/home/Home";
-
 import DocumentsList from "../components/DocumentsList";
 
 export const router = createBrowserRouter([
-    {
+  // Public
+  {
     path: "/",
-    element: <Navigate to="/sign-in" replace />,
+    element: <Home />,
   },
   {
-    path: "/sign-in",
+    path: "/login",
     element: (
-      <AuthLayout>
-        <SignIn />
-      </AuthLayout>
+      <GuestRoute>
+        <AuthLayout>
+          <SignIn />
+        </AuthLayout>
+      </GuestRoute>
     ),
   },
   {
     path: "/sign-up",
     element: (
-      <AuthLayout>
-        <SignUp />
-      </AuthLayout>
+      <GuestRoute>
+        <AuthLayout>
+          <SignUp />
+        </AuthLayout>
+      </GuestRoute>
     ),
   },
   {
@@ -40,14 +46,13 @@ export const router = createBrowserRouter([
     ),
   },
 
-  // 👇 trang sau khi login
-  {
-    path: "/home",
-    element: <Home />,
-  },
-
+  // Protected
   {
     path: "/documents",
-    element: <DocumentsList />,
+    element: (
+      <ProtectedRoute>
+        <DocumentsList />
+      </ProtectedRoute>
+    ),
   },
 ]);
