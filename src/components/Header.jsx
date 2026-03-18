@@ -1,5 +1,13 @@
 import { BellIcon, SearchIcon, UploadIcon } from "./icons";
+import { NavLink } from "react-router-dom";
 import studyItLogo from "/favicon.svg";
+const navLinkBaseStyle = {
+  textAlign: "center",
+  fontSize: "14px",
+  lineHeight: "20px",
+  textDecoration: "none",
+};
+
 export default function Header() {
   return (
     <div
@@ -30,19 +38,46 @@ export default function Header() {
           
         }}
       >
-        <img
-          style={{ width: "151.21px", height: "56px", objectFit: "contain" }}
-          src={studyItLogo}
-          alt="StudyIT Logo"
-        />
-
-        <div style={{ paddingLeft: "32px", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-          <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "32px", display: "inline-flex" }}>
-            <div style={{ width: "68.08px", height: "20px", textAlign: "center", color: "#007BFF", fontSize: "14px", fontWeight: 600, lineHeight: "20px" }}>Home</div>
-            <div style={{ width: "47.03px", height: "20px", textAlign: "center", color: "#475569", fontSize: "14px", fontWeight: 500, lineHeight: "20px" }}>Documents</div>
-            <div style={{ width: "94px", height: "20px", textAlign: "center", color: "#475569", fontSize: "14px", fontWeight: 500, lineHeight: "20px" }}>About Us</div>
-          </div>
-        </div>
+        <NavLink to="/home" aria-label="Go to home" style={{ display: "inline-flex", alignItems: "center" }}>
+          <img
+            style={{ width: "151.21px", height: "56px", objectFit: "contain" }}
+            src={studyItLogo}
+            alt="StudyIT Logo"
+          />
+        </NavLink>
+<nav
+          style={{
+            paddingLeft: "32px",
+            width: "280px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <NavLink
+            to="/home"
+            style={({ isActive }) => ({
+              ...navLinkBaseStyle,
+              color: isActive ? "#007BFF" : "#475569",
+              fontWeight: isActive ? 600 : 500,
+            })}
+          >
+            Home
+          </NavLink>
+          <NavLink
+            to="/documents"
+            style={({ isActive }) => ({
+              ...navLinkBaseStyle,
+              color: isActive ? "#007BFF" : "#475569",
+              fontWeight: isActive ? 600 : 500,
+            })}
+          >
+            Documents
+          </NavLink>
+          <a href="#" style={{ ...navLinkBaseStyle, color: "#475569", fontWeight: 500 }}>
+            About Us
+          </a>
+        </nav>
 
         <div style={{ flex: "1 1 0", maxWidth: "512px", paddingLeft: "32px", paddingRight: "32px" }}>
           <div style={{ width: "100%", maxWidth: "448px", position: "relative" }}>
@@ -90,7 +125,9 @@ export default function Header() {
           </button>
 
           <div style={{ padding: "8px 16px", background: "#007BFF", borderRadius: "12px", position: "relative", display: "flex", alignItems: "center", gap: "8px" }}>
-            <div style={{ color: "white" }}><UploadIcon size={12} /></div>
+             <div style={{ color: "white" }}>
+              <UploadIcon size={12} />
+            </div>
             <div style={{ color: "white", fontSize: "14px", fontWeight: 600, lineHeight: "20px" }}>Upload</div>
             <div style={{ position: "absolute", inset: 0, boxShadow: "0px 4px 6px -4px rgba(0,123,255,0.25), 0px 10px 15px -3px rgba(0,123,255,0.25)", borderRadius: "12px" }}></div>
           </div>

@@ -63,6 +63,7 @@ export default function Categories() {
               gap: "12px",
             }}
           >
+            <img src="https://placehold.co/39x39" alt="Java" style={{ width: "39px", height: "39px" }} />
             <div style={{ color: "#0F172A", fontSize: "14px", fontWeight: 600, lineHeight: "20px" }}>Unity</div>
           </div>
         </div>
