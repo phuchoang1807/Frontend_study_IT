@@ -14,6 +14,7 @@ import DocumentDetail from "../pages/document/DocumentDetail";
 import ContributorRequest from "../pages/contributor/ContributorRequest";
 import ViewHistory from "../pages/history/ViewHistory";
 import Dashboard from "../pages/dashboard/Dashboard";
+import ManageDocuments from "../pages/document/ManageDocuments";
 
 export const router = createBrowserRouter([
   // Public
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
   {
     path: "/profile",
     element: <Dashboard />,
+  },
+  {
+    path: "/manage-documents",
+    element: <ManageDocuments />,
   },
   {
     path: "/document/:id",
