@@ -17,6 +17,7 @@ import Dashboard from "../pages/dashboard/Dashboard";
 import ManageDocuments from "../pages/document/ManageDocuments";
 import StyleGuide from "../pages/about/StyleGuide";
 import FavoriteDocuments from "../pages/document/FavoriteDocuments";
+import ManageQuizzes from "../pages/quiz/ManageQuizzes";
 
 export const router = createBrowserRouter([
   // Public
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
   {
     path: "/favorite-documents",
     element: <FavoriteDocuments />,
+  },
+  {
+    path: "/manage-quizzes",
+    element: <ManageQuizzes />,
   },
   {
     path: "/profile",
