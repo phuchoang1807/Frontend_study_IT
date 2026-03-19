@@ -18,11 +18,11 @@ export default function UserPopup({ onClose }) {
       {/* TÀI KHOẢN */}
       <div className="popup-section">
         <div className="popup-header">TÀI KHOẢN</div>
-        <Link to="/profile" className="popup-item">
+        <Link to="/profile" className="popup-item" onClick={onClose}>
           <UserCircleIcon size={18} />
           <span>Hồ sơ cá nhân</span>
         </Link>
-        <Link to="/contributor-profile" className="popup-item">
+        <Link to="/contributor-profile" className="popup-item" onClick={onClose}>
           <ShieldIcon size={18} />
           <span>Hồ sơ đăng ký Contributor</span>
         </Link>
@@ -31,15 +31,15 @@ export default function UserPopup({ onClose }) {
       {/* QUẢN LÝ */}
       <div className="popup-section">
         <div className="popup-header">QUẢN LÝ</div>
-        <Link to="/manage-documents" className="popup-item">
+        <Link to="/manage-documents" className="popup-item" onClick={onClose}>
           <DocumentIcon size={18} />
           <span>Quản lý tài liệu</span>
         </Link>
-        <Link to="/manage-quizzes" className="popup-item">
+        <Link to="/manage-quizzes" className="popup-item" onClick={onClose}>
           <QuizIcon size={18} />
           <span>Quản lý Quiz</span>
         </Link>
-        <Link to="/favorite-documents" className="popup-item">
+        <Link to="/favorite-documents" className="popup-item" onClick={onClose}>
           <BookmarkIcon size={18} />
           <span>Tài liệu yêu thích</span>
         </Link>
@@ -48,11 +48,11 @@ export default function UserPopup({ onClose }) {
       {/* LỊCH SỬ */}
       <div className="popup-section">
         <div className="popup-header">LỊCH SỬ</div>
-        <Link to="/quiz-history" className="popup-item">
+        <Link to="/quiz-history" className="popup-item" onClick={onClose}>
           <HistoryIcon size={18} />
           <span>Lịch sử Quiz</span>
         </Link>
-        <Link to="/view-history" className="popup-item">
+        <Link to="/view-history" className="popup-item" onClick={onClose}>
           <EyeIcon size={18} />
           <span>Lịch sử Tài liệu đã xem</span>
         </Link>

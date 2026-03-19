@@ -13,12 +13,17 @@ import DocumentsList from "../components/DocumentsList";
 import DocumentDetail from "../pages/document/DocumentDetail";
 import ContributorRequest from "../pages/contributor/ContributorRequest";
 import ViewHistory from "../pages/history/ViewHistory";
+import Dashboard from "../pages/dashboard/Dashboard";
 
 export const router = createBrowserRouter([
   // Public
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/profile",
+    element: <Dashboard />,
   },
   {
     path: "/document/:id",
