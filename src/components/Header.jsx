@@ -2,6 +2,8 @@ import { BellIcon, SearchIcon, UploadIcon } from "./icons";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import studyItLogo from "/favicon.svg";
 import { useAuth } from "../context/AuthContext";
+import { useState, useEffect } from "react";
+import UserPopup from "./UserPopup";
 
 const navLinkBaseStyle = {
   textAlign: "center",
@@ -12,6 +14,15 @@ const navLinkBaseStyle = {
 export default function Header() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const [showUserPopup, setShowUserPopup] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = () => setShowUserPopup(false);
+    if (showUserPopup) {
+      window.addEventListener("click", handleClickOutside);
+    }
+    return () => window.removeEventListener("click", handleClickOutside);
+  }, [showUserPopup]);
 
   return (
     <div
@@ -173,9 +184,13 @@ export default function Header() {
           </div>
 
           {isAuthenticated ? (
-            <>
+            <div style={{ position: "relative" }}>
               <div
                 title="Profile"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowUserPopup(!showUserPopup);
+                }}
                 style={{
                   width: "40px",
                   height: "40px",
@@ -183,6 +198,7 @@ export default function Header() {
                   overflow: "hidden",
                   outline: "2px solid #E2E8F0",
                   outlineOffset: "-2px",
+                  cursor: "pointer",
                 }}
               >
                 <img
@@ -191,7 +207,8 @@ export default function Header() {
                   style={{ width: "100%", height: "100%" }}
                 />
               </div>
-            </>
+              {showUserPopup && <UserPopup onClose={() => setShowUserPopup(false)} />}
+            </div>
           ) : (
             <>
               <Link

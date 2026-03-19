@@ -12,6 +12,7 @@ import Home from "../pages/home/Home";
 import DocumentsList from "../components/DocumentsList";
 import DocumentDetail from "../pages/document/DocumentDetail";
 import ContributorRequest from "../pages/contributor/ContributorRequest";
+import ViewHistory from "../pages/history/ViewHistory";
 
 export const router = createBrowserRouter([
   // Public
@@ -22,6 +23,10 @@ export const router = createBrowserRouter([
   {
     path: "/document/:id",
     element: <DocumentDetail />,
+  },
+  {
+    path: "/view-history",
+    element: <ViewHistory />,
   },
   {
     path: "/contributor-request",
