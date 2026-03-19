@@ -16,6 +16,7 @@ import ViewHistory from "../pages/history/ViewHistory";
 import Dashboard from "../pages/dashboard/Dashboard";
 import ManageDocuments from "../pages/document/ManageDocuments";
 import StyleGuide from "../pages/about/StyleGuide";
+import FavoriteDocuments from "../pages/document/FavoriteDocuments";
 
 export const router = createBrowserRouter([
   // Public
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
   {
     path: "/style-guide",
     element: <StyleGuide />,
+  },
+  {
+    path: "/favorite-documents",
+    element: <FavoriteDocuments />,
   },
   {
     path: "/profile",
