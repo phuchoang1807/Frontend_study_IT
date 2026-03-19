@@ -18,6 +18,7 @@ import ManageDocuments from "../pages/document/ManageDocuments";
 import StyleGuide from "../pages/about/StyleGuide";
 import FavoriteDocuments from "../pages/document/FavoriteDocuments";
 import ManageQuizzes from "../pages/quiz/ManageQuizzes";
+import QuizHistory from "../pages/quiz/QuizHistory";
 
 export const router = createBrowserRouter([
   // Public
@@ -36,6 +37,10 @@ export const router = createBrowserRouter([
   {
     path: "/manage-quizzes",
     element: <ManageQuizzes />,
+  },
+  {
+    path: "/quiz-history",
+    element: <QuizHistory />,
   },
   {
     path: "/profile",

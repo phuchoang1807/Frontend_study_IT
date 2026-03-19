@@ -254,6 +254,77 @@ export function HistoryIcon({ size = 18, color = "currentColor" }) {
   );
 }
 
+export function FilterIcon({ size = 16, color = "currentColor" }) {
+  return (
+    <svg style={baseSvgStyle} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+    </svg>
+  );
+}
+
+export function LayoutIcon({ size = 18, color = "currentColor" }) {
+  return (
+    <svg style={baseSvgStyle} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+      <line x1="3" y1="9" x2="21" y2="9"></line>
+      <line x1="9" y1="21" x2="9" y2="9"></line>
+    </svg>
+  );
+}
+
+export function MonitorIcon({ size = 18, color = "currentColor" }) {
+  return (
+    <svg style={baseSvgStyle} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+      <line x1="8" y1="21" x2="16" y2="21"></line>
+      <line x1="12" y1="17" x2="12" y2="21"></line>
+    </svg>
+  );
+}
+
+export function NetworkIcon({ size = 18, color = "currentColor" }) {
+  return (
+    <svg style={baseSvgStyle} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="9" y="3" width="6" height="6" rx="1"></rect>
+      <rect x="3" y="15" width="6" height="6" rx="1"></rect>
+      <rect x="15" y="15" width="6" height="6" rx="1"></rect>
+      <line x1="12" y1="9" x2="12" y2="12"></line>
+      <line x1="6" y1="12" x2="18" y2="12"></line>
+      <line x1="6" y1="12" x2="6" y2="15"></line>
+      <line x1="18" y1="12" x2="18" y2="15"></line>
+    </svg>
+  );
+}
+
+export function DatabaseIcon({ size = 18, color = "currentColor" }) {
+  return (
+    <svg style={baseSvgStyle} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+      <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+    </svg>
+  );
+}
+
+export function CheckCircleIcon({ size = 16, color = "currentColor" }) {
+  return (
+    <svg style={baseSvgStyle} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+  );
+}
+
+export function XCircleIcon({ size = 16, color = "currentColor" }) {
+  return (
+    <svg style={baseSvgStyle} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="15" y1="9" x2="9" y2="15"></line>
+      <line x1="9" y1="9" x2="15" y2="15"></line>
+    </svg>
+  );
+}
+
 export function LogoutIcon({ size = 18, color = "currentColor" }) {
   return (
     <svg style={baseSvgStyle} width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
