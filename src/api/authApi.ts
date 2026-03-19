@@ -94,8 +94,15 @@ export async function register(
 }
 
 export async function logout(): Promise<MessageResponse> {
+  const refreshToken = getRefreshToken();
   const response = await axiosClient.post<ApiResponse<MessageResponse>>(
-    '/auth/logout'
+    '/auth/logout',
+    {},
+    {
+      headers: refreshToken
+        ? { 'X-Refresh-Token': refreshToken }
+        : undefined,
+    }
   );
 
   clearTokens();

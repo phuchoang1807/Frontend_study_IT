@@ -150,13 +150,33 @@ body {
   position: relative;
 }
 
-.input-with-icon span {
+.auth-form .input-with-icon input {
+  padding-right: 44px;
+}
+
+.input-with-icon .password-toggle {
   position: absolute;
-  right: 12px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 14px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
   color: #97a0b5;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-with-icon .password-toggle:hover {
+  color: #5a67f0;
+  background: rgba(90, 103, 240, 0.08);
 }
 
 .auth-form__row {
@@ -259,6 +279,17 @@ align-items: center;
   font-weight: 700;
 }
 
+.auth-form-error {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
 .auth-footer-text {
   margin-top: 16px;
   color: #6d7895;
@@ -289,4 +320,77 @@ align-items: center;
   .primary-button {
     font-size: 17px;
   }
+}
+
+/* Notification toast (base component) - bottom center */
+.notification-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 280px;
+  max-width: 420px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  z-index: 9999;
+  animation: notification-slide-in 0.25s ease-out;
+}
+
+@keyframes notification-slide-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 100%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.notification-toast--success {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+}
+
+.notification-toast--error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.notification-toast__icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.notification-toast__message {
+  margin: 0;
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.notification-toast__close {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.7;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.notification-toast__close:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.06);
 }

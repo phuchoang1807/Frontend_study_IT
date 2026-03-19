@@ -17,6 +17,7 @@ type AuthContextValue = {
   user: UserInfo | null;
   isAuthenticated: boolean;
   loading: boolean;
+  initializing: boolean;
   login: (payload: LoginRequest) => Promise<void>;
   logout: () => Promise<void>;
   fetchMe: () => Promise<void>;
@@ -129,6 +130,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user,
       isAuthenticated,
       loading: loading || initializing,
+      initializing,
       login,
       logout,
       fetchMe,

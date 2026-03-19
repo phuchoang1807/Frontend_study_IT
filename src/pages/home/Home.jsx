@@ -15,6 +15,7 @@ import {
   TrophyIcon,
   UsersIcon,
 } from "../../components/icons";
+import { useNotification } from "../../context/NotificationContext";
 import { homepageService } from "../../services/api";
 
 const lineClampTitle = {
@@ -52,6 +53,7 @@ function fileTypeBadgeStyle(fileType) {
 
 export default function Home() {
   const navigate = useNavigate();
+  const notification = useNotification();
   const [keyword, setKeyword] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -236,6 +238,10 @@ export default function Home() {
               onSubmit={(e) => {
                 e.preventDefault();
                 const k = keyword.trim();
+                if (k.length > 50) {
+                  notification.error("Từ khóa tìm kiếm tối đa 50 ký tự.");
+                  return;
+                }
                 navigate(k ? `/documents?keyword=${encodeURIComponent(k)}` : "/documents");
               }}
               style={{

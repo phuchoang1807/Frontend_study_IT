@@ -2,7 +2,8 @@ import { BellIcon, SearchIcon, UploadIcon } from "./icons";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import studyItLogo from "/favicon.svg";
 import { useAuth } from "../context/AuthContext";
-import { useRef, useState } from "react";
+import { useNotification } from "../context/NotificationContext";
+import { useRef, useState, useEffect } from "react";
 
 const navLinkBaseStyle = {
   textAlign: "center",
@@ -12,9 +13,37 @@ const navLinkBaseStyle = {
 };
 export default function Header() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
+  const notification = useNotification();
   const [keyword, setKeyword] = useState("");
+  const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
   const inputRef = useRef(null);
+  const avatarMenuRef = useRef(null);
+
+  useEffect(() => {
+    if (!avatarMenuOpen) return;
+    const handleClickOutside = (e) => {
+      if (avatarMenuRef.current && !avatarMenuRef.current.contains(e.target)) {
+        setAvatarMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [avatarMenuOpen]);
+
+  const handleLogout = async () => {
+    setAvatarMenuOpen(false);
+    try {
+      await logout();
+      notification.success("You have been logged out.");
+    } catch (err) {
+      const msg =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Logout failed. Please try again.";
+      notification.error(msg);
+    }
+  };
 
   return (
     <div
@@ -96,6 +125,10 @@ export default function Header() {
               onSubmit={(e) => {
                 e.preventDefault();
                 const k = keyword.trim();
+                if (k.length > 50) {
+                  notification.error("Từ khóa tìm kiếm tối đa 50 ký tự.");
+                  return;
+                }
                 navigate(k ? `/documents?keyword=${encodeURIComponent(k)}` : "/documents");
               }}
             >
@@ -235,22 +268,78 @@ export default function Header() {
                 />
               </div>
 
-              <div
-                title="Profile"
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "9999px",
-                  overflow: "hidden",
-                  outline: "2px solid #E2E8F0",
-                  outlineOffset: "-2px",
-                }}
-              >
-                <img
-                  src="https://placehold.co/36x36"
-                  alt="Avatar"
-                  style={{ width: "100%", height: "100%" }}
-                />
+              <div ref={avatarMenuRef} style={{ position: "relative" }}>
+                <button
+                  type="button"
+                  title="Profile menu"
+                  aria-label="Profile menu"
+                  aria-expanded={avatarMenuOpen}
+                  aria-haspopup="true"
+                  onClick={() => setAvatarMenuOpen((open) => !open)}
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    padding: 0,
+                    margin: 0,
+                    border: "none",
+                    borderRadius: "9999px",
+                    overflow: "hidden",
+                    outline: "2px solid #E2E8F0",
+                    outlineOffset: "-2px",
+                    background: "transparent",
+                    cursor: "pointer",
+                    display: "block",
+                  }}
+                >
+                  <img
+                    src="https://placehold.co/36x36"
+                    alt="Avatar"
+                    style={{ width: "100%", height: "100%", display: "block" }}
+                  />
+                </button>
+                {avatarMenuOpen && (
+                  <div
+                    role="menu"
+                    style={{
+                      position: "absolute",
+                      right: 0,
+                      top: "calc(100% + 8px)",
+                      minWidth: "160px",
+                      padding: "6px 0",
+                      background: "#fff",
+                      borderRadius: "12px",
+                      boxShadow:
+                        "0 4px 6px -1px rgba(0,0,0,0.1), 0 10px 15px -3px rgba(0,0,0,0.1)",
+                      border: "1px solid #E2E8F0",
+                      zIndex: 50,
+                    }}
+                  >
+                    <button
+                      type="button"
+                      role="menuitem"
+                      onClick={handleLogout}
+                      style={{
+                        width: "100%",
+                        padding: "10px 16px",
+                        border: "none",
+                        background: "transparent",
+                        color: "#0F172A",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                        textAlign: "left",
+                        cursor: "pointer",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "#F1F5F9";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "transparent";
+                      }}
+                    >
+                      Log out
+                    </button>
+                  </div>
+                )}
               </div>
             </>
           ) : (

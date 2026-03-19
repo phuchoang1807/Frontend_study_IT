@@ -2,38 +2,40 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import BrandLogo from "../../components/BrandLogo";
 import { useAuth } from "../../context/AuthContext";
+import { useNotification } from "../../context/NotificationContext";
 import { register as registerApi } from "../../api/authApi";
 
 export default function SignUp() {
   const navigate = useNavigate();
   const { loading } = useAuth();
+  const notification = useNotification();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
+  const [formError, setFormError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError(null);
-    setSuccess(null);
+    setFormError("");
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setFormError("Passwords do not match.");
       return;
     }
 
     try {
       await registerApi({ email, password, fullName });
-      setSuccess("Account created successfully. Please sign in.");
+      notification.success("Account created successfully. Please sign in.");
       setTimeout(() => navigate("/login"), 800);
     } catch (err) {
       const message =
         err?.response?.data?.message ||
         err?.message ||
         "Registration failed. Please try again.";
-      setError(message);
+      setFormError(message);
     }
   };
 
@@ -46,7 +48,11 @@ export default function SignUp() {
         <p>Join our community of developers today.</p>
       </header>
 
-      <form className="auth-form" onSubmit={handleSubmit}>
+      <form
+        className="auth-form"
+        onSubmit={handleSubmit}
+        onChange={() => setFormError("")}
+      >
         <label htmlFor="signup-name">Full Name</label>
         <input
           id="signup-name"
@@ -65,21 +71,27 @@ export default function SignUp() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <label htmlFor="signup-confirm-password">Confirm Password</label>
-        <div className="input-with-icon">
-          <input
-            id="signup-confirm-password"
-            type="password"
-            placeholder="Confirm your password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-          <span aria-hidden="true">👁</span>
-
-        </div>
-
         <label htmlFor="signup-password">Password</label>
-        <div className="input-with-icon">
+        {password.length > 0 ? (
+          <div className="input-with-icon">
+            <input
+              id="signup-password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              className="password-toggle"
+              onClick={() => setShowPassword((p) => !p)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              tabIndex={-1}
+            >
+              {showPassword ? "🙈" : "👁"}
+            </button>
+          </div>
+        ) : (
           <input
             id="signup-password"
             type="password"
@@ -87,11 +99,39 @@ export default function SignUp() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <span aria-hidden="true">👁</span>
-        </div>
+        )}
 
-        {error && <p className="auth-error">{error}</p>}
-        {success && <p className="auth-success">{success}</p>}
+        <label htmlFor="signup-confirm-password">Confirm Password</label>
+        {confirmPassword.length > 0 ? (
+          <div className="input-with-icon">
+            <input
+              id="signup-confirm-password"
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm your password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              className="password-toggle"
+              onClick={() => setShowConfirmPassword((p) => !p)}
+              aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+              tabIndex={-1}
+            >
+              {showConfirmPassword ? "🙈" : "👁"}
+            </button>
+          </div>
+        ) : (
+          <input
+            id="signup-confirm-password"
+            type="password"
+            placeholder="Confirm your password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+        )}
+
+        {formError && <p className="auth-form-error" role="alert">{formError}</p>}
 
         <button type="submit" className="primary-button" disabled={loading}>
           {loading ? "Signing up..." : "Sign Up"}

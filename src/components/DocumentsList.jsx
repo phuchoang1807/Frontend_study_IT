@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useNotification } from "../context/NotificationContext";
 import Header from "./Header";
 import Footer from "./Footer";
 import {
@@ -93,6 +94,7 @@ export default function DocumentsList() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated } = useAuth();
+  const notification = useNotification();
 
   const query = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const initialKeyword = (query.get("keyword") || "").trim();
@@ -185,7 +187,9 @@ export default function DocumentsList() {
       setTotalPages(Number(payload?.totalPages) || 1);
       setPage(Number(payload?.page) || 0);
     } catch (e) {
-      setError(getApiErrorMessage(e));
+      const msg = getApiErrorMessage(e);
+      setError(msg);
+      notification.error(msg);
       setDocuments([]);
       setTotalPages(1);
     } finally {
@@ -295,7 +299,9 @@ export default function DocumentsList() {
         await documentService.unbookmark(doc.id);
       }
     } catch (e) {
-      setError(getApiErrorMessage(e));
+      const msg = getApiErrorMessage(e);
+      setError(msg);
+      notification.error(msg);
       // rollback by refetching current page
       fetchDocuments({ nextPage: page });
     }
@@ -319,7 +325,9 @@ export default function DocumentsList() {
         )
       );
     } catch (e) {
-      setError(getApiErrorMessage(e));
+      const msg = getApiErrorMessage(e);
+      setError(msg);
+      notification.error(msg);
     }
   }
 
