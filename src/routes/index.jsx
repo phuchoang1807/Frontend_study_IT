@@ -15,12 +15,17 @@ import ContributorRequest from "../pages/contributor/ContributorRequest";
 import ViewHistory from "../pages/history/ViewHistory";
 import Dashboard from "../pages/dashboard/Dashboard";
 import ManageDocuments from "../pages/document/ManageDocuments";
+import StyleGuide from "../pages/about/StyleGuide";
 
 export const router = createBrowserRouter([
   // Public
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/style-guide",
+    element: <StyleGuide />,
   },
   {
     path: "/profile",

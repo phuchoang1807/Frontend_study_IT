@@ -93,9 +93,16 @@ export default function Header() {
           >
             Documents
           </NavLink>
-          <a href="#" style={{ ...navLinkBaseStyle, color: "#475569", fontWeight: 500 }}>
+          <NavLink
+            to="/style-guide"
+            style={({ isActive }) => ({
+              ...navLinkBaseStyle,
+              color: isActive ? "#007BFF" : "#475569",
+              fontWeight: isActive ? 600 : 500,
+            })}
+          >
             About Us
-          </a>
+          </NavLink>
         </nav>
 
         <div style={{ flex: "1 1 0", maxWidth: "512px", paddingLeft: "32px", paddingRight: "32px" }}>
