@@ -50,6 +50,7 @@ export default function Home() {
         <ContributeSection />
         <PopularDocuments />
       </div>
+      
 
       <Footer />
     </div>
