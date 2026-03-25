@@ -6,8 +6,7 @@ import '../../styles/admin/contributorRequests.css';
 const ContributorRequests = () => {
   const [selectedContributor, setSelectedContributor] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const requests = [
+  const [requests, setRequests] = useState([
     {
       id: 1,
       name: 'Nguyễn Văn A',
@@ -48,7 +47,13 @@ const ContributorRequests = () => {
       statusLabel: 'Chờ duyệt',
       avatar: 'https://i.pravatar.cc/150?u=d'
     }
-  ];
+  ]);
+
+  const handleUpdateStatus = (id, newStatus, newLabel) => {
+    setRequests(prev => prev.map(req => 
+      req.id === id ? { ...req, status: newStatus, statusLabel: newLabel } : req
+    ));
+  };
 
   const handleViewDetails = (contributor) => {
     setSelectedContributor(contributor);
@@ -176,7 +181,8 @@ const ContributorRequests = () => {
       <ContributorDetailModal 
         isOpen={isModalOpen} 
         onClose={handleCloseModal} 
-        contributor={selectedContributor} 
+        contributor={selectedContributor}
+        onUpdateStatus={handleUpdateStatus}
       />
     </AdminLayout>
   );
