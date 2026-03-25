@@ -19,12 +19,17 @@ import StyleGuide from "../pages/about/StyleGuide";
 import FavoriteDocuments from "../pages/document/FavoriteDocuments";
 import ManageQuizzes from "../pages/quiz/ManageQuizzes";
 import QuizHistory from "../pages/quiz/QuizHistory";
+import AdminDashboard from "../pages/admin/AdminDashboard";
 
 export const router = createBrowserRouter([
   // Public
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/admin/dashboard",
+    element: <AdminDashboard />,
   },
   {
     path: "/style-guide",

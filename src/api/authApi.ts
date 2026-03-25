@@ -70,6 +70,28 @@ export type RegisterRequest = {
 // Auth API functions - luôn trả về data.data (unwrap ApiResponse)
 
 export async function login(payload: LoginRequest): Promise<TokenResponse> {
+  // Mock admin login
+  if (payload.email === 'admin@gmail.com' && payload.password === 'admin123@') {
+    const mockTokenData: TokenResponse = {
+      accessToken: 'mock-admin-access-token',
+      refreshToken: 'mock-admin-refresh-token',
+      expiresIn: 3600,
+      refreshTokenExpiresIn: 86400,
+      user: {
+        id: 'admin-id',
+        email: 'admin@gmail.com',
+        fullName: 'Nguyễn Văn An',
+        status: 'ACTIVE',
+        emailVerified: true,
+        roles: ['ADMIN'],
+        permissions: ['ALL'],
+      },
+    };
+    setAccessToken(mockTokenData.accessToken);
+    setRefreshToken(mockTokenData.refreshToken);
+    return mockTokenData;
+  }
+
   const response = await axiosClient.post<ApiResponse<TokenResponse>>(
     '/auth/login',
     payload

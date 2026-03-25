@@ -13,8 +13,12 @@ export default function SignIn() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await login({ email, password, rememberMe });
-      navigate("/");
+      const user = await login({ email, password, rememberMe });
+      if (user.roles.includes("ADMIN")) {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
     } catch {
       // error đã được set trong context
     }

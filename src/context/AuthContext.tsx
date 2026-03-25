@@ -12,7 +12,7 @@ type AuthContextValue = {
   user: UserInfo | null;
   isAuthenticated: boolean;
   loading: boolean;
-  login: (payload: LoginRequest) => Promise<void>;
+  login: (payload: LoginRequest) => Promise<UserInfo>;
   logout: () => Promise<void>;
   fetchMe: () => Promise<void>;
   error: string | null;
@@ -48,6 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const tokenResponse = await loginApi(payload);
       setUser(tokenResponse.user);
+      return tokenResponse.user;
     } catch (err: any) {
       const message =
         err?.response?.data?.message ||
