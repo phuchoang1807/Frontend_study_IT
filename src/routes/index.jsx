@@ -20,6 +20,7 @@ import FavoriteDocuments from "../pages/document/FavoriteDocuments";
 import ManageQuizzes from "../pages/quiz/ManageQuizzes";
 import QuizHistory from "../pages/quiz/QuizHistory";
 import AdminDashboard from "../pages/admin/AdminDashboard";
+import ContributorRequests from "../pages/admin/ContributorRequests";
 
 export const router = createBrowserRouter([
   // Public
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
   {
     path: "/admin/dashboard",
     element: <AdminDashboard />,
+  },
+  {
+    path: "/admin/contributor-requests",
+    element: <ContributorRequests />,
   },
   {
     path: "/style-guide",
