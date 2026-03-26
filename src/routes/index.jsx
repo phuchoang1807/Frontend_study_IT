@@ -21,12 +21,21 @@ import ManageQuizzes from "../pages/quiz/ManageQuizzes";
 import QuizHistory from "../pages/quiz/QuizHistory";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import ContributorRequests from "../pages/admin/ContributorRequests";
+import AdminSignIn from "../pages/admin/AdminSignIn";
 
 export const router = createBrowserRouter([
   // Public
   {
     path: "/",
     element: <Home />,
+  },
+  {
+    path: "/admin/login",
+    element: (
+      <GuestRoute>
+        <AdminSignIn />
+      </GuestRoute>
+    ),
   },
   {
     path: "/admin/dashboard",

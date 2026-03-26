@@ -1,0 +1,187 @@
+.admin-login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f7ff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.admin-login-card {
+  background: white;
+  width: 100%;
+  max-width: 440px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  position: relative;
+  border-top: 4px solid #1d76e0;
+}
+
+.admin-login-content {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.admin-login-header {
+  text-align: center;
+  margin-bottom: 32px;
+  width: 100%;
+}
+
+.admin-logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.admin-logo-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.admin-logo-disk {
+  width: 28px;
+  height: 8px;
+  background-color: #1d76e0;
+  border-radius: 4px;
+}
+
+.admin-logo-text {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.admin-badge {
+  display: inline-block;
+  background-color: #e6f0ff;
+  color: #1d76e0;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+
+.admin-login-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+}
+
+.admin-login-subtitle {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+}
+
+.admin-login-form {
+  width: 100%;
+}
+
+.admin-form-group {
+  margin-bottom: 20px;
+}
+
+.admin-form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.admin-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.admin-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e0e6ed;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #1a1a1a;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: #1d76e0;
+}
+
+.admin-input::placeholder {
+  color: #a0aec0;
+}
+
+.admin-password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #718096;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.admin-checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.admin-checkbox {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #e0e6ed;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.admin-checkbox-label {
+  font-size: 14px;
+  color: #4a5568;
+  cursor: pointer;
+}
+
+.admin-submit-btn {
+  width: 100%;
+  background-color: #1d76e0;
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-bottom: 24px;
+}
+
+.admin-submit-btn:hover {
+  background-color: #1565c0;
+}
+
+.admin-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #f0f0f0;
+  margin-top: 8px;
+}
