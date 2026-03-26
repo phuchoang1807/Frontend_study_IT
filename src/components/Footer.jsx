@@ -16,17 +16,6 @@ export default function Footer() {
         display: "flex",
       }}
     >
-      <img
-        style={{
-          width: "172.45px",
-          height: "32px",
-          margin: "0 auto",
-          display: "block",
-        }}
-        src="/StudyIT.jpg"
-        alt="StudyIT Logo"
-      />
-
       <div
         style={{
           width: "100%",
@@ -65,7 +54,11 @@ export default function Footer() {
               display: "inline-flex",
             }}
           >
-            <div style={{ alignSelf: "stretch", height: "28px" }}></div>
+            <img
+              style={{ width: "302.42px", height: "112px", objectFit: "contain", marginBottom: "8px" }}
+              src="/imgs/logo.png"
+              alt="StudyIT Logo"
+            />
 
             <div
               style={{

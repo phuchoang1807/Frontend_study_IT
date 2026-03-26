@@ -1,6 +1,5 @@
 import { BellIcon, SearchIcon, UploadIcon } from "./icons";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import studyItLogo from "/favicon.svg";
 import { useAuth } from "../context/AuthContext";
 import { useNotification } from "../context/NotificationContext";
 import { useRef, useState, useEffect } from "react";
@@ -72,17 +71,25 @@ export default function Header() {
           justifyContent: "space-between",
           alignItems: "center",
           display: "inline-flex",
-          
+          position: "relative"
         }}
       >
         <NavLink
           to="/"
           aria-label="Go to home"
-          style={{ display: "inline-flex", alignItems: "center" }}
+          style={{ display: "inline-flex", alignItems: "center", width: "302.42px", height: "64px", position: "relative" }}
         >
           <img
-            style={{ width: "151.21px", height: "56px", objectFit: "contain" }}
-            src={studyItLogo}
+            style={{ 
+              width: "302.42px", 
+              height: "112px", 
+              objectFit: "contain", 
+              position: "absolute", 
+              top: "50%", 
+              transform: "translateY(-50%)",
+              zIndex: 11
+            }}
+            src="/imgs/logo.png"
             alt="StudyIT Logo"
           />
         </NavLink>
