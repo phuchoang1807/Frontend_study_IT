@@ -21,7 +21,7 @@ export default function Categories() {
               gap: "12px",
             }}
           >
-            <img src="https://placehold.co/42x39" alt="Docker" style={{ width: "42px", height: "39px" }} />
+            <img src="/imgs/Docker.png" alt="Docker" style={{ width: "42px", height: "39px" }} />
             <div style={{ color: "#0F172A", fontSize: "14px", fontWeight: 600, lineHeight: "20px" }}>Docker</div>
           </div>
         </div>
@@ -41,7 +41,7 @@ export default function Categories() {
               gap: "12px",
             }}
           >
-            <img src="https://placehold.co/39x39" alt="Java" style={{ width: "39px", height: "39px" }} />
+            <img src="/imgs/Java.png" alt="Java" style={{ width: "39px", height: "39px" }} />
             <div style={{ color: "#0F172A", fontSize: "14px", fontWeight: 600, lineHeight: "20px" }}>Java</div>
           </div>
         </div>
@@ -63,7 +63,7 @@ export default function Categories() {
               gap: "12px",
             }}
           >
-            <img src="https://placehold.co/39x39" alt="Java" style={{ width: "39px", height: "39px" }} />
+            <img src="/imgs/Unity.png" alt="Unity" style={{ width: "39px", height: "39px" }} />
             <div style={{ color: "#0F172A", fontSize: "14px", fontWeight: 600, lineHeight: "20px" }}>Unity</div>
           </div>
         </div>
@@ -83,7 +83,7 @@ export default function Categories() {
               gap: "12px",
             }}
           >
-            <img src="https://placehold.co/42x39" alt="MySQL" style={{ width: "42px", height: "39px" }} />
+            <img src="/imgs/MySQL.png" alt="MySQL" style={{ width: "42px", height: "39px" }} />
             <div style={{ color: "#0F172A", fontSize: "14px", fontWeight: 600, lineHeight: "20px" }}>MySQL</div>
           </div>
         </div>
@@ -103,7 +103,7 @@ export default function Categories() {
               gap: "12px",
             }}
           >
-            <img src="https://placehold.co/57x41" alt="SQL Server" style={{ width: "57px", height: "41px" }} />
+            <img src="/imgs/SQLServer.png" alt="SQL Server" style={{ width: "57px", height: "41px" }} />
             <div style={{ color: "#0F172A", fontSize: "14px", fontWeight: 600, lineHeight: "20px", width: "92.56px" }}>SQL Server</div>
           </div>
         </div>
@@ -123,7 +123,7 @@ export default function Categories() {
               gap: "12px",
             }}
           >
-            <img src="https://placehold.co/40x45" alt="Firebase" style={{ width: "40px", height: "45px" }} />
+            <img src="/imgs/Firebase.png" alt="Firebase" style={{ width: "40px", height: "45px" }} />
             <div style={{ color: "#0F172A", fontSize: "14px", fontWeight: 600, lineHeight: "20px" }}>Firebase</div>
           </div>
         </div>
