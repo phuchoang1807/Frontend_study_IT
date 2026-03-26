@@ -14,8 +14,11 @@ export default function SignIn() {
     event.preventDefault();
     try {
       const user = await login({ email, password, rememberMe });
+      // Redirect based on role
       if (user.roles.includes("ADMIN")) {
         navigate("/admin/dashboard");
+      } else if (user.roles.includes("GUEST")) {
+        navigate("/");
       } else {
         navigate("/");
       }

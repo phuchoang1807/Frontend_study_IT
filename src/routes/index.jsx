@@ -30,11 +30,19 @@ export const router = createBrowserRouter([
   },
   {
     path: "/admin/dashboard",
-    element: <AdminDashboard />,
+    element: (
+      <ProtectedRoute requiredRoles={["ADMIN"]}>
+        <AdminDashboard />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/admin/contributor-requests",
-    element: <ContributorRequests />,
+    element: (
+      <ProtectedRoute requiredRoles={["ADMIN"]}>
+        <ContributorRequests />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/style-guide",
@@ -42,23 +50,43 @@ export const router = createBrowserRouter([
   },
   {
     path: "/favorite-documents",
-    element: <FavoriteDocuments />,
+    element: (
+      <ProtectedRoute>
+        <FavoriteDocuments />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/manage-quizzes",
-    element: <ManageQuizzes />,
+    element: (
+      <ProtectedRoute>
+        <ManageQuizzes />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/quiz-history",
-    element: <QuizHistory />,
+    element: (
+      <ProtectedRoute>
+        <QuizHistory />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/profile",
-    element: <Dashboard />,
+    element: (
+      <ProtectedRoute>
+        <Dashboard />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/manage-documents",
-    element: <ManageDocuments />,
+    element: (
+      <ProtectedRoute>
+        <ManageDocuments />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/document/:id",
@@ -66,11 +94,19 @@ export const router = createBrowserRouter([
   },
   {
     path: "/view-history",
-    element: <ViewHistory />,
+    element: (
+      <ProtectedRoute>
+        <ViewHistory />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/contributor-request",
-    element: <ContributorRequest />,
+    element: (
+      <ProtectedRoute>
+        <ContributorRequest />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/login",
