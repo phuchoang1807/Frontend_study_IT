@@ -2,6 +2,8 @@ import axiosClient from './axiosClient';
 import {
   setAccessToken,
   setRefreshToken,
+  setRoles,
+  setPermissions,
   clearTokens,
   getRefreshToken,
 } from './tokenStorage';
@@ -89,6 +91,8 @@ export async function login(payload: LoginRequest): Promise<TokenResponse> {
     };
     setAccessToken(mockTokenData.accessToken);
     setRefreshToken(mockTokenData.refreshToken);
+    setRoles(mockTokenData.user.roles || []);
+    setPermissions(mockTokenData.user.permissions || []);
     return mockTokenData;
   }
 
@@ -100,6 +104,8 @@ export async function login(payload: LoginRequest): Promise<TokenResponse> {
   const tokenData = response.data.data;
   setAccessToken(tokenData.accessToken);
   setRefreshToken(tokenData.refreshToken);
+  setRoles(tokenData.user.roles || []);
+  setPermissions(tokenData.user.permissions || []);
 
   return tokenData;
 }
@@ -182,6 +188,8 @@ export async function manualRefresh(): Promise<TokenResponse | null> {
   const tokenData = response.data.data;
   setAccessToken(tokenData.accessToken);
   setRefreshToken(tokenData.refreshToken);
+  setRoles(tokenData.user.roles || []);
+  setPermissions(tokenData.user.permissions || []);
 
   return tokenData;
 }

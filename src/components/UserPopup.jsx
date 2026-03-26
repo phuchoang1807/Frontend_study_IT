@@ -10,6 +10,7 @@ import {
   EyeIcon,
   LogoutIcon
 } from "./icons";
+import { hasPermission } from "../utils/authStorage";
 import "../styles/userPopup.css";
 
 export default function UserPopup({ onClose, onLogout }) {
@@ -18,44 +19,58 @@ export default function UserPopup({ onClose, onLogout }) {
       {/* TÀI KHOẢN */}
       <div className="popup-section">
         <div className="popup-header">TÀI KHOẢN</div>
-        <Link to="/profile" className="popup-item" onClick={onClose}>
-          <UserCircleIcon size={18} />
-          <span>Hồ sơ cá nhân</span>
-        </Link>
-        <Link to="/contributor-profile" className="popup-item" onClick={onClose}>
-          <ShieldIcon size={18} />
-          <span>Hồ sơ đăng ký Contributor</span>
-        </Link>
+        {(hasPermission("profile:view") || hasPermission("user:statistics:view")) && (
+          <Link to="/profile" className="popup-item" onClick={onClose}>
+            <UserCircleIcon size={18} />
+            <span>Hồ sơ cá nhân</span>
+          </Link>
+        )}
+        {hasPermission("contributor:profile:view") && (
+          <Link to="/contributor-profile" className="popup-item" onClick={onClose}>
+            <ShieldIcon size={18} />
+            <span>Hồ sơ đăng ký Contributor</span>
+          </Link>
+        )}
       </div>
 
       {/* QUẢN LÝ */}
       <div className="popup-section">
         <div className="popup-header">QUẢN LÝ</div>
-        <Link to="/manage-documents" className="popup-item" onClick={onClose}>
-          <DocumentIcon size={18} />
-          <span>Quản lý tài liệu</span>
-        </Link>
-        <Link to="/manage-quizzes" className="popup-item" onClick={onClose}>
-          <QuizIcon size={18} />
-          <span>Quản lý Quiz</span>
-        </Link>
-        <Link to="/favorite-documents" className="popup-item" onClick={onClose}>
-          <BookmarkIcon size={18} />
-          <span>Tài liệu yêu thích</span>
-        </Link>
+        {hasPermission("document:manage") && (
+          <Link to="/manage-documents" className="popup-item" onClick={onClose}>
+            <DocumentIcon size={18} />
+            <span>Quản lý tài liệu</span>
+          </Link>
+        )}
+        {hasPermission("quiz:manage") && (
+          <Link to="/manage-quizzes" className="popup-item" onClick={onClose}>
+            <QuizIcon size={18} />
+            <span>Quản lý Quiz</span>
+          </Link>
+        )}
+        {hasPermission("bookmark:view") && (
+          <Link to="/favorite-documents" className="popup-item" onClick={onClose}>
+            <BookmarkIcon size={18} />
+            <span>Tài liệu yêu thích</span>
+          </Link>
+        )}
       </div>
 
       {/* LỊCH SỬ */}
       <div className="popup-section">
         <div className="popup-header">LỊCH SỬ</div>
-        <Link to="/quiz-history" className="popup-item" onClick={onClose}>
-          <HistoryIcon size={18} />
-          <span>Lịch sử Quiz</span>
-        </Link>
-        <Link to="/view-history" className="popup-item" onClick={onClose}>
-          <EyeIcon size={18} />
-          <span>Lịch sử Tài liệu đã xem</span>
-        </Link>
+        {hasPermission("history:quiz:view") && (
+          <Link to="/quiz-history" className="popup-item" onClick={onClose}>
+            <HistoryIcon size={18} />
+            <span>Lịch sử Quiz</span>
+          </Link>
+        )}
+        {hasPermission("history:document:view") && (
+          <Link to="/view-history" className="popup-item" onClick={onClose}>
+            <EyeIcon size={18} />
+            <span>Lịch sử Tài liệu đã xem</span>
+          </Link>
+        )}
       </div>
 
       {/* ĐĂNG XUẤT */}

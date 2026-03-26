@@ -9,6 +9,8 @@ import {
   getRefreshToken,
   setAccessToken,
   setRefreshToken,
+  setRoles,
+  setPermissions,
   clearTokens,
 } from './tokenStorage';
 
@@ -80,6 +82,8 @@ async function performTokenRefresh(): Promise<string | null> {
     const tokenData = response.data.data;
     setAccessToken(tokenData.accessToken);
     setRefreshToken(tokenData.refreshToken);
+    setRoles(tokenData.user.roles || []);
+    setPermissions(tokenData.user.permissions || []);
 
     return tokenData.accessToken;
   } catch (error) {
