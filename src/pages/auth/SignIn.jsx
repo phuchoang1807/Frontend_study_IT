@@ -19,9 +19,13 @@ export default function SignIn() {
     setError(null);
     setFormError("");
     try {
-      await login({ email, password, rememberMe });
+      const user = await login({ email, password, rememberMe });
       notification.success("Login successful.");
-      navigate("/");
+      if (user?.roles?.includes("ADMIN")) {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       const message =
         err?.response?.data?.message ||

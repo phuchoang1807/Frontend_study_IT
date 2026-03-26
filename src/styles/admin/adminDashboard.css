@@ -1,0 +1,250 @@
+/* Main Content Styles */
+.admin-main {
+  padding: 32px 40px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+
+.header-title h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #101828;
+  margin: 0 0 4px 0;
+}
+
+.header-title p {
+  font-size: 16px;
+  color: #667085;
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: white;
+  border: 1px solid #D0D5DD;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #344054;
+  cursor: pointer;
+}
+
+.btn-export {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: #007AFF;
+  border: 1px solid #007AFF;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+}
+
+/* Stats Cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.stats-card {
+  background-color: white;
+  border: 1px solid #E4E7F1;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.stats-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.stats-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-blue { background-color: #EFF8FF; color: #2E90FA; }
+.icon-indigo { background-color: #EEF4FF; color: #6172F3; }
+.icon-sky { background-color: #F0F9FF; color: #0086C9; }
+
+.stats-trend {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.trend-up { background-color: #ECFDF3; color: #027A48; }
+.trend-down { background-color: #FEF3F2; color: #B42318; }
+
+.stats-label {
+  font-size: 14px;
+  color: #667085;
+  margin-bottom: 8px;
+}
+
+.stats-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #101828;
+}
+
+/* Chart Section */
+.chart-card {
+  background-color: white;
+  border: 1px solid #E4E7F1;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.chart-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #101828;
+}
+
+.chart-filter {
+  padding: 8px 12px;
+  border: 1px solid #D0D5DD;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #344054;
+}
+
+.chart-container {
+  height: 300px;
+  position: relative;
+}
+
+/* Table Section */
+.table-card {
+  background-color: white;
+  border: 1px solid #E4E7F1;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #E4E7F1;
+}
+
+.table-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #101828;
+}
+
+.btn-view-all {
+  font-size: 14px;
+  font-weight: 600;
+  color: #007AFF;
+  text-decoration: none;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th {
+  background-color: #F9FAFB;
+  padding: 12px 24px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: #667085;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-table td {
+  padding: 16px 24px;
+  border-bottom: 1px solid #E4E7F1;
+  font-size: 14px;
+  color: #344054;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.file-icon {
+  width: 32px;
+  height: 32px;
+  background-color: #F2F4F7;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #667085;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-pending { background-color: #FFFAEB; color: #B54708; }
+.status-approved { background-color: #ECFDF3; color: #027A48; }
+.status-rejected { background-color: #FEF3F2; color: #B42318; }
+
+.actions-cell {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid #D0D5DD;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #667085;
+}
+
+.action-btn.approve { color: #12B76A; border-color: #D1FADF; }
+.action-btn.reject { color: #F04438; border-color: #FEE4E2; }

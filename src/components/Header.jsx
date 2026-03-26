@@ -4,6 +4,7 @@ import studyItLogo from "/favicon.svg";
 import { useAuth } from "../context/AuthContext";
 import { useNotification } from "../context/NotificationContext";
 import { useRef, useState, useEffect } from "react";
+import UserPopup from "./UserPopup";
 
 const navLinkBaseStyle = {
   textAlign: "center",
@@ -114,9 +115,16 @@ export default function Header() {
           >
             Documents
           </NavLink>
-          <a href="#" style={{ ...navLinkBaseStyle, color: "#475569", fontWeight: 500 }}>
+          <NavLink
+            to="/style-guide"
+            style={({ isActive }) => ({
+              ...navLinkBaseStyle,
+              color: isActive ? "#007BFF" : "#475569",
+              fontWeight: isActive ? 600 : 500,
+            })}
+          >
             About Us
-          </a>
+          </NavLink>
         </nav>
 
         <div style={{ flex: "1 1 0", maxWidth: "512px", paddingLeft: "32px", paddingRight: "32px" }}>
@@ -226,48 +234,47 @@ export default function Header() {
             />
           </button>
 
-          {isAuthenticated ? (
-            <>
-              <div
-                role="button"
-                tabIndex={0}
-                onClick={() => navigate("/documents")}
-                onKeyDown={(e) => e.key === "Enter" && navigate("/documents")}
-                style={{
-                  padding: "8px 16px",
-                  background: "#007BFF",
-                  borderRadius: "12px",
-                  position: "relative",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  cursor: "pointer",
-                }}
-              >
-                <div style={{ color: "white" }}>
-                  <UploadIcon size={12} />
-                </div>
-                <div
-                  style={{
-                    color: "white",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                    lineHeight: "20px",
-                  }}
-                >
-                  Upload
-                </div>
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    boxShadow:
-                      "0px 4px 6px -4px rgba(0,123,255,0.25), 0px 10px 15px -3px rgba(0,123,255,0.25)",
-                    borderRadius: "12px",
-                  }}
-                />
-              </div>
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate("/contributor-request")}
+            onKeyDown={(e) => e.key === "Enter" && navigate("/contributor-request")}
+            style={{
+              padding: "8px 16px",
+              background: "#007BFF",
+              borderRadius: "12px",
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              cursor: "pointer",
+            }}
+          >
+            <div style={{ color: "white" }}>
+              <UploadIcon size={12} />
+            </div>
+            <div
+              style={{
+                color: "white",
+                fontSize: "14px",
+                fontWeight: 600,
+                lineHeight: "20px",
+              }}
+            >
+              Upload
+            </div>
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                boxShadow:
+                  "0px 4px 6px -4px rgba(0,123,255,0.25), 0px 10px 15px -3px rgba(0,123,255,0.25)",
+                borderRadius: "12px",
+              }}
+            />
+          </div>
 
+          {isAuthenticated ? (
               <div ref={avatarMenuRef} style={{ position: "relative" }}>
                 <button
                   type="button"
@@ -298,50 +305,12 @@ export default function Header() {
                   />
                 </button>
                 {avatarMenuOpen && (
-                  <div
-                    role="menu"
-                    style={{
-                      position: "absolute",
-                      right: 0,
-                      top: "calc(100% + 8px)",
-                      minWidth: "160px",
-                      padding: "6px 0",
-                      background: "#fff",
-                      borderRadius: "12px",
-                      boxShadow:
-                        "0 4px 6px -1px rgba(0,0,0,0.1), 0 10px 15px -3px rgba(0,0,0,0.1)",
-                      border: "1px solid #E2E8F0",
-                      zIndex: 50,
-                    }}
-                  >
-                    <button
-                      type="button"
-                      role="menuitem"
-                      onClick={handleLogout}
-                      style={{
-                        width: "100%",
-                        padding: "10px 16px",
-                        border: "none",
-                        background: "transparent",
-                        color: "#0F172A",
-                        fontSize: "14px",
-                        fontWeight: 500,
-                        textAlign: "left",
-                        cursor: "pointer",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "#F1F5F9";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "transparent";
-                      }}
-                    >
-                      Log out
-                    </button>
-                  </div>
+                  <UserPopup
+                    onClose={() => setAvatarMenuOpen(false)}
+                    onLogout={handleLogout}
+                  />
                 )}
               </div>
-            </>
           ) : (
             <>
               <Link
