@@ -18,6 +18,7 @@ import ViewHistory from "../pages/history/ViewHistory";
 import Dashboard from "../pages/dashboard/Dashboard";
 import ManageDocuments from "../pages/document/ManageDocuments";
 import StyleGuide from "../pages/about/StyleGuide";
+import AboutUs from "../pages/about/AboutUs";
 import FavoriteDocuments from "../pages/document/FavoriteDocuments";
 import ManageQuizzes from "../pages/quiz/ManageQuizzes";
 import QuizHistory from "../pages/quiz/QuizHistory";
@@ -32,6 +33,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: "style-guide", element: <StyleGuide /> },
+      { path: "about-us", element: <AboutUs /> },
       { path: "favorite-documents", element: <FavoriteDocuments /> },
       { path: "manage-quizzes", element: <ManageQuizzes /> },
       { path: "quiz-history", element: <QuizHistory /> },

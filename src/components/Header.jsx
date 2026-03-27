@@ -123,7 +123,7 @@ export default function Header() {
             Documents
           </NavLink>
           <NavLink
-            to="/style-guide"
+            to="/about-us"
             style={({ isActive }) => ({
               ...navLinkBaseStyle,
               color: isActive ? "#007BFF" : "#475569",
