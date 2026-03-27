@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { EyeIcon } from "../../components/icons";
 import { useAuth } from "../../context/AuthContext";
 import { useNotification } from "../../context/NotificationContext";
+import { userHasAdminPortalRole } from "../../constants/adminPortalRoles";
 import "../../styles/admin/adminSignIn.css";
+
+const LOGIN_ERROR_FALLBACK =
+  "Invalid email or password. Please try again or contact support if you need an account.";
 
 const AdminSignIn = () => {
   const navigate = useNavigate();
@@ -23,15 +27,21 @@ const AdminSignIn = () => {
     try {
       const user = await login({ email, password, rememberMe: trustDevice });
       
-      if (user?.roles?.includes("ADMIN")) {
+      if (userHasAdminPortalRole(user?.roles)) {
         notification.success("Admin access authorized.");
         navigate("/admin/dashboard");
       } else {
-        setError("Access denied. You do not have administrator privileges.");
-        notification.error("Unauthorized access.");
+        const msg =
+          "You do not have permission to access the admin portal.";
+        setError(msg);
+        notification.error(msg);
       }
     } catch (err) {
-      const message = err?.response?.data?.message || err?.message || "Authentication failed.";
+      const apiMsg = err?.response?.data?.message;
+      const message =
+        typeof apiMsg === "string" && apiMsg.trim()
+          ? apiMsg
+          : LOGIN_ERROR_FALLBACK;
       setError(message);
       notification.error(message);
     }

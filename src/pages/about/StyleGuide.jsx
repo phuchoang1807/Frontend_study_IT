@@ -1,6 +1,4 @@
 import React from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 import '../../styles/styleGuide.css';
 
 const StyleGuide = () => {
@@ -199,7 +197,6 @@ const StyleGuide = () => {
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   );
 };

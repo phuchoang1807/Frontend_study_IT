@@ -2,8 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useNotification } from "../context/NotificationContext";
-import Header from "./Header";
-import Footer from "./Footer";
 import {
   BookmarkIcon,
   ChevronLeftIcon,
@@ -369,8 +367,6 @@ export default function DocumentsList() {
         background: "#F5F7F8",
       }}
     >
-      <Header />
-
       <div
         style={{
           width: "100%",
@@ -1324,8 +1320,6 @@ export default function DocumentsList() {
           </div>
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 }

@@ -1,13 +1,15 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import AuthLayout from "../layouts/AuthLayout";
+import UserLayout from "../layouts/user/UserLayout";
+import AdminLayout from "../layouts/admin/AdminLayout";
 
 import SignIn from "../pages/auth/SignIn";
 import SignUp from "../pages/auth/SignUp";
 import ForgotPassword from "../pages/auth/ForgotPassword";
 
-import ProtectedRoute from "./ProtectedRoute";
 import GuestRoute from "./GuestRoute";
+import ProtectedRoute from "./ProtectedRoute";
 import Home from "../pages/home/Home";
 import DocumentsList from "../components/DocumentsList";
 import DocumentDetail from "../pages/document/DocumentDetail";
@@ -24,62 +26,48 @@ import ContributorRequests from "../pages/admin/ContributorRequests";
 import AdminSignIn from "../pages/admin/AdminSignIn";
 
 export const router = createBrowserRouter([
-  // Public
   {
     path: "/",
-    element: <Home />,
+    element: <UserLayout />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: "style-guide", element: <StyleGuide /> },
+      { path: "favorite-documents", element: <FavoriteDocuments /> },
+      { path: "manage-quizzes", element: <ManageQuizzes /> },
+      { path: "quiz-history", element: <QuizHistory /> },
+      { path: "profile", element: <Dashboard /> },
+      { path: "manage-documents", element: <ManageDocuments /> },
+      { path: "document/:id", element: <DocumentDetail /> },
+      { path: "view-history", element: <ViewHistory /> },
+      { path: "contributor-request", element: <ContributorRequest /> },
+      { path: "documents", element: <DocumentsList /> },
+    ],
   },
   {
-    path: "/admin/login",
-    element: (
-      <GuestRoute>
-        <AdminSignIn />
-      </GuestRoute>
-    ),
-  },
-  {
-    path: "/admin/dashboard",
-    element: <AdminDashboard />,
-  },
-  {
-    path: "/admin/contributor-requests",
-    element: <ContributorRequests />,
-  },
-  {
-    path: "/style-guide",
-    element: <StyleGuide />,
-  },
-  {
-    path: "/favorite-documents",
-    element: <FavoriteDocuments />,
-  },
-  {
-    path: "/manage-quizzes",
-    element: <ManageQuizzes />,
-  },
-  {
-    path: "/quiz-history",
-    element: <QuizHistory />,
-  },
-  {
-    path: "/profile",
-    element: <Dashboard />,
-  },
-  {
-    path: "/manage-documents",
-    element: <ManageDocuments />,
-  },
-  {
-    path: "/document/:id",
-    element: <DocumentDetail />,
-  },
-  {
-    path: "/view-history",
-    element: <ViewHistory />,
-  },
-  {
-    path: "/contributor-request",
-    element: <ContributorRequest />,
+    path: "/admin",
+    children: [
+      {
+        path: "login",
+        element: (
+          <GuestRoute adminPortal>
+            <AdminSignIn />
+          </GuestRoute>
+        ),
+      },
+      {
+        element: (
+          <ProtectedRoute
+            requiredRoles={["ADMIN", "USER_MODERATOR", "CONTENT_MODERATOR"]}
+          >
+            <AdminLayout />
+          </ProtectedRoute>
+        ),
+        children: [
+          { path: "dashboard", element: <AdminDashboard /> },
+          { path: "contributor-requests", element: <ContributorRequests /> },
+        ],
+      },
+    ],
   },
   {
     path: "/login",
@@ -108,11 +96,5 @@ export const router = createBrowserRouter([
         <ForgotPassword />
       </AuthLayout>
     ),
-  },
-
-  // Protected
-  {
-    path: "/documents",
-    element: <DocumentsList />,
   },
 ]);

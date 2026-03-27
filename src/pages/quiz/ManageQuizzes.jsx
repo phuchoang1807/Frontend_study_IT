@@ -1,6 +1,4 @@
 import React from "react";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import { EyeIcon, PlusIcon } from "../../components/icons";
 import "../../styles/manageQuizzes.css";
 
@@ -206,8 +204,6 @@ export default function ManageQuizzes() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

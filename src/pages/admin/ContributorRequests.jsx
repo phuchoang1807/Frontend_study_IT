@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import AdminLayout from '../../layouts/admin/AdminLayout';
 import ContributorDetailModal from './components/ContributorDetailModal';
 import '../../styles/admin/contributorRequests.css';
 
@@ -84,7 +83,7 @@ const ContributorRequests = () => {
   };
 
   return (
-    <AdminLayout>
+    <>
       <div className="admin-content">
         <header className="content-header">
           <div className="header-title">
@@ -184,7 +183,7 @@ const ContributorRequests = () => {
         contributor={selectedContributor}
         onUpdateStatus={handleUpdateStatus}
       />
-    </AdminLayout>
+    </>
   );
 };
 

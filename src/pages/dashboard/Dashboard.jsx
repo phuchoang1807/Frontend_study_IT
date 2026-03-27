@@ -1,6 +1,4 @@
 import React from "react";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import { 
   UserCircleIcon, 
   ShieldIcon, 
@@ -70,8 +68,6 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      <Header />
-      
       <main className="dashboard-content">
         {/* Profile Summary Card */}
         <section className="profile-card">
@@ -243,8 +239,6 @@ export default function Dashboard() {
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 }

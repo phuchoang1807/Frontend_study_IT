@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../../components/Header";
 import Categories from "../../components/Categories";
 import ContributeSection from "../../components/ContributeSection";
-import Footer from "../../components/Footer";
 import {
   BookmarkIcon,
   ChevronLeftIcon,
@@ -108,8 +106,6 @@ export default function Home() {
         background: "#F5F7F8",
       }}
     >
-      <Header />
-
       <div
         style={{
           width: "100%",
@@ -643,9 +639,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-      
-
-      <Footer />
     </div>
   );
 }

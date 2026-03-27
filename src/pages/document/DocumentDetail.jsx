@@ -1,6 +1,4 @@
 import React from "react";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import {
   ChevronRightIcon,
   EyeIcon,
@@ -75,8 +73,6 @@ const relatedDocs = [
 export default function DocumentDetail() {
   return (
     <div className="document-detail-container">
-      <Header />
-      
       <main className="document-detail-content">
         {/* Breadcrumb */}
         <nav className="breadcrumb">
@@ -262,8 +258,6 @@ export default function DocumentDetail() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

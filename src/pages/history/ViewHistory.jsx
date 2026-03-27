@@ -1,6 +1,4 @@
 import React from "react";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import {
   ClockIcon,
   UsersIcon,
@@ -55,8 +53,6 @@ const historyData = [
 export default function ViewHistory() {
   return (
     <div className="view-history-container">
-      <Header />
-      
       <main className="view-history-content">
         <header className="history-header">
           <div className="history-title-section">
@@ -142,8 +138,6 @@ export default function ViewHistory() {
           </button>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

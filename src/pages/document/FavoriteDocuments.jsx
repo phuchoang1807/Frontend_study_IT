@@ -1,6 +1,4 @@
 import React from "react";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import {
   ClockIcon,
   UsersIcon,
@@ -171,8 +169,6 @@ export default function FavoriteDocuments() {
           </button>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

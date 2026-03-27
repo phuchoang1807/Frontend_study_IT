@@ -1,6 +1,4 @@
 import React from "react";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import {
   LayoutIcon,
   MonitorIcon,
@@ -55,8 +53,6 @@ const historyData = [
 export default function QuizHistory() {
   return (
     <div className="quiz-history-container">
-      <Header />
-
       <main className="quiz-history-content">
         <header className="quiz-history-header">
           <div className="title-section">
@@ -167,8 +163,6 @@ export default function QuizHistory() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

@@ -1,6 +1,4 @@
 import React from "react";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import {
   LinkIcon,
   UploadIcon,
@@ -13,8 +11,6 @@ import "../../styles/contributorRequest.css";
 export default function ContributorRequest() {
   return (
     <div className="contributor-request-container">
-      <Header />
-      
       <main className="contributor-request-content">
         <header className="request-header">
           <h1 className="request-title">Đăng ký trở thành Người đóng góp (Contributor)</h1>
@@ -85,8 +81,6 @@ export default function ContributorRequest() {
           </p>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

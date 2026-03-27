@@ -1,12 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import AdminLayout from '../../layouts/admin/AdminLayout';
 import '../../styles/admin/adminDashboard.css';
 
 const AdminDashboard = () => {
   return (
-    <AdminLayout>
-      <main className="admin-main">
+    <main className="admin-main">
         <header className="dashboard-header">
           <div className="header-title">
             <h1>Tổng quan Dashboard</h1>
@@ -254,7 +252,6 @@ const AdminDashboard = () => {
           </table>
         </section>
       </main>
-    </AdminLayout>
   );
 };
 
