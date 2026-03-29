@@ -14,6 +14,7 @@ import Home from "../pages/home/Home";
 import DocumentsList from "../components/DocumentsList";
 import DocumentDetail from "../pages/document/DocumentDetail";
 import ContributorRequest from "../pages/contributor/ContributorRequest";
+import ContributorStatus from "../pages/contributor/ContributorStatus";
 import ViewHistory from "../pages/history/ViewHistory";
 import Dashboard from "../pages/dashboard/Dashboard";
 import ManageDocuments from "../pages/document/ManageDocuments";
@@ -42,6 +43,7 @@ export const router = createBrowserRouter([
       { path: "document/:id", element: <DocumentDetail /> },
       { path: "view-history", element: <ViewHistory /> },
       { path: "contributor-request", element: <ContributorRequest /> },
+      { path: "contributor-status", element: <ContributorStatus /> },
       { path: "documents", element: <DocumentsList /> },
     ],
   },

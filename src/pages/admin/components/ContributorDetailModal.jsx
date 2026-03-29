@@ -209,11 +209,9 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
                   MÔ TẢ KINH NGHIỆM
                 </label>
               </div>
-              <ul className="experience-list">
-                <li>5 năm Senior UI/UX Designer tại tập đoàn công nghệ XYZ.</li>
-                <li>Thành thạo Figma, Adobe Creative Cloud và các công cụ prototyping.</li>
-                <li>Có kinh nghiệm xây dựng Design System quy mô lớn.</li>
-              </ul>
+              <div className="experience-text">
+                {contributor.experience || "Không có thông tin kinh nghiệm."}
+              </div>
               {renderReasonInput('experience')}
               {!isRequestMode && requestedFields.experience?.requested && (
                 <div className="requested-reason">
@@ -237,18 +235,35 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
                 </label>
               </div>
               <div className="attachments-list">
-                <a href="#" className="attachment-card">
-                  <div className="attachment-icon pdf">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                      <polyline points="14 2 14 8 20 8"></polyline>
-                    </svg>
-                  </div>
-                  <div className="attachment-info">
-                    <span className="attachment-name">Chung_chi_HCI.pdf</span>
-                    <span className="attachment-meta">2.4 MB</span>
-                  </div>
-                </a>
+                {contributor.certificates && contributor.certificates.length > 0 ? (
+                  contributor.certificates.map((cert, index) => (
+                    <a key={index} href={cert.url} target="_blank" rel="noopener noreferrer" className="attachment-card">
+                      <div className="attachment-icon pdf">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                          <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                      </div>
+                      <div className="attachment-info">
+                        <span className="attachment-name">{cert.certificateName}</span>
+                      </div>
+                    </a>
+                  ))
+                ) : contributor.certificateUrl ? (
+                  <a href={contributor.certificateUrl} target="_blank" rel="noopener noreferrer" className="attachment-card">
+                    <div className="attachment-icon pdf">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                      </svg>
+                    </div>
+                    <div className="attachment-info">
+                      <span className="attachment-name">{contributor.certificateName || "Chung_chi.pdf"}</span>
+                    </div>
+                  </a>
+                ) : (
+                  <p className="no-attachments">Không có tệp đính kèm.</p>
+                )}
               </div>
               {renderReasonInput('attachments')}
               {!isRequestMode && requestedFields.attachments?.requested && (

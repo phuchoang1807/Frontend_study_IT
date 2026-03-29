@@ -13,7 +13,7 @@ const navLinkBaseStyle = {
 };
 export default function Header() {
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, contributorStatus } = useAuth();
   const notification = useNotification();
   const [keyword, setKeyword] = useState("");
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
@@ -42,6 +42,23 @@ export default function Header() {
         err?.message ||
         "Logout failed. Please try again.";
       notification.error(msg);
+    }
+  };
+
+  const handleUploadClick = () => {
+    if (!isAuthenticated) {
+      notification.info("Vui lòng đăng nhập để tải tài liệu.");
+      navigate("/login");
+      return;
+    }
+
+    // Sử dụng trạng thái từ context để chuyển trang ngay lập tức
+    if (contributorStatus) {
+      // Nếu đã có trạng thái (PENDING, APPROVED, REJECTED)
+      navigate("/contributor-status");
+    } else {
+      // Nếu chưa gửi yêu cầu bao giờ
+      navigate("/contributor-request");
     }
   };
 
@@ -244,8 +261,8 @@ export default function Header() {
           <div
             role="button"
             tabIndex={0}
-            onClick={() => navigate("/contributor-request")}
-            onKeyDown={(e) => e.key === "Enter" && navigate("/contributor-request")}
+            onClick={handleUploadClick}
+            onKeyDown={(e) => e.key === "Enter" && handleUploadClick()}
             style={{
               padding: "8px 16px",
               background: "#007BFF",

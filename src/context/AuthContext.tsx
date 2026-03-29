@@ -12,15 +12,18 @@ import {
   getAccessToken,
   getRefreshToken,
 } from "../api/tokenStorage";
+import axiosClient from "../api/axiosClient";
 
 type AuthContextValue = {
   user: UserInfo | null;
   isAuthenticated: boolean;
+  contributorStatus: string | null; // Thêm trạng thái contributor
   loading: boolean;
   initializing: boolean;
   login: (payload: LoginRequest) => Promise<UserInfo>;
   logout: () => Promise<void>;
   fetchMe: () => Promise<void>;
+  refreshContributorStatus: () => Promise<void>; // Hàm để cập nhật lại trạng thái khi cần
   error: string | null;
   setError: (message: string | null) => void;
 };
@@ -29,20 +32,37 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserInfo | null>(null);
+  const [contributorStatus, setContributorStatus] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [initializing, setInitializing] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const isAuthenticated = !!user;
 
+  const refreshContributorStatus = async () => {
+    try {
+      const response = await axiosClient.get("/contributor/registration-status");
+      if (response.data.success && response.data.data) {
+        setContributorStatus(response.data.data.status);
+      } else {
+        setContributorStatus(null);
+      }
+    } catch (err) {
+      setContributorStatus(null);
+    }
+  };
+
   const fetchMe = async () => {
     try {
       setLoading(true);
       const currentUser = await getCurrentUser();
       setUser(currentUser);
+      // Khi lấy user thành công, lấy luôn trạng thái contributor
+      await refreshContributorStatus();
     } catch {
       clearTokens();
       setUser(null);
+      setContributorStatus(null);
     } finally {
       setLoading(false);
     }
@@ -54,6 +74,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const tokenResponse = await loginApi(payload);
       setUser(tokenResponse.user);
+      // Sau khi login thành công, lấy trạng thái contributor
+      await refreshContributorStatus();
       return tokenResponse.user;
     } catch (err: any) {
       const message =
@@ -77,6 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       clearTokens();
       setUser(null);
+      setContributorStatus(null);
       setLoading(false);
     }
   };
@@ -93,8 +116,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return;
         }
 
-        // Mất accessToken sau F5 là bình thường (token in-memory).
-        // Nếu còn refreshToken thì refresh để khôi phục session.
         const refreshToken = getRefreshToken();
         if (!refreshToken) {
           return;
@@ -105,14 +126,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return;
         }
 
-        // manualRefresh đã setAccessToken/setRefreshToken; user từ response đủ để mở app ngay
         if (!cancelled) {
           setUser(tokenData.user);
+          // Refresh trạng thái contributor sau khi phục hồi session
+          await refreshContributorStatus();
         }
       } catch {
         clearTokens();
         if (!cancelled) {
           setUser(null);
+          setContributorStatus(null);
         }
       }
     };
@@ -130,15 +153,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     () => ({
       user,
       isAuthenticated,
+      contributorStatus,
       loading: loading || initializing,
       initializing,
       login,
       logout,
       fetchMe,
+      refreshContributorStatus,
       error,
       setError,
     }),
-    [user, isAuthenticated, loading, initializing, error]
+    [user, isAuthenticated, contributorStatus, loading, initializing, error]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
