@@ -1,57 +1,74 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ContributorDetailModal from './components/ContributorDetailModal';
 import '../../styles/admin/contributorRequests.css';
+import axiosClient from '../../api/axiosClient';
 
 const ContributorRequests = () => {
   const [selectedContributor, setSelectedContributor] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [requests, setRequests] = useState([
-    {
-      id: 1,
-      name: 'Nguyễn Văn A',
-      email: 'vana@example.com',
-      date: '10/10/2023',
-      field: 'Công nghệ thông tin',
-      status: 'pending',
-      statusLabel: 'Chờ duyệt',
-      avatar: 'https://i.pravatar.cc/150?u=a'
-    },
-    {
-      id: 2,
-      name: 'Trần Thị B',
-      email: 'thib@example.com',
-      date: '09/10/2023',
-      field: 'Kinh tế học',
-      status: 'approved',
-      statusLabel: 'Đã duyệt',
-      avatar: 'https://i.pravatar.cc/150?u=b'
-    },
-    {
-      id: 3,
-      name: 'Lê Văn C',
-      email: 'vanc@example.com',
-      date: '08/10/2023',
-      field: 'Y học',
-      status: 'rejected',
-      statusLabel: 'Đã từ chối',
-      avatar: 'https://i.pravatar.cc/150?u=c'
-    },
-    {
-      id: 4,
-      name: 'Phạm Minh D',
-      email: 'minhd@example.com',
-      date: '07/10/2023',
-      field: 'Luật học',
-      status: 'pending',
-      statusLabel: 'Chờ duyệt',
-      avatar: 'https://i.pravatar.cc/150?u=d'
-    }
-  ]);
+  const [requests, setRequests] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleUpdateStatus = (id, newStatus, newLabel) => {
-    setRequests(prev => prev.map(req => 
-      req.id === id ? { ...req, status: newStatus, statusLabel: newLabel } : req
-    ));
+  const fetchRequests = async () => {
+    try {
+      setIsLoading(true);
+
+      const response = await axiosClient.get('/admin/contributor-requests');
+
+      console.log("API response:", response.data);
+
+      // ✅ FIX DUY NHẤT Ở ĐÂY
+      if (response.data && Array.isArray(response.data.data)) {
+        const mappedData = response.data.data.map(req => ({
+          ...req,
+
+          avatar:
+            req.avatarUrl ||
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(
+              req.name || 'User'
+            )}&background=random`,
+
+          date: req.createdAt
+            ? new Date(req.createdAt).toLocaleDateString('vi-VN')
+            : 'N/A',
+
+          status: (req.status || 'PENDING').toLowerCase(),
+
+          statusLabel:
+            req.status === 'PENDING'
+              ? 'Chờ duyệt'
+              : req.status === 'APPROVED'
+              ? 'Đã duyệt'
+              : req.status === 'REJECTED'
+              ? 'Đã từ chối'
+              : req.status || 'Chưa rõ',
+        }));
+
+        setRequests(mappedData);
+      } else {
+        console.warn("Response không đúng format:", response.data);
+        setRequests([]);
+      }
+    } catch (error) {
+      console.error("❌ Lỗi gọi API:", error);
+      setRequests([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRequests();
+  }, []);
+
+  const handleUpdateStatus = async (id, newStatus, newLabel) => {
+    try {
+      setRequests(prev => prev.map(req => 
+        req.id === id ? { ...req, status: newStatus.toLowerCase(), statusLabel: newLabel } : req
+      ));
+    } catch (error) {
+      console.error("Failed to update status on server:", error);
+    }
   };
 
   const handleViewDetails = (contributor) => {
@@ -69,7 +86,7 @@ const ContributorRequests = () => {
       case 'pending': return 'dot-pending';
       case 'approved': return 'dot-approved';
       case 'rejected': return 'dot-rejected';
-      default: return '';
+      default: return 'dot-pending';
     }
   };
 
@@ -78,7 +95,7 @@ const ContributorRequests = () => {
       case 'pending': return 'status-text-pending';
       case 'approved': return 'status-text-approved';
       case 'rejected': return 'status-text-rejected';
-      default: return '';
+      default: return 'status-text-pending';
     }
   };
 
@@ -91,11 +108,11 @@ const ContributorRequests = () => {
             <p>Quản lý và phê duyệt hồ sơ người dùng muốn đóng góp nội dung mới cho nền tảng.</p>
           </div>
           <div className="header-actions">
-            <button className="btn-filter">
+            <button className="btn-filter" onClick={fetchRequests}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
-              Bộ lọc
+              Làm mới
             </button>
             <button className="btn-export">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -109,71 +126,80 @@ const ContributorRequests = () => {
         </header>
 
         <div className="table-card">
-          <table className="contributor-table">
-            <thead>
-              <tr>
-                <th>Người dùng</th>
-                <th>Ngày gửi</th>
-                <th>Lĩnh vực chuyên môn</th>
-                <th>Trạng thái</th>
-                <th>Hành động</th>
-              </tr>
-            </thead>
-            <tbody>
-              {requests.map((req) => (
-                <tr key={req.id}>
-                  <td>
-                    <div className="user-cell">
-                      <img src={req.avatar} alt={req.name} className="user-avatar-img" />
-                      <div className="user-details">
-                        <span className="user-name">{req.name}</span>
-                        <span className="user-email">{req.email}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td>{req.date}</td>
-                  <td>
-                    <span className="field-tag">{req.field}</span>
-                  </td>
-                  <td>
-                    <div className="status-cell">
-                      <span className={`status-dot ${getStatusClass(req.status)}`}></span>
-                      <span className={getStatusTextClass(req.status)}>{req.statusLabel}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <button 
-                      onClick={() => handleViewDetails(req)} 
-                      className="view-profile-btn"
-                    >
-                      Xem hồ sơ
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          
-          <div className="pagination-area">
-            <span className="results-count">Hiển thị 4 trong 48 yêu cầu</span>
-            <div className="pagination-controls">
-              <button className="page-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="15 18 9 12 15 6"></polyline>
-                </svg>
-              </button>
-              <button className="page-btn active">1</button>
-              <button className="page-btn">2</button>
-              <button className="page-btn">3</button>
-              <span className="page-dots">...</span>
-              <button className="page-btn">12</button>
-              <button className="page-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </button>
+          {isLoading ? (
+            <div className="loading-container" style={{ padding: '40px', textAlign: 'center' }}>
+              <div className="spinner"></div>
+              <p style={{ marginTop: '10px', color: '#64748b' }}>Đang tải danh sách yêu cầu...</p>
             </div>
-          </div>
+          ) : (
+            <>
+              <table className="contributor-table">
+                <thead>
+                  <tr>
+                    <th>Người dùng</th>
+                    <th>Ngày gửi</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {requests.length > 0 ? (
+                    requests.map((req) => (
+                      <tr key={req.id}>
+                        <td>
+                          <div className="user-cell">
+                            <img src={req.avatar} alt={req.name} className="user-avatar-img" />
+                            <div className="user-details">
+                              <span className="user-name">{req.name}</span>
+                              <span className="user-email">{req.email}</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td>{req.date}</td>
+                        <td>
+                          <div className="status-cell">
+                            <span className={`status-dot ${getStatusClass(req.status)}`}></span>
+                            <span className={getStatusTextClass(req.status)}>{req.statusLabel}</span>
+                          </div>
+                        </td>
+                        <td>
+                          <button 
+                            onClick={() => handleViewDetails(req)} 
+                            className="view-profile-btn"
+                          >
+                            Xem hồ sơ
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="4" style={{ textAlign: 'center', padding: '40px', color: '#94a3b8' }}>
+                        Không có yêu cầu Contributor nào đang chờ xử lý.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+              
+              <div className="pagination-area">
+                <span className="results-count">Hiển thị {requests.length} yêu cầu từ database</span>
+                <div className="pagination-controls">
+                  <button className="page-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                  </button>
+                  <button className="page-btn active">1</button>
+                  <button className="page-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
 

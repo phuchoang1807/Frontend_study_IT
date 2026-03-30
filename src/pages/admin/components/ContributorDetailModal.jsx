@@ -169,23 +169,27 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
                   </div>
                 )}
               </div>
-              <div className={`info-item full-width ${getFieldClass('bio')}`}>
+              <div className={`info-item full-width ${getFieldClass('portfolioLink')}`}>
                 <div className="label-with-dot">
                   {isRequestMode && (
                     <span 
-                      className={`section-dot ${selectedFields.bio ? 'selected' : ''}`}
-                      onClick={() => toggleField('bio')}
+                      className={`section-dot ${selectedFields.portfolioLink ? 'selected' : ''}`}
+                      onClick={() => toggleField('portfolioLink')}
                     ></span>
                   )}
-                  <label>GIỚI THIỆU BẢN THÂN</label>
+                  <label>LINK PORTFOLIO / WEBSITE</label>
                 </div>
                 <p className="bio-text">
-                  "Tôi là một nhà thiết kế UI/UX với hơn 5 năm kinh nghiệm làm việc trong các dự án Fintech và E-commerce. Tôi đam mê việc tạo ra các giải pháp kỹ thuật số tối ưu hóa trải nghiệm người dùng thông qua sự tinh tế và chính xác."
+                  {contributor.portfolioLink ? (
+                    <a href={contributor.portfolioLink} target="_blank" rel="noopener noreferrer" style={{ color: '#007BFF', textDecoration: 'underline' }}>
+                      {contributor.portfolioLink}
+                    </a>
+                  ) : "Không cung cấp link portfolio."}
                 </p>
-                {renderReasonInput('bio')}
-                {!isRequestMode && requestedFields.bio?.requested && (
+                {renderReasonInput('portfolioLink')}
+                {!isRequestMode && requestedFields.portfolioLink?.requested && (
                   <div className="requested-reason">
-                    {requestedFields.bio.reason}
+                    {requestedFields.portfolioLink.reason}
                   </div>
                 )}
               </div>
@@ -285,7 +289,7 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
             </div>
             <div className="status-details">
               <label>TRẠNG THÁI HIỆN TẠI</label>
-              <p>Đang chờ xét duyệt (Gửi cách đây 2 ngày)</p>
+              <p>{contributor.statusLabel || "N/A"} (Gửi ngày {contributor.date || "N/A"})</p>
             </div>
           </div>
         </div>
