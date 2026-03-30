@@ -48,7 +48,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setContributorStatus(null);
       }
     } catch (err) {
-      setContributorStatus(null);
+      // Log the error conceptually for debugging.
+      console.error("Failed to refresh contributor status:", err);
+      // Do not set contributorStatus to null here.
+      // This preserves the existing contributorStatus if one exists,
+      // preventing incorrect navigation due to temporary API errors.
     }
   };
 

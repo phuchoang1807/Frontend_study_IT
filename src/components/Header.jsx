@@ -13,7 +13,7 @@ const navLinkBaseStyle = {
 };
 export default function Header() {
   const navigate = useNavigate();
-  const { isAuthenticated, logout, contributorStatus } = useAuth();
+  const { isAuthenticated, logout, contributorStatus, initializing, loading } = useAuth();
   const notification = useNotification();
   const [keyword, setKeyword] = useState("");
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
@@ -52,7 +52,14 @@ export default function Header() {
       return;
     }
 
-    // Sử dụng trạng thái từ context để chuyển trang ngay lập tức
+    // Wait for initialization to complete and contributorStatus to be determined
+    if (initializing || loading) {
+      // Optionally, show a loading indicator or disable the button
+      // For now, we can just return to prevent premature navigation
+      return;
+    }
+
+    // Now that initialization is complete, we can confidently check the status
     if (contributorStatus) {
       // Nếu đã có trạng thái (PENDING, APPROVED, REJECTED)
       navigate("/contributor-status");

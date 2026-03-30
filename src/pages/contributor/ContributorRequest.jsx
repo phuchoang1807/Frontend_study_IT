@@ -36,6 +36,7 @@ export default function ContributorRequest() {
     }
   }, [contributorStatus, navigate]);
 
+  
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
@@ -103,18 +104,24 @@ export default function ContributorRequest() {
       await axiosClient.post("/contributor/register", {
         portfolioLink: formData.portfolioLink,
         experience: formData.experience,
-        certificates: formData.certificates // Gửi danh sách [{url, certificateName}]
+        certificates: formData.certificates
       });
-      
-      await refreshContributorStatus(); // Cập nhật lại state toàn cục ngay lập tức
+
       notification.success("Yêu cầu của bạn đã được gửi thành công!");
+      // Điều hướng ngay lập tức nếu việc POST thành công
       navigate("/contributor-status");
-    } catch (error) {
+
+      // Sau đó, làm mới trạng thái của AuthContext ở chế độ nền
+      // để đảm bảo context được cập nhật cho các lần sử dụng sau.
+      refreshContributorStatus().catch(err => {
+        console.error("Background refresh failed after navigation:", err);
+      });
+      } catch (error) {
       const msg = error?.response?.data?.message || "Gửi yêu cầu thất bại.";
       notification.error(msg);
-    } finally {
+      } finally {
       setIsSubmitting(false);
-    }
+      }
   };
 
   return (
