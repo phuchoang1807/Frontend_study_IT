@@ -60,8 +60,10 @@ export default function Header() {
     }
 
     // Now that initialization is complete, we can confidently check the status
-    if (contributorStatus) {
-      // Nếu đã có trạng thái (PENDING, APPROVED, REJECTED)
+    if (contributorStatus === "APPROVED") {
+      navigate("/upload-document");
+    } else if (contributorStatus) {
+      // Nếu đã có trạng thái (PENDING, REJECTED)
       navigate("/contributor-status");
     } else {
       // Nếu chưa gửi yêu cầu bao giờ
@@ -134,7 +136,7 @@ export default function Header() {
               fontWeight: isActive ? 600 : 500,
             })}
           >
-            Home
+            Trang chủ
           </NavLink>
           <NavLink
             to="/documents"
@@ -144,7 +146,7 @@ export default function Header() {
               fontWeight: isActive ? 600 : 500,
             })}
           >
-            Documents
+            Tài liệu
           </NavLink>
           <NavLink
             to="/about-us"
@@ -154,7 +156,7 @@ export default function Header() {
               fontWeight: isActive ? 600 : 500,
             })}
           >
-            About Us
+            Về chúng tôi
           </NavLink>
         </nav>
 
@@ -181,7 +183,7 @@ export default function Header() {
                     setKeyword("");
                   }
                 }}
-                placeholder="Search documents..."
+                placeholder="Tìm kiếm tài liệu..."
                 aria-label="Search documents"
                 style={{
                   width: "100%",
@@ -292,7 +294,7 @@ export default function Header() {
                 lineHeight: "20px",
               }}
             >
-              Upload
+              Tải lên
             </div>
             <div
               style={{

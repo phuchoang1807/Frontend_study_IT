@@ -170,7 +170,7 @@ export default function ContributorStatus() {
              </div>
              <h2 className="success-title">Chúc mừng bạn đã trở thành Contributor!</h2>
              <p className="success-desc">Hồ sơ của bạn đã được phê duyệt. Bây giờ bạn có thể bắt đầu chia sẻ tài liệu và kiến thức của mình với cộng đồng.</p>
-             <button className="upload-doc-btn" onClick={() => navigate("/manage-documents")}>
+             <button className="upload-doc-btn" onClick={() => navigate("/upload-document")}>
                 Đăng tải tài liệu
              </button>
           </div>
