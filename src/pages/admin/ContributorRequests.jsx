@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ContributorDetailModal from './components/ContributorDetailModal';
 import '../../styles/admin/contributorRequests.css';
 import axiosClient from '../../api/axiosClient';
+import { ContributorRequestStatus, ContributorStatusLabel } from '../../constants/contributorStatus';
 
 const ContributorRequests = () => {
   const [selectedContributor, setSelectedContributor] = useState(null);
@@ -15,34 +16,28 @@ const ContributorRequests = () => {
 
       const response = await axiosClient.get('/admin/contributor-requests');
 
-      console.log("API response:", response.data);
-
-      // ✅ FIX DUY NHẤT Ở ĐÂY
       if (response.data && Array.isArray(response.data.data)) {
-        const mappedData = response.data.data.map(req => ({
-          ...req,
+        const mappedData = response.data.data.map(req => {
+          const status = (req.status || ContributorRequestStatus.PENDING).toUpperCase();
+          
+          return {
+            ...req,
+            avatar:
+              req.avatarUrl ||
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                req.name || 'User'
+              )}&background=random`,
 
-          avatar:
-            req.avatarUrl ||
-            `https://ui-avatars.com/api/?name=${encodeURIComponent(
-              req.name || 'User'
-            )}&background=random`,
+            date: req.createdAt
+              ? new Date(req.createdAt).toLocaleDateString('vi-VN')
+              : 'N/A',
 
-          date: req.createdAt
-            ? new Date(req.createdAt).toLocaleDateString('vi-VN')
-            : 'N/A',
-
-          status: (req.status || 'PENDING').toLowerCase(),
-
-          statusLabel:
-            req.status === 'PENDING'
-              ? 'Chờ duyệt'
-              : req.status === 'APPROVED'
-              ? 'Đã duyệt'
-              : req.status === 'REJECTED'
-              ? 'Đã từ chối'
-              : req.status || 'Chưa rõ',
-        }));
+            status: status.toLowerCase(),
+            statusKey: status,
+            statusLabel: ContributorStatusLabel[status] || 'Chưa rõ',
+            rejectionReason: req.rejectionReason || null, // Ensure rejectionReason is passed
+          };
+        });
 
         setRequests(mappedData);
       } else {
@@ -61,14 +56,9 @@ const ContributorRequests = () => {
     fetchRequests();
   }, []);
 
-  const handleUpdateStatus = async (id, newStatus, newLabel) => {
-    try {
-      setRequests(prev => prev.map(req => 
-        req.id === id ? { ...req, status: newStatus.toLowerCase(), statusLabel: newLabel } : req
-      ));
-    } catch (error) {
-      console.error("Failed to update status on server:", error);
-    }
+  // This function is now only used to trigger a re-fetch, as the actual update is in the modal
+  const handleUpdateStatus = () => {
+    fetchRequests(); 
   };
 
   const handleViewDetails = (contributor) => {
@@ -79,22 +69,25 @@ const ContributorRequests = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedContributor(null);
+    fetchRequests(); // Re-fetch requests when the modal closes
   };
 
-  const getStatusClass = (status) => {
-    switch (status) {
-      case 'pending': return 'dot-pending';
-      case 'approved': return 'dot-approved';
-      case 'rejected': return 'dot-rejected';
+  const getStatusClass = (statusKey) => {
+    switch (statusKey) {
+      case ContributorRequestStatus.PENDING: return 'dot-pending';
+      case ContributorRequestStatus.APPROVED: return 'dot-approved';
+      case ContributorRequestStatus.REJECTED: return 'dot-rejected';
+      case ContributorRequestStatus.NEED_INFO: return 'dot-pending';
       default: return 'dot-pending';
     }
   };
 
-  const getStatusTextClass = (status) => {
-    switch (status) {
-      case 'pending': return 'status-text-pending';
-      case 'approved': return 'status-text-approved';
-      case 'rejected': return 'status-text-rejected';
+  const getStatusTextClass = (statusKey) => {
+    switch (statusKey) {
+      case ContributorRequestStatus.PENDING: return 'status-text-pending';
+      case ContributorRequestStatus.APPROVED: return 'status-text-approved';
+      case ContributorRequestStatus.REJECTED: return 'status-text-rejected';
+      case ContributorRequestStatus.NEED_INFO: return 'status-text-pending';
       default: return 'status-text-pending';
     }
   };
@@ -158,8 +151,8 @@ const ContributorRequests = () => {
                         <td>{req.date}</td>
                         <td>
                           <div className="status-cell">
-                            <span className={`status-dot ${getStatusClass(req.status)}`}></span>
-                            <span className={getStatusTextClass(req.status)}>{req.statusLabel}</span>
+                            <span className={`status-dot ${getStatusClass(req.statusKey)}`}></span>
+                            <span className={getStatusTextClass(req.statusKey)}>{req.statusLabel}</span>
                           </div>
                         </td>
                         <td>
