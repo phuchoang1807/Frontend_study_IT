@@ -13,7 +13,7 @@ const navLinkBaseStyle = {
 };
 export default function Header() {
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, contributorStatus, initializing, loading } = useAuth();
   const notification = useNotification();
   const [keyword, setKeyword] = useState("");
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
@@ -42,6 +42,32 @@ export default function Header() {
         err?.message ||
         "Logout failed. Please try again.";
       notification.error(msg);
+    }
+  };
+
+  const handleUploadClick = () => {
+    if (!isAuthenticated) {
+      notification.info("Vui lòng đăng nhập để tải tài liệu.");
+      navigate("/login");
+      return;
+    }
+
+    // Wait for initialization to complete and contributorStatus to be determined
+    if (initializing || loading) {
+      // Optionally, show a loading indicator or disable the button
+      // For now, we can just return to prevent premature navigation
+      return;
+    }
+
+    // Now that initialization is complete, we can confidently check the status
+    if (contributorStatus === "APPROVED") {
+      navigate("/upload-document");
+    } else if (contributorStatus) {
+      // Nếu đã có trạng thái (PENDING, REJECTED)
+      navigate("/contributor-status");
+    } else {
+      // Nếu chưa gửi yêu cầu bao giờ
+      navigate("/contributor-request");
     }
   };
 
@@ -110,7 +136,7 @@ export default function Header() {
               fontWeight: isActive ? 600 : 500,
             })}
           >
-            Home
+            Trang chủ
           </NavLink>
           <NavLink
             to="/documents"
@@ -120,7 +146,7 @@ export default function Header() {
               fontWeight: isActive ? 600 : 500,
             })}
           >
-            Documents
+            Tài liệu
           </NavLink>
           <NavLink
             to="/about-us"
@@ -130,7 +156,7 @@ export default function Header() {
               fontWeight: isActive ? 600 : 500,
             })}
           >
-            About Us
+            Về chúng tôi
           </NavLink>
         </nav>
 
@@ -157,7 +183,7 @@ export default function Header() {
                     setKeyword("");
                   }
                 }}
-                placeholder="Search documents..."
+                placeholder="Tìm kiếm tài liệu..."
                 aria-label="Search documents"
                 style={{
                   width: "100%",
@@ -244,8 +270,8 @@ export default function Header() {
           <div
             role="button"
             tabIndex={0}
-            onClick={() => navigate("/contributor-request")}
-            onKeyDown={(e) => e.key === "Enter" && navigate("/contributor-request")}
+            onClick={handleUploadClick}
+            onKeyDown={(e) => e.key === "Enter" && handleUploadClick()}
             style={{
               padding: "8px 16px",
               background: "#007BFF",
@@ -268,7 +294,7 @@ export default function Header() {
                 lineHeight: "20px",
               }}
             >
-              Upload
+              Tải lên
             </div>
             <div
               style={{

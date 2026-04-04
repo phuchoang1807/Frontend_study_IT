@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../../styles/admin/contributorDetailModal.css';
+import { ContributorRequestStatus, ContributorStatusLabel } from '../../../constants/contributorStatus';
+import axiosClient from '../../../api/axiosClient'; // Import axiosClient
 
 const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }) => {
   const [isRequestMode, setIsRequestMode] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showApproveModal, setShowApproveModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
   const [selectedFields, setSelectedFields] = useState({
@@ -23,6 +26,13 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
   });
 
   const [requestedFields, setRequestedFields] = useState({});
+
+  useEffect(() => {
+    if (isOpen && contributor) {
+      // Set the rejection reason if available in the contributor data
+      setRejectReason(contributor.rejectionReason || '');
+    }
+  }, [isOpen, contributor]);
 
   if (!isOpen || !contributor) return null;
 
@@ -47,17 +57,30 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
     setShowConfirmModal(true);
   };
 
+  const sendUpdateRequest = async (status, reason = null) => {
+    try {
+      const payload = {
+        requestId: contributor.id,
+        status: status,
+        rejectionReason: reason,
+      };
+      await axiosClient.post(`/admin/contributor-requests/${contributor.id}/status`, payload);
+      onUpdateStatus(); // Trigger re-fetch in parent
+      handleClose();
+    } catch (error) {
+      console.error(`❌ Lỗi cập nhật trạng thái yêu cầu Contributor thành ${status}:`, error);
+      alert(`Có lỗi xảy ra khi cập nhật trạng thái. Vui lòng thử lại. Lỗi: ${error.message}`);
+    }
+  };
+
   const confirmSendRequest = () => {
     const newRequested = {};
-    Object.keys(selectedFields).forEach(field => {
-      if (selectedFields[field]) {
-        newRequested[field] = {
-          requested: true,
-          reason: reasons[field]
-        };
-      }
-    });
-    setRequestedFields(newRequested);
+    const detailedReason = Object.keys(selectedFields)
+      .filter(field => selectedFields[field])
+      .map(field => `- ${reasons[field]}`)
+      .join('\n');
+
+    sendUpdateRequest(ContributorRequestStatus.NEED_INFO, detailedReason);
     setIsRequestMode(false);
     setShowConfirmModal(false);
   };
@@ -68,17 +91,41 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
 
   const confirmReject = () => {
     if (rejectReason.trim()) {
-      onUpdateStatus(contributor.id, 'rejected', 'Đã từ chối');
+      sendUpdateRequest(ContributorRequestStatus.REJECTED, rejectReason);
       setShowRejectModal(false);
-      onClose();
     }
+  };
+
+  const handleOpenApprove = () => {
+    setShowApproveModal(true);
+  };
+
+  const confirmApprove = () => {
+    sendUpdateRequest(ContributorRequestStatus.APPROVED);
+    setShowApproveModal(false);
   };
 
   const handleClose = () => {
     setIsRequestMode(false);
     setShowConfirmModal(false);
     setShowRejectModal(false);
+    setShowApproveModal(false);
     setRejectReason('');
+    setSelectedFields({
+        fullName: false,
+        email: false,
+        bio: false,
+        experience: false,
+        attachments: false,
+    });
+    setReasons({
+        fullName: 'Vui lòng cung cấp họ tên đầy đủ theo căn cước công dân.',
+        email: '',
+        bio: '',
+        experience: '',
+        attachments: 'Chứng chỉ đã hết hạn hoặc không nhìn rõ. Vui lòng tải lên bản sao mới nhất.',
+    });
+    setRequestedFields({});
     onClose();
   };
 
@@ -100,11 +147,16 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
 
   const getFieldClass = (field) => {
     let classes = "";
-    if (!isRequestMode && requestedFields[field]?.requested) {
+    // Display requested fields from backend data if available
+    const isFieldRequestedFromBackend = contributor.statusKey === ContributorRequestStatus.NEED_INFO && contributor.rejectionReason && contributor.rejectionReason.includes(reasons[field]);
+    if (!isRequestMode && (requestedFields[field]?.requested || isFieldRequestedFromBackend)) {
       classes += " requested-field-box";
     }
     return classes;
   };
+
+  const isActionable = contributor.statusKey === ContributorRequestStatus.PENDING || 
+                     contributor.statusKey === ContributorRequestStatus.NEED_INFO;
 
   return (
     <div className="modal-overlay">
@@ -145,9 +197,9 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
                 </div>
                 <p>{contributor.name}</p>
                 {renderReasonInput('fullName')}
-                {!isRequestMode && requestedFields.fullName?.requested && (
+                {!isRequestMode && contributor.statusKey === ContributorRequestStatus.NEED_INFO && contributor.rejectionReason && contributor.rejectionReason.includes(reasons.fullName) && (
                   <div className="requested-reason">
-                    {requestedFields.fullName.reason}
+                    {reasons.fullName}
                   </div>
                 )}
               </div>
@@ -163,29 +215,32 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
                 </div>
                 <p>{contributor.email}</p>
                 {renderReasonInput('email')}
-                {!isRequestMode && requestedFields.email?.requested && (
+                {!isRequestMode && contributor.statusKey === ContributorRequestStatus.NEED_INFO && contributor.rejectionReason && contributor.rejectionReason.includes(reasons.email) && (
                   <div className="requested-reason">
-                    {requestedFields.email.reason}
+                    {reasons.email}
                   </div>
                 )}
               </div>
-              <div className={`info-item full-width ${getFieldClass('bio')}`}>
+              <div className={`info-item full-width ${getFieldClass('portfolioLink')}`}>
                 <div className="label-with-dot">
                   {isRequestMode && (
                     <span 
-                      className={`section-dot ${selectedFields.bio ? 'selected' : ''}`}
-                      onClick={() => toggleField('bio')}
+                      className={`section-dot ${selectedFields.portfolioLink ? 'selected' : ''}`}
+                      onClick={() => toggleField('portfolioLink')}
                     ></span>
                   )}
-                  <label>GIỚI THIỆU BẢN THÂN</label>
+                  <label>LINK PORTFOLIO / WEBSITE</label>
                 </div>
                 <p className="bio-text">
-                  "Tôi là một nhà thiết kế UI/UX với hơn 5 năm kinh nghiệm làm việc trong các dự án Fintech và E-commerce. Tôi đam mê việc tạo ra các giải pháp kỹ thuật số tối ưu hóa trải nghiệm người dùng thông qua sự tinh tế và chính xác."
-                </p>
-                {renderReasonInput('bio')}
-                {!isRequestMode && requestedFields.bio?.requested && (
+                  {contributor.portfolioLink ? (
+                    <a href={contributor.portfolioLink} target="_blank" rel="noopener noreferrer" style={{ color: '#007BFF', textDecoration: 'underline' }}>
+                      {contributor.portfolioLink}
+                    </a>
+                  ) : "Không cung cấp link portfolio."}</p>
+                {renderReasonInput('portfolioLink')}
+                {!isRequestMode && contributor.statusKey === ContributorRequestStatus.NEED_INFO && contributor.rejectionReason && contributor.rejectionReason.includes(reasons.portfolioLink) && (
                   <div className="requested-reason">
-                    {requestedFields.bio.reason}
+                    {reasons.portfolioLink}
                   </div>
                 )}
               </div>
@@ -209,17 +264,15 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
                   MÔ TẢ KINH NGHIỆM
                 </label>
               </div>
-              <ul className="experience-list">
-                <li>5 năm Senior UI/UX Designer tại tập đoàn công nghệ XYZ.</li>
-                <li>Thành thạo Figma, Adobe Creative Cloud và các công cụ prototyping.</li>
-                <li>Có kinh nghiệm xây dựng Design System quy mô lớn.</li>
-              </ul>
+              <div className="experience-text">
+                {contributor.experience || "Không có thông tin kinh nghiệm."}</div
+              >
               {renderReasonInput('experience')}
-              {!isRequestMode && requestedFields.experience?.requested && (
-                <div className="requested-reason">
-                  {requestedFields.experience.reason}
-                </div>
-              )}
+              {!isRequestMode && contributor.statusKey === ContributorRequestStatus.NEED_INFO && contributor.rejectionReason && contributor.rejectionReason.includes(reasons.experience) && (
+                  <div className="requested-reason">
+                    {reasons.experience}
+                  </div>
+                )}
             </div>
             <div className={`attachments-col ${getFieldClass('attachments')}`}>
               <div className="label-with-dot">
@@ -237,30 +290,47 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
                 </label>
               </div>
               <div className="attachments-list">
-                <a href="#" className="attachment-card">
-                  <div className="attachment-icon pdf">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                      <polyline points="14 2 14 8 20 8"></polyline>
-                    </svg>
-                  </div>
-                  <div className="attachment-info">
-                    <span className="attachment-name">Chung_chi_HCI.pdf</span>
-                    <span className="attachment-meta">2.4 MB</span>
-                  </div>
-                </a>
+                {contributor.certificates && contributor.certificates.length > 0 ? (
+                  contributor.certificates.map((cert, index) => (
+                    <a key={index} href={cert.url} target="_blank" rel="noopener noreferrer" className="attachment-card">
+                      <div className="attachment-icon pdf">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                          <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                      </div>
+                      <div className="attachment-info">
+                        <span className="attachment-name">{cert.certificateName}</span>
+                      </div>
+                    </a>
+                  ))
+                ) : contributor.certificateUrl ? (
+                  <a href={contributor.certificateUrl} target="_blank" rel="noopener noreferrer" className="attachment-card">
+                    <div className="attachment-icon pdf">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                      </svg>
+                    </div>
+                    <div className="attachment-info">
+                      <span className="attachment-name">{contributor.certificateName || "Chung_chi.pdf"}</span>
+                    </div>
+                  </a>
+                ) : (
+                  <p className="no-attachments">Không có tệp đính kèm.</p>
+                )}
               </div>
               {renderReasonInput('attachments')}
-              {!isRequestMode && requestedFields.attachments?.requested && (
-                <div className="requested-reason">
-                  {requestedFields.attachments.reason}
-                </div>
-              )}
+              {!isRequestMode && contributor.statusKey === ContributorRequestStatus.NEED_INFO && contributor.rejectionReason && contributor.rejectionReason.includes(reasons.attachments) && (
+                  <div className="requested-reason">
+                    {reasons.attachments}
+                  </div>
+                )}
             </div>
           </div>
 
           {/* Current Status Banner */}
-          <div className="status-banner">
+          <div className={`status-banner ${contributor.statusKey?.toLowerCase()}`}>
             <div className="status-icon-box">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -270,7 +340,14 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
             </div>
             <div className="status-details">
               <label>TRẠNG THÁI HIỆN TẠI</label>
-              <p>Đang chờ xét duyệt (Gửi cách đây 2 ngày)</p>
+              <p>
+                {contributor.statusLabel || "N/A"} (Gửi ngày {contributor.date || "N/A"})
+              </p>
+              {(contributor.statusKey === ContributorRequestStatus.REJECTED || contributor.statusKey === ContributorRequestStatus.NEED_INFO) && contributor.rejectionReason && (
+                <div className="reject-reason-display">
+                  <strong>Lý do:</strong> {contributor.rejectionReason}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -290,7 +367,7 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
                 Gửi yêu cầu bổ sung
               </button>
             </>
-          ) : (
+          ) : isActionable ? (
             <>
               <div className="footer-left">
                 <button className="btn-modal btn-outline-danger" onClick={handleOpenReject}>Từ chối</button>
@@ -298,13 +375,15 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
                   Yêu cầu bổ sung
                 </button>
               </div>
-              <button className="btn-modal btn-primary-action">
+              <button className="btn-modal btn-primary-action" onClick={handleOpenApprove}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M20 6L9 17l-5-5"></path>
                 </svg>
                 Phê duyệt yêu cầu
               </button>
             </>
+          ) : (
+            <button className="btn-modal btn-secondary" onClick={handleClose}>Đóng</button>
           )}
         </footer>
 
@@ -317,6 +396,20 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
               <div className="mini-modal-actions">
                 <button className="btn-mini btn-cancel" onClick={() => setShowConfirmModal(false)}>Hủy</button>
                 <button className="btn-mini btn-confirm" onClick={confirmSendRequest}>Gửi yêu cầu</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Approve Modal Overlay */}
+        {showApproveModal && (
+          <div className="mini-modal-overlay">
+            <div className="mini-modal">
+              <h3>Xác nhận phê duyệt</h3>
+              <p>Bạn có chắc chắn muốn phê duyệt người dùng này thành Contributor không?</p>
+              <div className="mini-modal-actions">
+                <button className="btn-mini btn-cancel" onClick={() => setShowApproveModal(false)}>Hủy</button>
+                <button className="btn-mini btn-confirm" onClick={confirmApprove}>Phê duyệt</button>
               </div>
             </div>
           </div>

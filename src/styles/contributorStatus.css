@@ -1,0 +1,290 @@
+.status-page-container {
+  min-height: 100vh;
+  background-color: #F8FAFC;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.status-content {
+  width: 100%;
+  max-width: 800px;
+}
+
+.status-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 8px;
+}
+
+.status-subtitle {
+  font-size: 16px;
+  color: #64748B;
+  margin-bottom: 32px;
+}
+
+.status-stepper-card {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin-bottom: 24px;
+}
+
+.stepper-item {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 0;
+  position: relative;
+}
+
+.stepper-item:not(:last-child) {
+  padding-bottom: 40px;
+}
+
+.step-icon-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40px;
+}
+
+.step-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.step-icon.success {
+  background-color: #10B981;
+  color: white;
+}
+
+.step-icon.processing {
+  background-color: #3B82F6;
+  color: white;
+}
+
+.step-icon.pending {
+  background-color: white;
+  border: 2px solid #E2E8F0;
+  color: #94A3B8;
+}
+
+.step-icon.rejected {
+  background-color: #EF4444;
+  color: white;
+}
+
+.step-line {
+  position: absolute;
+  top: 32px;
+  left: 15.5px;
+  width: 2px;
+  height: calc(100% - 32px);
+  background-color: #E2E8F0;
+  z-index: 1;
+}
+
+.step-line.active {
+  background-color: #10B981;
+}
+
+.step-content h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0F172A;
+  margin-bottom: 4px;
+}
+
+.step-content p {
+  font-size: 14px;
+  color: #64748B;
+}
+
+.text-processing {
+  color: #3B82F6 !important;
+}
+
+.spin {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Rejection Card */
+.rejection-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.rejection-banner {
+  height: 200px;
+  background-color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.no-image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rejection-info {
+  padding: 32px;
+  background-color: #FEF2F2;
+}
+
+.moderator-note-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #EF4444;
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+}
+
+.rejection-reason-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 12px;
+}
+
+.rejection-detail {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #475569;
+  margin-bottom: 24px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.resubmit-btn {
+  background-color: #3B82F6;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.resubmit-btn:hover {
+  background-color: #2563EB;
+}
+
+.support-btn {
+  background-color: white;
+  color: #475569;
+  border: 1px solid #E2E8F0;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.support-btn:hover {
+  background-color: #F8FAFC;
+}
+
+/* Success Card */
+.success-card {
+  background: white;
+  border-radius: 16px;
+  padding: 48px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-top: 4px solid #10B981;
+}
+
+.success-icon-large {
+  margin-bottom: 24px;
+}
+
+.success-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 16px;
+}
+
+.success-desc {
+  font-size: 16px;
+  color: #64748B;
+  margin-bottom: 32px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.upload-doc-btn {
+  background-color: #10B981;
+  color: white;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+}
+
+.upload-doc-btn:hover {
+  background-color: #059669;
+}
+
+.help-footer {
+  margin-top: 32px;
+  text-align: center;
+  font-size: 14px;
+  color: #64748B;
+}
+
+.help-footer a {
+  color: #3B82F6;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.help-footer a:hover {
+  text-decoration: underline;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  font-size: 18px;
+  color: #64748B;
+}

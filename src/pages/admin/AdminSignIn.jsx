@@ -58,7 +58,7 @@ const AdminSignIn = () => {
                 <div className="admin-logo-disk"></div>
                 <div className="admin-logo-disk"></div>
               </div>
-              <span className="admin-logo-text">DevDocs Hub</span>
+
             </div>
             
             <div className="admin-badge">System Administration</div>

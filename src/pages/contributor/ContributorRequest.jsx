@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   LinkIcon,
   UploadIcon,
@@ -6,9 +6,124 @@ import {
   ChevronRightIcon,
   DocumentIcon
 } from "../../components/icons";
+import { useNavigate } from "react-router-dom";
 import "../../styles/contributorRequest.css";
+import { uploadToCloudinary } from "../../utils/uploadCloudinary";
+import { useNotification } from "../../context/NotificationContext";
+import { useAuth } from "../../context/AuthContext";
+import axiosClient from "../../api/axiosClient";
 
 export default function ContributorRequest() {
+  const notification = useNotification();
+  const { contributorStatus, refreshContributorStatus } = useAuth();
+  const fileInputRef = useRef(null);
+  const navigate = useNavigate();
+  
+  const [formData, setFormData] = useState({
+    portfolioLink: "",
+    experience: "",
+    certificates: [], // Lưu danh sách các chứng chỉ [{url, certificateName}]
+    agreeTerms: false
+  });
+  
+  const [isUploading, setIsUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    // Chuyển hướng ngay lập tức nếu đã có trạng thái từ context
+    if (contributorStatus === 'PENDING' || contributorStatus === 'APPROVED') {
+       navigate("/contributor-status");
+    }
+  }, [contributorStatus, navigate]);
+
+  
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value
+    }));
+  };
+
+  const handleFileChange = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    try {
+      setIsUploading(true);
+      const uploadPromises = files.map(file => uploadToCloudinary(file));
+      const results = await Promise.all(uploadPromises);
+      
+      const newCertificates = results.map(res => ({
+        url: res.url,
+        certificateName: res.certificateName
+      }));
+
+      setFormData(prev => ({
+        ...prev,
+        certificates: [...prev.certificates, ...newCertificates]
+      }));
+      
+      notification.success(`Tải lên thành công ${files.length} tệp!`);
+    } catch (error) {
+      notification.error(error.message || "Lỗi khi tải lên tệp.");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const removeFile = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      certificates: prev.certificates.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!formData.agreeTerms) {
+      notification.error("Bạn phải đồng ý với các điều khoản.");
+      return;
+    }
+
+    if (!formData.experience) {
+      notification.error("Vui lòng mô tả kinh nghiệm của bạn.");
+      return;
+    }
+
+    if (formData.certificates.length === 0) {
+      notification.error("Vui lòng tải lên ít nhất một chứng chỉ liên quan.");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      // Gửi request về backend Spring Boot
+      await axiosClient.post("/contributor/register", {
+        portfolioLink: formData.portfolioLink,
+        experience: formData.experience,
+        certificates: formData.certificates
+      });
+
+      notification.success("Yêu cầu của bạn đã được gửi thành công!");
+      // Điều hướng ngay lập tức nếu việc POST thành công
+      navigate("/contributor-status");
+
+      // Sau đó, làm mới trạng thái của AuthContext ở chế độ nền
+      // để đảm bảo context được cập nhật cho các lần sử dụng sau.
+      refreshContributorStatus().catch(err => {
+        console.error("Background refresh failed after navigation:", err);
+      });
+      } catch (error) {
+      const msg = error?.response?.data?.message || "Gửi yêu cầu thất bại.";
+      notification.error(msg);
+      } finally {
+      setIsSubmitting(false);
+      }
+  };
+
   return (
     <div className="contributor-request-container">
       <main className="contributor-request-content">
@@ -21,15 +136,18 @@ export default function ContributorRequest() {
           <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2070&auto=format&fit=crop" alt="Contributor Banner" />
         </div>
 
-        <div className="request-form-card">
+        <form className="request-form-card" onSubmit={handleSubmit}>
           <div className="form-group">
             <label className="form-label">Link Portfolio (nếu có)</label>
             <div className="input-wrapper">
               <span className="input-icon"><LinkIcon size={16} /></span>
               <input 
                 type="text" 
+                name="portfolioLink"
                 className="form-input" 
                 placeholder="https://behance.net/username" 
+                value={formData.portfolioLink}
+                onChange={handleInputChange}
               />
             </div>
           </div>
@@ -37,29 +155,82 @@ export default function ContributorRequest() {
           <div className="form-group">
             <label className="form-label">Mô tả kinh nghiệm của bạn</label>
             <textarea 
+              name="experience"
               className="form-textarea" 
               placeholder="Hãy cho chúng tôi biết về kinh nghiệm chuyên môn, các dự án bạn đã thực hiện hoặc các lĩnh vực bạn am hiểu nhất..."
+              value={formData.experience}
+              onChange={handleInputChange}
+              required
             ></textarea>
           </div>
 
           <div className="form-group">
             <label className="form-label">Tải lên chứng chỉ liên quan (PDF, JPG, PNG)</label>
-            <div className="upload-zone">
+            <div 
+              className="upload-zone" 
+              onClick={() => fileInputRef.current?.click()}
+              style={{ cursor: "pointer", opacity: isUploading ? 0.6 : 1 }}
+            >
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                style={{ display: "none" }} 
+                onChange={handleFileChange}
+                accept=".jpg,.jpeg,.png,.pdf"
+                multiple // Cho phép chọn nhiều file
+              />
               <div className="upload-info">
                 <div className="upload-icon-wrapper">
                   <DocumentIcon size={20} />
                 </div>
                 <div className="upload-text-wrapper">
-                  <div className="upload-text-main">Nhấn để tải lên hoặc kéo thả</div>
+                  <div className="upload-text-main">
+                    {isUploading ? "Đang tải lên..." : "Nhấn để tải lên hoặc kéo thả (có thể chọn nhiều file)"}
+                  </div>
                   <div className="upload-text-sub">Tối đa 10MB mỗi tệp</div>
                 </div>
               </div>
-              <button className="upload-btn">Chọn tệp</button>
+              <button type="button" className="upload-btn" disabled={isUploading}>
+                Thêm tệp
+              </button>
             </div>
+
+            {/* Hiển thị danh sách file đã tải lên */}
+            {formData.certificates.length > 0 && (
+              <div className="uploaded-files-list">
+                {formData.certificates.map((file, index) => (
+                  <div key={index} className="uploaded-file-item">
+                    <div className="file-info">
+                      <DocumentIcon size={16} color="#64748b" />
+                      <a href={file.url} target="_blank" rel="noopener noreferrer" className="file-name">
+                        {file.certificateName}
+                      </a>
+                    </div>
+                    <button 
+                      type="button" 
+                      className="remove-file-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeFile(index);
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="checkbox-group">
-            <input type="checkbox" id="terms" className="custom-checkbox" />
+            <input 
+              type="checkbox" 
+              id="terms" 
+              name="agreeTerms"
+              className="custom-checkbox" 
+              checked={formData.agreeTerms}
+              onChange={handleInputChange}
+            />
             <label htmlFor="terms" className="checkbox-label">
               Tôi đồng ý với các <a href="#">điều khoản dành cho Contributor</a> và cam kết cung cấp thông tin chính xác.
             </label>
@@ -67,12 +238,16 @@ export default function ContributorRequest() {
 
           <div className="form-footer">
             <span className="privacy-note">Mọi thông tin của bạn sẽ được bảo mật tuyệt đối.</span>
-            <button className="submit-request-btn">
-              Gửi yêu cầu
-              <ChevronRightIcon size={14} color="white" />
+            <button 
+              type="submit" 
+              className="submit-request-btn" 
+              disabled={isSubmitting || isUploading}
+            >
+              {isSubmitting ? "Đang gửi..." : "Gửi yêu cầu"}
+              {!isSubmitting && <ChevronRightIcon size={14} color="white" />}
             </button>
           </div>
-        </div>
+        </form>
 
         <div className="info-box">
           <span className="info-icon"><AlertIcon size={18} /></span>
