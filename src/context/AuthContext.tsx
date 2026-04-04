@@ -11,6 +11,8 @@ import {
   clearTokens,
   getAccessToken,
   getRefreshToken,
+  setPermissions,
+  setRoles,
 } from "../api/tokenStorage";
 import axiosClient from "../api/axiosClient";
 
@@ -61,6 +63,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
       const currentUser = await getCurrentUser();
       setUser(currentUser);
+      setRoles(currentUser.roles || []);
+      setPermissions(currentUser.permissions || []);
       // Khi lấy user thành công, lấy luôn trạng thái contributor
       await refreshContributorStatus();
     } catch {
@@ -132,6 +136,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (!cancelled) {
           setUser(tokenData.user);
+          setRoles(tokenData.user.roles || []);
+          setPermissions(tokenData.user.permissions || []);
           // Refresh trạng thái contributor sau khi phục hồi session
           await refreshContributorStatus();
         }

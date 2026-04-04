@@ -1,16 +1,17 @@
 import React from "react";
-import { 
-  UserCircleIcon, 
-  ShieldIcon, 
-  DocumentIcon, 
-  QuizIcon, 
+import { Navigate } from "react-router-dom";
+import {
+  UserCircleIcon,
+  DocumentIcon,
+  QuizIcon,
   StarIcon,
   ClockIcon,
-  LinkIcon
 } from "../../components/icons";
 import "../../styles/dashboard.css";
+import { useAuth } from "../../context/AuthContext";
+import UserAvatarDisplay from "../../components/UserAvatarDisplay";
+import { getProfileRoleBadges } from "../../utils/roleBadges";
 
-// Local icons for specific dashboard parts
 const GridIcon = ({ size = 18, color = "currentColor" }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="3" y="3" width="7" height="7"></rect>
@@ -48,7 +49,9 @@ const LockIcon = ({ size = 18, color = "currentColor" }) => (
   </svg>
 );
 
-export default function Dashboard() {
+export default function Profile() {
+  const { user, isAuthenticated, initializing } = useAuth();
+
   const activityData = [
     { id: 1, name: "Giải tích 1 - Chương 2", meta: "Đã xem • 15 phút trước", icon: <DocumentIcon color="#3b82f6" />, bg: "#eff6ff" },
     { id: 2, name: "Quiz: Cấu trúc dữ liệu", meta: "Hoàn thành: 9/10 • 2 giờ trước", icon: <QuizIcon color="#f97316" />, bg: "#fff7ed" },
@@ -66,33 +69,45 @@ export default function Dashboard() {
     { day: "CN", height: "45%" },
   ];
 
+  if (initializing) {
+    return null;
+  }
+
+  if (!isAuthenticated || !user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  const roleBadges = getProfileRoleBadges(user.roles);
+
   return (
     <div className="dashboard-container">
       <main className="dashboard-content">
-        {/* Profile Summary Card */}
         <section className="profile-card">
           <div className="profile-info-main">
             <div className="avatar-wrapper">
-              <img src="https://i.pravatar.cc/150?u=an.nguyen" alt="Avatar" className="avatar-img" />
-              <button className="camera-btn">
+              <UserAvatarDisplay user={user} size="profile" />
+              <button type="button" className="camera-btn">
                 <CameraIcon color="white" size={16} />
               </button>
             </div>
             <div className="profile-text">
               <h2>
-                Nguyễn Văn An
-                <span className="role-badge">NGƯỜI DÙNG</span>
+                {user.fullName || "—"}
+                {roleBadges.map(({ role, label }) => (
+                  <span key={role} className="role-badge">
+                    {label}
+                  </span>
+                ))}
               </h2>
-              <p className="profile-email">an.nguyen@docshare.vn</p>
+              <p className="profile-email">{user.email}</p>
             </div>
           </div>
-          <button className="edit-profile-btn">
+          <button type="button" className="edit-profile-btn">
             <EditIcon color="white" size={16} />
             Chỉnh sửa hồ sơ
           </button>
         </section>
 
-        {/* Dashboard Section */}
         <section>
           <div className="section-header">
             <GridIcon color="#3b82f6" size={20} />
@@ -145,7 +160,6 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Middle Row: Progress and Activity */}
         <div className="dashboard-middle-row">
           <div className="chart-card">
             <div className="card-title-row">
@@ -162,8 +176,8 @@ export default function Dashboard() {
               <div className="chart-bars">
                 {chartData.map((item, index) => (
                   <div key={index} className="chart-bar-group">
-                    <div 
-                      className={`chart-bar ${item.day === "T5" ? "active" : ""}`} 
+                    <div
+                      className={`chart-bar ${item.day === "T5" ? "active" : ""}`}
                       style={{ height: item.height }}
                     ></div>
                     <span className="chart-label">{item.day}</span>
@@ -178,7 +192,7 @@ export default function Dashboard() {
               <ClockIcon color="#3b82f6" size={18} />
               Hoạt động gần đây
             </div>
-            <div className="activity-list" style={{ marginTop: '24px' }}>
+            <div className="activity-list" style={{ marginTop: "24px" }}>
               {activityData.map((item) => (
                 <div key={item.id} className="activity-item">
                   <div className="activity-icon" style={{ backgroundColor: item.bg }}>
@@ -195,24 +209,23 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Personal Info Section */}
         <section className="personal-info-card">
-          <div className="card-title" style={{ marginBottom: '24px' }}>
+          <div className="card-title" style={{ marginBottom: "24px" }}>
             <UserCircleIcon color="#3b82f6" size={20} />
             Thông tin cá nhân
           </div>
-          
+
           <div className="personal-info-grid">
-            <div className="info-form">
+            <div className="info-form" key={user.id}>
               <div className="form-group">
                 <label>HỌ VÀ TÊN</label>
-                <input type="text" defaultValue="Nguyễn Văn An" />
+                <input type="text" defaultValue={user.fullName || ""} />
               </div>
               <div className="form-group">
                 <label>ĐỊA CHỈ EMAIL</label>
-                <input type="email" defaultValue="an.nguyen@docshare.vn" />
+                <input type="email" defaultValue={user.email || ""} />
               </div>
-              <button className="save-btn">Lưu thay đổi</button>
+              <button type="button" className="save-btn">Lưu thay đổi</button>
             </div>
 
             <div className="security-box">
@@ -220,7 +233,7 @@ export default function Dashboard() {
                 <LockIcon color="#3b82f6" size={18} />
                 Bảo mật tài khoản
               </div>
-              
+
               <div className="security-item">
                 <div className="security-item-info">
                   <span className="security-item-label">Mật khẩu</span>

@@ -47,6 +47,18 @@
   border: 4px solid #f1f5f9;
 }
 
+.avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e2e8f0;
+  color: #475569;
+  font-size: 2.25rem;
+  font-weight: 600;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
 .camera-btn {
   position: absolute;
   bottom: 0;

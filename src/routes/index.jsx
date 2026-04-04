@@ -7,6 +7,7 @@ import AdminLayout from "../layouts/admin/AdminLayout";
 import SignIn from "../pages/auth/SignIn";
 import SignUp from "../pages/auth/SignUp";
 import ForgotPassword from "../pages/auth/ForgotPassword";
+import OAuth2Success from "../pages/auth/OAuth2Success";
 
 import GuestRoute from "./GuestRoute";
 import ProtectedRoute from "./ProtectedRoute";
@@ -16,7 +17,7 @@ import DocumentDetail from "../pages/document/DocumentDetail";
 import ContributorRequest from "../pages/contributor/ContributorRequest";
 import ContributorStatus from "../pages/contributor/ContributorStatus";
 import ViewHistory from "../pages/history/ViewHistory";
-import Dashboard from "../pages/dashboard/Dashboard";
+import Profile from "../pages/user/Profile";
 import ManageDocuments from "../pages/document/ManageDocuments";
 import UploadDocument from "../pages/document/UploadDocument";
 import StyleGuide from "../pages/about/StyleGuide";
@@ -39,7 +40,7 @@ export const router = createBrowserRouter([
       { path: "favorite-documents", element: <FavoriteDocuments /> },
       { path: "manage-quizzes", element: <ManageQuizzes /> },
       { path: "quiz-history", element: <QuizHistory /> },
-      { path: "profile", element: <Dashboard /> },
+      { path: "profile", element: <Profile /> },
       { path: "manage-documents", element: <ManageDocuments /> },
       { path: "upload-document", element: <UploadDocument /> },
       { path: "document/:id", element: <DocumentDetail /> },
@@ -100,6 +101,14 @@ export const router = createBrowserRouter([
     element: (
       <AuthLayout>
         <ForgotPassword />
+      </AuthLayout>
+    ),
+  },
+  {
+    path: "/oauth2-success",
+    element: (
+      <AuthLayout>
+        <OAuth2Success />
       </AuthLayout>
     ),
   },

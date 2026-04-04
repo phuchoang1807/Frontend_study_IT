@@ -47,6 +47,7 @@ type TokenResponse = {
     id: string;
     email: string;
     fullName: string;
+    avatar?: string | null;
     status: string;
     emailVerified: boolean;
     roles: string[];

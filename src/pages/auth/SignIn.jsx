@@ -1,11 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import BrandLogo from "../../components/BrandLogo";
 import { useAuth } from "../../context/AuthContext";
 import { useNotification } from "../../context/NotificationContext";
+import { GOOGLE_OAUTH_LOGIN_URL } from "../../constants/backendOrigin";
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { login, loading, setError } = useAuth();
   const notification = useNotification();
   const [email, setEmail] = useState("");
@@ -13,6 +15,13 @@ export default function SignIn() {
   const [rememberMe, setRememberMe] = useState(false);
   const [formError, setFormError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    const oauthError = searchParams.get("oauthError");
+    if (oauthError === "missing_email") {
+      setFormError("Google did not return an email. Try another account.");
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -108,6 +117,22 @@ export default function SignIn() {
           {loading ? "Signing in..." : "Sign In"}
         </button>
 
+        <div className="divider">Or continue with</div>
+
+        <div className="social-row">
+          <button
+            type="button"
+            className="social-button"
+            onClick={() => {
+              window.location.href = GOOGLE_OAUTH_LOGIN_URL;
+            }}
+          >
+            <span>G</span> Đăng nhập bằng Google
+          </button>
+          <button type="button" className="social-button">
+            <span></span> Đăng nhập bằng Github
+          </button>
+        </div>
       </form>
 
       <p className="auth-footer-text">

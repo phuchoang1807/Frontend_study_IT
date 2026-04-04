@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNotification } from "../context/NotificationContext";
 import { useRef, useState, useEffect } from "react";
 import UserPopup from "./UserPopup";
+import UserAvatarDisplay from "./UserAvatarDisplay";
 
 const navLinkBaseStyle = {
   textAlign: "center",
@@ -13,7 +14,7 @@ const navLinkBaseStyle = {
 };
 export default function Header() {
   const navigate = useNavigate();
-  const { isAuthenticated, logout, contributorStatus, initializing, loading } = useAuth();
+  const { user, isAuthenticated, logout, contributorStatus, initializing, loading } = useAuth();
   const notification = useNotification();
   const [keyword, setKeyword] = useState("");
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
@@ -331,11 +332,7 @@ export default function Header() {
                     display: "block",
                   }}
                 >
-                  <img
-                    src="https://placehold.co/36x36"
-                    alt="Avatar"
-                    style={{ width: "100%", height: "100%", display: "block" }}
-                  />
+                  <UserAvatarDisplay user={user} size="header" />
                 </button>
                 {avatarMenuOpen && (
                   <UserPopup

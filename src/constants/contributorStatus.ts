@@ -1,9 +1,12 @@
-export enum ContributorRequestStatus {
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-  REJECTED = 'REJECTED',
-  NEED_INFO = 'NEED_INFO',
-}
+export const ContributorRequestStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  NEED_INFO: 'NEED_INFO',
+} as const;
+
+export type ContributorRequestStatus =
+  (typeof ContributorRequestStatus)[keyof typeof ContributorRequestStatus];
 
 export const ContributorStatusLabel = {
   [ContributorRequestStatus.PENDING]: 'Chờ duyệt',
