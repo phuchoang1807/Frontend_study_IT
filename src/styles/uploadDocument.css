@@ -273,10 +273,18 @@
   align-items: center;
   gap: 24px;
   margin-top: 40px;
+  position: relative;
+}
+
+.submit-btn-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .submit-btn {
-  flex: 1;
+  width: 100%;
   background: #007bff;
   color: white;
   border: none;
@@ -289,11 +297,23 @@
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
-.submit-btn:hover {
+.submit-btn:hover:not(:disabled) {
   background: #0069d9;
+}
+
+.submit-btn:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+  color: #64748b;
+}
+
+.validation-error-msg {
+  font-size: 12px;
+  color: #ef4444;
+  font-weight: 500;
 }
 
 .cancel-btn {
@@ -304,8 +324,130 @@
   border: none;
   cursor: pointer;
   transition: color 0.2s;
+  padding: 14px 0;
+}
+
+/* Upload Dropzones */
+.dropzone {
+  border: 2px dashed #e2e8f0;
+  border-radius: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #f8fafc;
+  position: relative;
+  overflow: hidden;
+}
+
+.dropzone:hover:not(.disabled) {
+  border-color: #007bff;
+  background: #f1f7ff;
+}
+
+.dropzone.disabled {
+  cursor: not-allowed;
+  background: #f1f5f9;
+  border-style: solid;
+  opacity: 0.7;
+}
+
+.dropzone.disabled::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top left, transparent 49.5%, #cbd5e1 49.5%, #cbd5e1 50.5%, transparent 50.5%);
+  pointer-events: none;
+}
+
+/* Tag Hints */
+.tags-container-wrapper {
+  position: relative;
+}
+
+.tag-hint {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* Previews */
+.preview-container {
+  margin-top: 12px;
+}
+
+.image-preview-card {
+  width: 100%;
+  max-width: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  position: relative;
+  margin-top: 12px;
+}
+
+.image-preview-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.image-preview-card .remove-image {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ef4444;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .cancel-btn:hover {
   color: #1e293b;
+}
+
+/* New styles for uploaded dropzones and text */
+.dropzone.dropzone-uploaded {
+  background: #f1f5f9; /* Gray background */
+  border-color: #cbd5e1; /* Gray border */
+  cursor: not-allowed;
+  position: relative; /* Needed for absolute positioning of overlay */
+}
+
+.dropzone-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top left, transparent 49%, #cbd5e1 49%, #cbd5e1 51%, transparent 51%);
+  pointer-events: none; /* Allows clicks to pass through to the underlying disabled input */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b; /* Gray text for the overlay message */
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  z-index: 10; /* Ensure it's above other content in dropzone */
+}
+
+.text-gray {
+  color: #64748b; /* A darker gray for the text */
+}
+
+.form-hint.error {
+  color: #ef4444; /* Red for error messages */
+  font-size: 12px;
+  margin-top: 4px;
 }

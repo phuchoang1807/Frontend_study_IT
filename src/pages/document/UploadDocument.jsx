@@ -61,21 +61,57 @@ export default function UploadDocument() {
 
   const [tagInput, setTagInput] = useState("");
 
+  const MIN_TITLE_LENGTH = 15;
+  const MAX_TITLE_LENGTH = 30;
+  const MIN_DESCRIPTION_LENGTH = 80;
+  const MAX_DESCRIPTION_LENGTH = 160;
+
+  const isTitleValid = formData.title.trim().length >= MIN_TITLE_LENGTH && formData.title.trim().length <= MAX_TITLE_LENGTH;
+  const isDescriptionValid = formData.description.trim().length >= MIN_DESCRIPTION_LENGTH && formData.description.trim().length <= MAX_DESCRIPTION_LENGTH;
+
+  // Derived state to check if the form is valid for submission
+  const canSubmit =
+    isTitleValid &&
+    isDescriptionValid &&
+    formData.category.trim() !== "" &&
+    formData.tags.length > 0 &&
+    formData.documentFile !== null &&
+    formData.thumbnailFile !== null &&
+    formData.confirmed === true;
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    if (type === "checkbox") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: checked,
+      }));
+    } else {
+      let newValue = value;
+      if (name === "title") {
+        if (value.length > MAX_TITLE_LENGTH) {
+          return; // Prevent further input
+        }
+      } else if (name === "description") {
+        if (value.length > MAX_DESCRIPTION_LENGTH) {
+          return; // Prevent further input
+        }
+      }
+      setFormData((prev) => ({
+        ...prev,
+        [name]: newValue,
+      }));
+    }
   };
 
   const handleTagInputKeyDown = (e) => {
-    if (e.key === "Enter" && tagInput.trim()) {
+    if ((e.key === "Enter" || e.key === ";") && tagInput.trim()) {
       e.preventDefault();
-      if (!formData.tags.includes(tagInput.trim())) {
+      const newTag = tagInput.trim().replace(/;$/, ''); // Remove trailing semicolon if present
+      if (newTag && !formData.tags.includes(newTag)) {
         setFormData((prev) => ({
           ...prev,
-          tags: [...prev.tags, tagInput.trim()],
+          tags: [...prev.tags, newTag],
         }));
       }
       setTagInput("");
@@ -108,12 +144,8 @@ export default function UploadDocument() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.documentFile) {
-      notification.error("Vui lòng tải lên tệp tài liệu.");
-      return;
-    }
-    if (!formData.confirmed) {
-      notification.error("Vui lòng xác nhận điều khoản.");
+    if (!canSubmit) {
+      notification.error("Vui lòng điền đầy đủ thông tin và xác nhận điều khoản trước khi đăng tải.");
       return;
     }
     
@@ -147,6 +179,15 @@ export default function UploadDocument() {
                 onChange={handleInputChange}
                 required
               />
+              {formData.title.trim().length === 0 && (
+                <p className="form-hint error">Vui lòng nhập tiêu đề tài liệu.</p>
+              )}
+              {formData.title.trim().length > 0 && formData.title.trim().length < MIN_TITLE_LENGTH && (
+                <p className="form-hint error">Tiêu đề phải có ít nhất {MIN_TITLE_LENGTH} ký tự.</p>
+              )}
+              {formData.title.trim().length > MAX_TITLE_LENGTH && (
+                <p className="form-hint error">Tiêu đề không được vượt quá {MAX_TITLE_LENGTH} ký tự.</p>
+              )}
             </div>
 
             <div className="form-section">
@@ -159,6 +200,15 @@ export default function UploadDocument() {
                 onChange={handleInputChange}
                 required
               ></textarea>
+              {formData.description.trim().length === 0 && (
+                <p className="form-hint error">Vui lòng nhập mô tả tài liệu.</p>
+              )}
+              {formData.description.trim().length > 0 && formData.description.trim().length < MIN_DESCRIPTION_LENGTH && (
+                <p className="form-hint error">Mô tả phải có ít nhất {MIN_DESCRIPTION_LENGTH} ký tự.</p>
+              )}
+              {formData.description.trim().length > MAX_DESCRIPTION_LENGTH && (
+                <p className="form-hint error">Mô tả không được vượt quá {MAX_DESCRIPTION_LENGTH} ký tự.</p>
+              )}
             </div>
 
             <div className="form-row form-section">
@@ -193,8 +243,12 @@ export default function UploadDocument() {
                     value={tagInput}
                     onChange={(e) => setTagInput(e.target.value)}
                     onKeyDown={handleTagInputKeyDown}
+                    title="Nhập thẻ mới và nhấn Enter hoặc ';' để thêm"
                   />
                 </div>
+                {formData.tags.length === 0 && tagInput.trim() === '' && (
+                  <p className="form-hint">Vui lòng thêm ít nhất một thẻ.</p>
+                )}
               </div>
             </div>
 
@@ -203,8 +257,8 @@ export default function UploadDocument() {
                 Tệp tài liệu <span className="required-star">*</span>
               </label>
               <div 
-                className="dropzone" 
-                onClick={() => fileInputRef.current.click()}
+                className={`dropzone ${formData.documentFile ? 'dropzone-disabled' : ''}`} 
+                onClick={formData.documentFile ? null : () => fileInputRef.current.click()}
               >
                 <input
                   type="file"
@@ -212,38 +266,22 @@ export default function UploadDocument() {
                   style={{ display: "none" }}
                   onChange={(e) => handleFileChange(e, "documentFile")}
                   accept=".pdf,.docx,.pptx"
+                  disabled={formData.documentFile !== null}
                 />
                 <div className="dropzone-icon">
                   <FileUploadIcon />
                 </div>
-                <p className="dropzone-text">Kéo thả hoặc nhấp để tải tệp</p>
-                <p className="dropzone-subtext">Hỗ trợ PDF, DOCX, PPTX (Tối đa 25MB)</p>
-              </div>
-            </div>
-
-            <div className="form-section">
-              <label className="form-label">Ảnh minh họa tài liệu</label>
-              <div 
-                className="dropzone" 
-                onClick={() => imageInputRef.current.click()}
-              >
-                <input
-                  type="file"
-                  ref={imageInputRef}
-                  style={{ display: "none" }}
-                  onChange={(e) => handleFileChange(e, "thumbnailFile")}
-                  accept="image/*"
-                />
-                <div className="dropzone-icon">
-                  <ImageIcon />
-                </div>
-                <p className="dropzone-text">Tải lên ảnh bìa hoặc kéo thả</p>
-                <p className="dropzone-subtext">Hỗ trợ JPG, PNG (Tối đa 5MB)</p>
+                <p className="dropzone-text">
+                  {formData.documentFile ? 'Đã tải lên 1 tệp' : 'Kéo thả hoặc nhấp để tải tệp'}
+                </p>
+                <p className="dropzone-subtext">
+                  Hỗ trợ PDF, DOCX, PPTX (Tối đa 25MB). Chỉ cho phép 1 tệp.
+                </p>
               </div>
             </div>
 
             {formData.documentFile && (
-              <div className="form-section">
+              <div className="form-section uploaded-file-preview">
                 <p className="preview-section-title">Xem trước tệp đã chọn</p>
                 <div className="file-preview-card">
                   <div className="file-preview-info">
@@ -258,6 +296,54 @@ export default function UploadDocument() {
                     </div>
                   </div>
                   <div className="remove-file" onClick={() => removeFile("documentFile")}>
+                    <TrashIcon />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="form-section">
+              <label className="form-label">Ảnh minh họa tài liệu</label>
+              <div 
+                className={`dropzone ${formData.thumbnailFile ? 'dropzone-disabled' : ''}`} 
+                onClick={formData.thumbnailFile ? null : () => imageInputRef.current.click()}
+              >
+                <input
+                  type="file"
+                  ref={imageInputRef}
+                  style={{ display: "none" }}
+                  onChange={(e) => handleFileChange(e, "thumbnailFile")}
+                  accept="image/*"
+                  disabled={formData.thumbnailFile !== null}
+                />
+                <div className="dropzone-icon">
+                  <ImageIcon />
+                </div>
+                <p className="dropzone-text">
+                  {formData.thumbnailFile ? 'Đã tải lên 1 ảnh' : 'Tải lên ảnh bìa hoặc kéo thả'}
+                </p>
+                <p className="dropzone-subtext">
+                  Hỗ trợ JPG, PNG (Tối đa 5MB). Chỉ cho phép 1 ảnh.
+                </p>
+              </div>
+            </div>
+
+            {formData.thumbnailFile && (
+              <div className="form-section uploaded-image-preview">
+                <p className="preview-section-title">Xem trước ảnh đã chọn</p>
+                <div className="image-preview-card">
+                  <img 
+                    src={URL.createObjectURL(formData.thumbnailFile)} 
+                    alt="Ảnh minh họa" 
+                    className="thumbnail-preview-img"
+                  />
+                  <div className="image-details">
+                    <span className="image-name">{formData.thumbnailFile.name}</span>
+                    <span className="image-meta">
+                      {(formData.thumbnailFile.size / (1024 * 1024)).toFixed(1)} MB
+                    </span>
+                  </div>
+                  <div className="remove-image" onClick={() => removeFile("thumbnailFile")}>
                     <TrashIcon />
                   </div>
                 </div>
@@ -281,7 +367,12 @@ export default function UploadDocument() {
             </div>
 
             <div className="form-actions">
-              <button type="submit" className="submit-btn">
+              <button 
+                type="submit" 
+                className={`submit-btn ${!canSubmit ? 'submit-btn-disabled' : ''}`}
+                disabled={!canSubmit}
+                title={!canSubmit ? 'Vui lòng điền đầy đủ thông tin và xác nhận điều khoản để đăng tải' : ''}
+              >
                 <SendIcon />
                 Đăng tải tài liệu
               </button>
