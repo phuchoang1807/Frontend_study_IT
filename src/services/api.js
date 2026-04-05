@@ -53,6 +53,10 @@ export const documentService = {
     const res = await axiosClient.get("/documents", { params });
     return unwrapApiResponse(res);
   },
+  async getDocumentById(documentId) {
+    const res = await axiosClient.get(`/documents/${documentId}`);
+    return unwrapApiResponse(res);
+  },
   async view(documentId) {
     const res = await axiosClient.post(`/documents/${documentId}/view`);
     return unwrapApiResponse(res);

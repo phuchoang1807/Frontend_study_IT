@@ -329,19 +329,6 @@ export default function DocumentsList() {
     }
   }
 
-  async function handleView(doc) {
-    try {
-      await documentService.view(doc.id);
-      setDocuments((prev) =>
-        prev.map((d) =>
-          d.id === doc.id ? { ...d, viewCount: Number(d.viewCount || 0) + 1 } : d
-        )
-      );
-    } catch {
-      // ignore view errors
-    }
-  }
-
   const title = isSearchMode ? "Kết quả tìm kiếm" : "Danh sách tài liệu";
   const subtitle = isSearchMode
     ? "Kết quả tìm kiếm của bạn"
@@ -876,8 +863,10 @@ export default function DocumentsList() {
                   key={doc.id}
                   role="button"
                   tabIndex={0}
-                  onClick={() => handleView(doc)}
-                  onKeyDown={(e) => e.key === "Enter" && handleView(doc)}
+                  onClick={() => doc.id != null && navigate(`/documents/${doc.id}`)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && doc.id != null && navigate(`/documents/${doc.id}`)
+                  }
                   style={{
                     width: "452px",
                     left: pos.left,

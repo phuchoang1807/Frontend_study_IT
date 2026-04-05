@@ -47,6 +47,7 @@ export const router = createBrowserRouter([
       { path: "view-history", element: <ViewHistory /> },
       { path: "contributor-request", element: <ContributorRequest /> },
       { path: "contributor-status", element: <ContributorStatus /> },
+      { path: "documents/:id", element: <DocumentDetail /> },
       { path: "documents", element: <DocumentsList /> },
     ],
   },
