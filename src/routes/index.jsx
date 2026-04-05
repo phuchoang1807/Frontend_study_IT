@@ -28,6 +28,11 @@ import QuizHistory from "../pages/quiz/QuizHistory";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import ContributorRequests from "../pages/admin/ContributorRequests";
 import AdminSignIn from "../pages/admin/AdminSignIn";
+import UsersPage from "../pages/admin/UsersPage";
+import RolesPage from "../pages/admin/RolesPage";
+import CategoryPage from "../pages/admin/CategoryPage";
+import TagPage from "../pages/admin/TagPage";
+import PermissionsPage from "../pages/admin/PermissionsPage";
 
 export const router = createBrowserRouter([
   {
@@ -73,6 +78,11 @@ export const router = createBrowserRouter([
         children: [
           { path: "dashboard", element: <AdminDashboard /> },
           { path: "contributor-requests", element: <ContributorRequests /> },
+          { path: "users", element: <UsersPage /> },
+          { path: "roles", element: <RolesPage /> },
+          { path: "permissions", element: <PermissionsPage /> },
+          { path: "categories", element: <CategoryPage /> },
+          { path: "tags", element: <TagPage /> },
         ],
       },
     ],

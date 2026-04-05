@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getMyMenus } from '../../api/menuApi';
@@ -14,29 +14,136 @@ const DEFAULT_MENU_ICON = (
   </svg>
 );
 
-function flattenMenusFromApi(nodes) {
+/** Chuẩn hóa node API → { label, path?, children } — giữ cấu trúc cây, không flatten. */
+function normalizeMenuTree(nodes) {
   if (!Array.isArray(nodes)) return [];
-  const out = [];
-  for (const node of nodes) {
-    if (!node || typeof node !== 'object') continue;
-    const route = node.route ?? node.path;
-    const name = node.name ?? node.label;
-    if (route && name) {
-      out.push({ name, route });
-    }
-    if (Array.isArray(node.children) && node.children.length > 0) {
-      out.push(...flattenMenusFromApi(node.children));
-    }
-  }
-  return out;
+  return nodes
+    .filter((n) => n && typeof n === 'object')
+    .map((n) => {
+      const label = n.name ?? n.label;
+      const pathRaw = n.route ?? n.path;
+      const path = typeof pathRaw === 'string' && pathRaw.trim() ? pathRaw.trim() : undefined;
+      const rawChildren = Array.isArray(n.children) ? n.children : [];
+      const children = normalizeMenuTree(rawChildren);
+      return { label, path, children };
+    })
+    .filter((n) => n.label);
 }
 
-function mapApiMenusToMenuItems(flat) {
-  return flat.map((m) => ({
-    label: m.name,
-    path: m.route,
-    icon: DEFAULT_MENU_ICON,
-  }));
+function subtreeContainsPath(item, pathname) {
+  if (!item) return false;
+  if (item.path && pathname === item.path) return true;
+  return Array.isArray(item.children) && item.children.some((c) => subtreeContainsPath(c, pathname));
+}
+
+/** Các key nhóm cần mở để hiển thị route đang active (theo index path). */
+function collectOpenKeysForPath(items, pathname, prefix = '') {
+  const keys = [];
+  if (!Array.isArray(items)) return keys;
+  items.forEach((item, index) => {
+    const key = `${prefix}${index}`;
+    if (item.children?.length > 0 && subtreeContainsPath(item, pathname)) {
+      keys.push(key);
+      keys.push(...collectOpenKeysForPath(item.children, pathname, `${key}-`));
+    }
+  });
+  return keys;
+}
+
+function Chevron({ open }) {
+  return (
+    <svg
+      className={`menu-chevron ${open ? 'menu-chevron--open' : ''}`}
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      aria-hidden
+    >
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  );
+}
+
+/**
+ * Render menu nested: có children → nhóm expand/collapse; không → Link (hoặc span nếu thiếu path).
+ */
+function renderMenu(items, ctx) {
+  const { location, openKeys, toggleKey, depth, keyPrefix } = ctx;
+  if (!Array.isArray(items) || items.length === 0) return null;
+
+  return items.map((item, index) => {
+    const key = `${keyPrefix}${index}`;
+    const hasChildren = Array.isArray(item.children) && item.children.length > 0;
+    const indentPx = 16 + depth * 14;
+
+    if (hasChildren) {
+      const open = openKeys.has(key);
+      const parentActive = subtreeContainsPath(item, location.pathname);
+
+      return (
+        <div className="menu-group" key={key}>
+          <div
+            className={`menu-group-header ${parentActive ? 'menu-group-header--active-branch' : ''}`}
+            style={{ paddingLeft: indentPx }}
+          >
+            {DEFAULT_MENU_ICON}
+            {item.path ? (
+              <Link
+                to={item.path}
+                className={`menu-item menu-item--in-group ${location.pathname === item.path ? 'active' : ''}`}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <span className="menu-item-label">{item.label}</span>
+            )}
+            <button
+              type="button"
+              className="menu-group-toggle"
+              aria-expanded={open}
+              aria-label={open ? 'Thu gọn menu' : 'Mở rộng menu'}
+              onClick={() => toggleKey(key)}
+            >
+              <Chevron open={open} />
+            </button>
+          </div>
+          {open && (
+            <div className="menu-group-children">
+              {renderMenu(item.children, {
+                ...ctx,
+                depth: depth + 1,
+                keyPrefix: `${key}-`,
+              })}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (item.path) {
+      return (
+        <Link
+          key={key}
+          to={item.path}
+          className={`menu-item ${location.pathname === item.path ? 'active' : ''}`}
+          style={{ paddingLeft: indentPx }}
+        >
+          {DEFAULT_MENU_ICON}
+          {item.label}
+        </Link>
+      );
+    }
+
+    return (
+      <div key={key} className="menu-item menu-item--disabled" style={{ paddingLeft: indentPx }}>
+        {DEFAULT_MENU_ICON}
+        <span className="menu-item-label">{item.label}</span>
+      </div>
+    );
+  });
 }
 
 function pickDisplayRole(roles) {
@@ -69,10 +176,27 @@ const AdminLayout = () => {
     };
   }, []);
 
-  const menuItems = useMemo(() => {
-    const flat = flattenMenusFromApi(menus);
-    return mapApiMenusToMenuItems(flat);
-  }, [menus]);
+  const menuTree = useMemo(() => normalizeMenuTree(menus), [menus]);
+
+  const [openKeys, setOpenKeys] = useState(() => new Set());
+
+  useEffect(() => {
+    const required = collectOpenKeysForPath(menuTree, location.pathname);
+    setOpenKeys((prev) => {
+      const next = new Set(prev);
+      required.forEach((k) => next.add(k));
+      return next;
+    });
+  }, [location.pathname, menuTree]);
+
+  const toggleKey = useCallback((key) => {
+    setOpenKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -82,6 +206,18 @@ const AdminLayout = () => {
       console.error('Logout failed:', error);
     }
   };
+
+  const menuContent = useMemo(
+    () =>
+      renderMenu(menuTree, {
+        location,
+        openKeys,
+        toggleKey,
+        depth: 0,
+        keyPrefix: '',
+      }),
+    [menuTree, location, openKeys, toggleKey]
+  );
 
   return (
     <div className="admin-layout">
@@ -99,18 +235,7 @@ const AdminLayout = () => {
           </div>
         </div>
 
-        <nav className="sidebar-menu">
-          {menuItems.map((item, index) => (
-            <Link 
-              key={`${item.path}-${index}`} 
-              to={item.path} 
-              className={`menu-item ${location.pathname === item.path ? 'active' : ''}`}
-            >
-              {item.icon}
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        <nav className="sidebar-menu">{menuContent}</nav>
 
         <div className="sidebar-footer">
           <div className="user-profile">
