@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import BrandLogo from "../../components/BrandLogo";
 import { useAuth } from "../../context/AuthContext";
 import { useNotification } from "../../context/NotificationContext";
-import { GOOGLE_OAUTH_LOGIN_URL } from "../../constants/backendOrigin";
+import {
+  GOOGLE_OAUTH_LOGIN_URL,
+  GITHUB_OAUTH_LOGIN_URL,
+} from "../../constants/backendOrigin";
 
 export default function SignIn() {
   const navigate = useNavigate();
@@ -129,7 +132,13 @@ export default function SignIn() {
           >
             <span>G</span> Đăng nhập bằng Google
           </button>
-          <button type="button" className="social-button">
+          <button
+            type="button"
+            className="social-button"
+            onClick={() => {
+              window.location.href = GITHUB_OAUTH_LOGIN_URL;
+            }}
+          >
             <span></span> Đăng nhập bằng Github
           </button>
         </div>
