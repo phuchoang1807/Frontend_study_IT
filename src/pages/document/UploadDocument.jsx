@@ -1,9 +1,10 @@
-import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useNotification } from "../../context/NotificationContext";
 import "../../styles/uploadDocument.css";
+import { uploadToCloudinary } from "../../utils/uploadCloudinary";
 
-// Thêm icon inline cho các thành phần đặc thù
+// Inline SVG Icons
 const FileUploadIcon = () => (
   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -48,18 +49,55 @@ export default function UploadDocument() {
   const notification = useNotification();
   const fileInputRef = useRef(null);
   const imageInputRef = useRef(null);
+  const location = useLocation();
+  const { documentToEdit } = location.state || {}; // Lấy dữ liệu tài liệu cần chỉnh sửa
 
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     category: "",
-    tags: ["Giáo trình", "Kinh tế"],
+    tags: [], // Khởi tạo rỗng để điền từ dữ liệu chỉnh sửa
     documentFile: null,
     thumbnailFile: null,
     confirmed: false,
+    isEditing: false, // Thêm trạng thái để biết đang chỉnh sửa hay tạo mới
+    // Thêm các trường để lưu URL của tài liệu và thumbnail đã upload nếu đang ở chế độ chỉnh sửa
+    existingDocumentUrl: null,
+    existingThumbnailUrl: null,
+    existingFileName: null,
+    existingFileSize: null,
   });
 
+  const [isUploading, setIsUploading] = useState(false);
   const [tagInput, setTagInput] = useState("");
+
+  useEffect(() => {
+    if (documentToEdit) {
+      setFormData({
+        title: documentToEdit.title || "",
+        description: documentToEdit.description || "",
+        category: documentToEdit.category || "",
+        tags: documentToEdit.tags || [],
+        documentFile: null, // File input will be empty, user can re-upload
+        thumbnailFile: null, // File input will be empty, user can re-upload
+        confirmed: true, // Auto-confirm for editing an existing document
+        isEditing: true,
+        existingDocumentUrl: documentToEdit.documentUrl,
+        existingThumbnailUrl: documentToEdit.thumbnailUrl,
+        existingFileName: documentToEdit.fileName,
+        existingFileSize: documentToEdit.fileSize,
+      });
+      notification.success("Đang chỉnh sửa tài liệu: " + documentToEdit.title);
+    } else {
+      // Reset form if not editing
+      setFormData(prev => ({ 
+        ...prev, 
+        title: "", description: "", category: "", tags: [], 
+        documentFile: null, thumbnailFile: null, confirmed: false, isEditing: false,
+        existingDocumentUrl: null, existingThumbnailUrl: null, existingFileName: null, existingFileSize: null
+      }));
+    }
+  }, [documentToEdit]);
 
   const MIN_TITLE_LENGTH = 15;
   const MAX_TITLE_LENGTH = 30;
@@ -75,9 +113,10 @@ export default function UploadDocument() {
     isDescriptionValid &&
     formData.category.trim() !== "" &&
     formData.tags.length > 0 &&
-    formData.documentFile !== null &&
-    formData.thumbnailFile !== null &&
-    formData.confirmed === true;
+    (formData.documentFile !== null || formData.existingDocumentUrl !== null) && // either new file or existing url
+    (formData.thumbnailFile !== null || formData.existingThumbnailUrl !== null) && // either new thumbnail or existing url
+    formData.confirmed === true &&
+    !isUploading;
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -131,6 +170,10 @@ export default function UploadDocument() {
       setFormData((prev) => ({
         ...prev,
         [field]: file,
+        // Khi chọn file mới, xóa URL của file cũ (nếu có) để đảm bảo chỉ dùng file mới
+        [`existing${field.replace("File", "Url")}`]: null,
+        [`existing${field.replace("File", "Name")}`]: null,
+        [`existing${field.replace("File", "Size")}`]: null,
       }));
     }
   };
@@ -139,30 +182,80 @@ export default function UploadDocument() {
     setFormData((prev) => ({
       ...prev,
       [field]: null,
+      // Khi xóa file, xóa luôn URL cũ
+      [`existing${field.replace("File", "Url")}`]: null,
+      [`existing${field.replace("File", "Name")}`]: null,
+      [`existing${field.replace("File", "Size")}`]: null,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!canSubmit) {
       notification.error("Vui lòng điền đầy đủ thông tin và xác nhận điều khoản trước khi đăng tải.");
       return;
     }
     
-    // Simulate upload
-    notification.success("Tài liệu đang được tải lên và chờ phê duyệt!");
-    setTimeout(() => {
-      navigate("/manage-documents");
-    }, 1500);
+    try {
+      setIsUploading(true);
+      notification.success(formData.isEditing ? "Đang cập nhật tài liệu lên Cloudinary..." : "Đang tải tài liệu lên Cloudinary...");
+
+      let docUrl = formData.existingDocumentUrl;
+      let thumbUrl = formData.existingThumbnailUrl;
+      let docFileName = formData.existingFileName;
+      let docFileSize = formData.existingFileSize;
+
+      // 1. Upload Document if new file is selected
+      if (formData.documentFile) {
+        const docResult = await uploadToCloudinary(formData.documentFile, "assets/UploadedDocuments");
+        docUrl = docResult.url;
+        docFileName = formData.documentFile.name;
+        docFileSize = (formData.documentFile.size / (1024 * 1024)).toFixed(1);
+      }
+      
+      // 2. Upload Thumbnail if new file is selected
+      if (formData.thumbnailFile) {
+        const thumbResult = await uploadToCloudinary(formData.thumbnailFile, "assets/UploadedDocuments");
+        thumbUrl = thumbResult.url;
+      }
+
+      if (!docUrl || !thumbUrl) {
+        throw new Error("Thiếu URL tài liệu hoặc ảnh minh họa sau khi tải lên.");
+      }
+
+      notification.success(formData.isEditing ? "Cập nhật tài liệu thành công!" : "Tải lên thành công!");
+      
+      // Chuyển hướng sang trang chi tiết với dữ liệu vừa upload/cập nhật
+      navigate("/submitted-document-details", {
+        state: {
+          document: {
+            title: formData.title,
+            description: formData.description,
+            category: formData.category,
+            tags: formData.tags,
+            documentUrl: docUrl,
+            thumbnailUrl: thumbUrl,
+            fileName: docFileName,
+            fileSize: docFileSize,
+            uploadDate: new Date().toLocaleDateString('vi-VN'),
+            status: "PENDING" // Status remains PENDING after upload/edit for review
+          }
+        }
+      });
+    } catch (error) {
+      notification.error("Lỗi khi tải lên/cập nhật: " + error.message);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
     <div className="upload-document-container">
       <div className="upload-document-content">
         <div className="upload-header">
-          <h1 className="upload-title">Đăng tải tài liệu mới</h1>
+          <h1 className="upload-title">{formData.isEditing ? "Chỉnh sửa tài liệu" : "Đăng tải tài liệu mới"}</h1>
           <p className="upload-subtitle">
-            Chia sẻ kiến thức của bạn với hàng ngàn người dùng trong cộng đồng StudyIT
+            {formData.isEditing ? "Cập nhật thông tin tài liệu của bạn." : "Chia sẻ kiến thức của bạn với hàng ngàn người dùng trong cộng đồng StudyIT"}
           </p>
         </div>
 
@@ -178,6 +271,7 @@ export default function UploadDocument() {
                 value={formData.title}
                 onChange={handleInputChange}
                 required
+                disabled={isUploading}
               />
               {formData.title.trim().length === 0 && (
                 <p className="form-hint error">Vui lòng nhập tiêu đề tài liệu.</p>
@@ -199,6 +293,7 @@ export default function UploadDocument() {
                 value={formData.description}
                 onChange={handleInputChange}
                 required
+                disabled={isUploading}
               ></textarea>
               {formData.description.trim().length === 0 && (
                 <p className="form-hint error">Vui lòng nhập mô tả tài liệu.</p>
@@ -220,6 +315,7 @@ export default function UploadDocument() {
                   value={formData.category}
                   onChange={handleInputChange}
                   required
+                  disabled={isUploading}
                 >
                   <option value="" disabled>Chọn danh mục phù hợp</option>
                   <option value="cntt">Công nghệ thông tin</option>
@@ -233,7 +329,7 @@ export default function UploadDocument() {
                   {formData.tags.map((tag) => (
                     <span key={tag} className="tag-item">
                       {tag}
-                      <span className="tag-remove" onClick={() => removeTag(tag)}>×</span>
+                      <span className="tag-remove" onClick={isUploading ? null : () => removeTag(tag)}>×</span>
                     </span>
                   ))}
                   <input
@@ -243,6 +339,7 @@ export default function UploadDocument() {
                     value={tagInput}
                     onChange={(e) => setTagInput(e.target.value)}
                     onKeyDown={handleTagInputKeyDown}
+                    disabled={isUploading}
                     title="Nhập thẻ mới và nhấn Enter hoặc ';' để thêm"
                   />
                 </div>
@@ -257,8 +354,8 @@ export default function UploadDocument() {
                 Tệp tài liệu <span className="required-star">*</span>
               </label>
               <div 
-                className={`dropzone ${formData.documentFile ? 'dropzone-disabled' : ''}`} 
-                onClick={formData.documentFile ? null : () => fileInputRef.current.click()}
+                className={`dropzone ${formData.documentFile || formData.existingDocumentUrl || isUploading ? 'dropzone-disabled' : ''}`} 
+                onClick={formData.documentFile || formData.existingDocumentUrl || isUploading ? null : () => fileInputRef.current.click()}
               >
                 <input
                   type="file"
@@ -266,13 +363,13 @@ export default function UploadDocument() {
                   style={{ display: "none" }}
                   onChange={(e) => handleFileChange(e, "documentFile")}
                   accept=".pdf,.docx,.pptx"
-                  disabled={formData.documentFile !== null}
+                  disabled={formData.documentFile !== null || formData.existingDocumentUrl !== null || isUploading}
                 />
                 <div className="dropzone-icon">
                   <FileUploadIcon />
                 </div>
                 <p className="dropzone-text">
-                  {formData.documentFile ? 'Đã tải lên 1 tệp' : 'Kéo thả hoặc nhấp để tải tệp'}
+                  {formData.documentFile || formData.existingDocumentUrl ? 'Đã tải lên 1 tệp' : 'Kéo thả hoặc nhấp để tải tệp'}
                 </p>
                 <p className="dropzone-subtext">
                   Hỗ trợ PDF, DOCX, PPTX (Tối đa 25MB). Chỉ cho phép 1 tệp.
@@ -280,7 +377,7 @@ export default function UploadDocument() {
               </div>
             </div>
 
-            {formData.documentFile && (
+            {(formData.documentFile || formData.existingDocumentUrl) && (
               <div className="form-section uploaded-file-preview">
                 <p className="preview-section-title">Xem trước tệp đã chọn</p>
                 <div className="file-preview-card">
@@ -289,13 +386,13 @@ export default function UploadDocument() {
                       <PdfIcon />
                     </div>
                     <div className="file-details">
-                      <span className="file-name">{formData.documentFile.name}</span>
+                      <span className="file-name">{formData.documentFile?.name || formData.existingFileName}</span>
                       <span className="file-meta">
-                        {(formData.documentFile.size / (1024 * 1024)).toFixed(1)} MB • Đã sẵn sàng
+                        {formData.documentFile ? (formData.documentFile.size / (1024 * 1024)).toFixed(1) : formData.existingFileSize} MB • Đã sẵn sàng
                       </span>
                     </div>
                   </div>
-                  <div className="remove-file" onClick={() => removeFile("documentFile")}>
+                  <div className="remove-file" onClick={isUploading ? null : () => removeFile("documentFile")}>
                     <TrashIcon />
                   </div>
                 </div>
@@ -305,8 +402,8 @@ export default function UploadDocument() {
             <div className="form-section">
               <label className="form-label">Ảnh minh họa tài liệu</label>
               <div 
-                className={`dropzone ${formData.thumbnailFile ? 'dropzone-disabled' : ''}`} 
-                onClick={formData.thumbnailFile ? null : () => imageInputRef.current.click()}
+                className={`dropzone ${formData.thumbnailFile || formData.existingThumbnailUrl || isUploading ? 'dropzone-disabled' : ''}`} 
+                onClick={formData.thumbnailFile || formData.existingThumbnailUrl || isUploading ? null : () => imageInputRef.current.click()}
               >
                 <input
                   type="file"
@@ -314,13 +411,13 @@ export default function UploadDocument() {
                   style={{ display: "none" }}
                   onChange={(e) => handleFileChange(e, "thumbnailFile")}
                   accept="image/*"
-                  disabled={formData.thumbnailFile !== null}
+                  disabled={formData.thumbnailFile !== null || formData.existingThumbnailUrl !== null || isUploading}
                 />
                 <div className="dropzone-icon">
                   <ImageIcon />
                 </div>
                 <p className="dropzone-text">
-                  {formData.thumbnailFile ? 'Đã tải lên 1 ảnh' : 'Tải lên ảnh bìa hoặc kéo thả'}
+                  {formData.thumbnailFile || formData.existingThumbnailUrl ? 'Đã tải lên 1 ảnh' : 'Tải lên ảnh bìa hoặc kéo thả'}
                 </p>
                 <p className="dropzone-subtext">
                   Hỗ trợ JPG, PNG (Tối đa 5MB). Chỉ cho phép 1 ảnh.
@@ -328,22 +425,22 @@ export default function UploadDocument() {
               </div>
             </div>
 
-            {formData.thumbnailFile && (
+            {(formData.thumbnailFile || formData.existingThumbnailUrl) && (
               <div className="form-section uploaded-image-preview">
                 <p className="preview-section-title">Xem trước ảnh đã chọn</p>
                 <div className="image-preview-card">
                   <img 
-                    src={URL.createObjectURL(formData.thumbnailFile)} 
+                    src={formData.thumbnailFile ? URL.createObjectURL(formData.thumbnailFile) : formData.existingThumbnailUrl} 
                     alt="Ảnh minh họa" 
                     className="thumbnail-preview-img"
                   />
                   <div className="image-details">
-                    <span className="image-name">{formData.thumbnailFile.name}</span>
+                    <span className="image-name">{formData.thumbnailFile?.name || "Existing Thumbnail"}</span>
                     <span className="image-meta">
-                      {(formData.thumbnailFile.size / (1024 * 1024)).toFixed(1)} MB
+                      {formData.thumbnailFile ? (formData.thumbnailFile.size / (1024 * 1024)).toFixed(1) : "-"} MB
                     </span>
                   </div>
-                  <div className="remove-image" onClick={() => removeFile("thumbnailFile")}>
+                  <div className="remove-image" onClick={isUploading ? null : () => removeFile("thumbnailFile")}>
                     <TrashIcon />
                   </div>
                 </div>
@@ -359,6 +456,7 @@ export default function UploadDocument() {
                   className="checkbox-input"
                   checked={formData.confirmed}
                   onChange={handleInputChange}
+                  disabled={isUploading}
                 />
                 <label htmlFor="confirm" className="checkbox-label">
                   Tôi xác nhận nội dung này hợp lệ, không vi phạm bản quyền và tuân thủ các điều khoản cộng đồng của StudyIT.
@@ -369,17 +467,30 @@ export default function UploadDocument() {
             <div className="form-actions">
               <button 
                 type="submit" 
-                className={`submit-btn ${!canSubmit ? 'submit-btn-disabled' : ''}`}
-                disabled={!canSubmit}
+                className={`submit-btn ${!canSubmit || isUploading ? 'submit-btn-disabled' : ''}`}
+                disabled={!canSubmit || isUploading}
                 title={!canSubmit ? 'Vui lòng điền đầy đủ thông tin và xác nhận điều khoản để đăng tải' : ''}
               >
-                <SendIcon />
-                Đăng tải tài liệu
+                {isUploading ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    {formData.isEditing ? "Đang cập nhật..." : "Đang tải lên..."}
+                  </>
+                ) : (
+                  <>
+                    <SendIcon />
+                    {formData.isEditing ? "Cập nhật tài liệu" : "Đăng tải tài liệu"}
+                  </>
+                )}
               </button>
               <button 
                 type="button" 
                 className="cancel-btn"
                 onClick={() => navigate(-1)}
+                disabled={isUploading}
               >
                 Hủy bỏ
               </button>
