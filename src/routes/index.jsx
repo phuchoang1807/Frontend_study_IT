@@ -20,7 +20,7 @@ import ViewHistory from "../pages/history/ViewHistory";
 import Profile from "../pages/user/Profile";
 import ManageDocuments from "../pages/document/ManageDocuments";
 import UploadDocument from "../pages/document/UploadDocument";
-import SubmittedDocumentDetails from "../pages/document/SubmittedDocumentDetails";
+import SubmittedDocumentDetails from "../pages/document/SubmittedDocumentDetails.jsx";
 import StyleGuide from "../pages/about/StyleGuide";
 import AboutUs from "../pages/about/AboutUs";
 import FavoriteDocuments from "../pages/document/FavoriteDocuments";

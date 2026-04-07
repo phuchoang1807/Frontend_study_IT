@@ -73,6 +73,22 @@ export const documentService = {
     const res = await axiosClient.delete(`/bookmarks/${documentId}`);
     return unwrapApiResponse(res);
   },
+  async getMyDocuments() {
+    const res = await axiosClient.get("/my-documents");
+    return unwrapApiResponse(res);
+  },
+  async createMyDocument(payload) {
+    const res = await axiosClient.post("/my-documents", payload);
+    return unwrapApiResponse(res);
+  },
+  async updateMyDocument(documentId, payload) {
+    const res = await axiosClient.put(`/my-documents/${documentId}`, payload);
+    return unwrapApiResponse(res);
+  },
+  async deleteMyDocument(documentId) {
+    const res = await axiosClient.delete(`/my-documents/${documentId}`);
+    return unwrapApiResponse(res);
+  },
 };
 
 // Base message (reusable): prompt auth then redirect
