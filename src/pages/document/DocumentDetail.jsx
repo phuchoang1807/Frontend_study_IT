@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import DocumentBookmarkControl from "../../components/common/DocumentBookmarkControl";
 import {
   ChevronRightIcon,
-  BookmarkIcon,
   DownloadIcon,
   MessageIcon,
   SearchIcon,
@@ -13,12 +13,13 @@ import {
   MaximizeIcon,
 } from "../../components/icons";
 import "../../styles/documentDetail.css";
-import { useAuth } from "../../context/AuthContext";
+import { useLoginRequired } from "../../context/LoginRequiredModalContext";
 import { useNotification } from "../../context/NotificationContext";
 import {
+  buildDocumentDownloadName,
   documentService,
+  downloadFileViaFetch,
   getApiErrorMessage,
-  requireAuthOrPrompt,
 } from "../../services/api";
 
 const pdfPageFallback =
@@ -72,8 +73,9 @@ function buildDisplayComments(detail) {
 export default function DocumentDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const location = useLocation();
   const notification = useNotification();
+  const requestLogin = useLoginRequired();
 
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -114,19 +116,40 @@ export default function DocumentDetail() {
 
   const handleDownload = useCallback(async () => {
     if (!id) return;
-    const ok = requireAuthOrPrompt({
-      isAuthenticated,
-      navigate,
-      redirectTo: id ? `/documents/${id}` : "/documents",
-    });
-    if (!ok) return;
+    if (
+      !requestLogin({
+        redirectTo: id ? `/documents/${id}` : "/documents",
+      })
+    )
+      return;
     try {
       await documentService.download(id);
-      notification.success("Đã ghi nhận lượt tải.");
+      const filePayload = await documentService.getDocumentFileUrl(id);
+      const fileUrl = filePayload?.fileUrl;
+      if (!fileUrl) {
+        notification.error("Không lấy được đường dẫn tải xuống.");
+        return;
+      }
+      const suggestedName = buildDocumentDownloadName(
+        detail?.documentInfo?.title,
+        detail?.file?.fileType
+      );
+      await downloadFileViaFetch(fileUrl, suggestedName);
+      notification.success("Đang tải xuống tài liệu.");
+      setDetail((prev) => {
+        if (!prev?.stats) return prev;
+        return {
+          ...prev,
+          stats: {
+            ...prev.stats,
+            totalDownloads: Number(prev.stats.totalDownloads ?? 0) + 1,
+          },
+        };
+      });
     } catch (e) {
       notification.error(getApiErrorMessage(e));
     }
-  }, [id, isAuthenticated, navigate, notification]);
+  }, [id, requestLogin, notification, detail]);
 
   const info = detail?.documentInfo;
   const stats = detail?.stats;
@@ -261,7 +284,16 @@ export default function DocumentDetail() {
           <div className="document-right-column">
             {/* Main Info */}
             <div className="document-info-card">
-              <h1 className="document-title">{titleText}</h1>
+              <div className="document-title-row">
+                <h1 className="document-title">{titleText}</h1>
+                {id ? (
+                  <DocumentBookmarkControl
+                    documentId={id}
+                    serverIsBookmarked={detail?.documentInfo?.isBookmarked}
+                    redirectTo={location.pathname + location.search}
+                  />
+                ) : null}
+              </div>
 
               <div className="author-info">
                 <div className="author-details">
@@ -303,11 +335,7 @@ export default function DocumentDetail() {
               </button>
 
               <div className="secondary-actions">
-                <button type="button" className="secondary-btn">
-                  <BookmarkIcon size={16} />
-                  Lưu tài liệu
-                </button>
-                <button type="button" className="secondary-btn report">
+                <button type="button" className="secondary-btn report" style={{ flex: 1 }}>
                   <AlertIcon size={16} />
                   Báo cáo
                 </button>

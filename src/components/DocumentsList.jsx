@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useLoginRequired } from "../context/LoginRequiredModalContext";
+import DocumentBookmarkControl from "./common/DocumentBookmarkControl";
 import { useNotification } from "../context/NotificationContext";
 import {
-  BookmarkIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   DocumentIcon,
@@ -13,9 +13,10 @@ import {
   UsersIcon,
 } from "./icons";
 import {
+  buildDocumentDownloadName,
   documentService,
+  downloadFileViaFetch,
   getApiErrorMessage,
-  requireAuthOrPrompt,
   sidebarService,
 } from "../services/api";
 
@@ -91,8 +92,8 @@ function computePageItems(currentPage, totalPages) {
 export default function DocumentsList() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated } = useAuth();
   const notification = useNotification();
+  const requestLogin = useLoginRequired();
 
   const query = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const initialKeyword = (query.get("keyword") || "").trim();
@@ -278,43 +279,26 @@ export default function DocumentsList() {
     });
   }
 
-  async function handleToggleBookmark(doc) {
-    const ok = requireAuthOrPrompt({
-      isAuthenticated,
-      navigate,
-      redirectTo: location.pathname + location.search,
-    });
-    if (!ok) return;
-
-    try {
-      const nextIsBookmarked = !doc.isBookmarked;
-      setDocuments((prev) =>
-        prev.map((d) => (d.id === doc.id ? { ...d, isBookmarked: nextIsBookmarked } : d))
-      );
-      if (nextIsBookmarked) {
-        await documentService.bookmark(doc.id);
-      } else {
-        await documentService.unbookmark(doc.id);
-      }
-    } catch (e) {
-      const msg = getApiErrorMessage(e);
-      setError(msg);
-      notification.error(msg);
-      // rollback by refetching current page
-      fetchDocuments({ nextPage: page });
-    }
-  }
-
   async function handleDownload(doc) {
-    const ok = requireAuthOrPrompt({
-      isAuthenticated,
-      navigate,
-      redirectTo: location.pathname + location.search,
-    });
-    if (!ok) return;
+    if (
+      !requestLogin({
+        redirectTo: location.pathname + location.search,
+      })
+    )
+      return;
 
     try {
       await documentService.download(doc.id);
+      const filePayload = await documentService.getDocumentFileUrl(doc.id);
+      const fileUrl = filePayload?.fileUrl;
+      if (!fileUrl) {
+        const msg = "Không lấy được đường dẫn tải xuống.";
+        setError(msg);
+        notification.error(msg);
+        return;
+      }
+      const suggestedName = buildDocumentDownloadName(doc.title, doc.fileType);
+      await downloadFileViaFetch(fileUrl, suggestedName);
       setDocuments((prev) =>
         prev.map((d) =>
           d.id === doc.id
@@ -1148,28 +1132,11 @@ export default function DocumentsList() {
                         </button>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleToggleBookmark(doc);
-                        }}
-                        style={{
-                          padding: "8px",
-                          borderRadius: "8px",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          display: "flex",
-                          border: "none",
-                          background: "transparent",
-                          cursor: "pointer",
-                        }}
-                        title={doc.isBookmarked ? "Remove bookmark" : "Bookmark"}
-                      >
-                        <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "center", display: "inline-flex" }}>
-                          <BookmarkIcon size={16} color={doc.isBookmarked ? "#007BFF" : "#94A3B8"} />
-                        </div>
-                      </button>
+                      <DocumentBookmarkControl
+                        documentId={doc.id}
+                        serverIsBookmarked={doc.isBookmarked}
+                        redirectTo={location.pathname + location.search}
+                      />
                     </div>
                   </div>
                 </div>

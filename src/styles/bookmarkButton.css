@@ -1,0 +1,38 @@
+/* Shared bookmark control — khớp tone public site */
+
+.bookmark-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.12s ease, opacity 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bookmark-button:hover:not(:disabled) {
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.bookmark-button:active:not(:disabled) {
+  opacity: 0.88;
+}
+
+.bookmark-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.bookmark-button--on:hover:not(:disabled) {
+  background: rgba(0, 123, 255, 0.1);
+}
+
+@media (max-width: 640px) {
+  .bookmark-button {
+    padding: 6px;
+  }
+}
