@@ -5,9 +5,10 @@ import { useAuth } from "../../context/AuthContext";
 import { useNotification } from "../../context/NotificationContext";
 import { userHasAdminPortalRole } from "../../constants/adminPortalRoles";
 import "../../styles/admin/adminSignIn.css";
+import logo from "../../assets/Logo.png";
 
 const LOGIN_ERROR_FALLBACK =
-  "Invalid email or password. Please try again or contact support if you need an account.";
+  "Email hoặc mật khẩu không đúng. Vui lòng thử lại hoặc liên hệ hỗ trợ nếu bạn cần tài khoản.";
 
 const AdminSignIn = () => {
   const navigate = useNavigate();
@@ -28,11 +29,11 @@ const AdminSignIn = () => {
       const user = await login({ email, password, rememberMe: trustDevice });
       
       if (userHasAdminPortalRole(user?.roles)) {
-        notification.success("Admin access authorized.");
+        notification.success("Xác thực quyền quản trị thành công.");
         navigate("/admin/dashboard");
       } else {
         const msg =
-          "You do not have permission to access the admin portal.";
+          "Bạn không có quyền truy cập vào trang quản trị.";
         setError(msg);
         notification.error(msg);
       }
@@ -53,32 +54,25 @@ const AdminSignIn = () => {
         <div className="admin-login-content">
           <header className="admin-login-header">
             <div className="admin-logo-wrapper">
-              <div className="admin-logo-icon">
-                <div className="admin-logo-disk"></div>
-                <div className="admin-logo-disk"></div>
-                <div className="admin-logo-disk"></div>
-              </div>
+              <img src={logo} alt="Admin Logo" className="admin-logo-img" />
 
             </div>
             
-            <div className="admin-badge">System Administration</div>
-            <h1 className="admin-login-title">Admin Portal</h1>
-            <p className="admin-login-subtitle">
-              Sign in to manage your documentation ecosystem.
-            </p>
+            <div className="admin-badge">Quản trị hệ thống</div>
+            <h1 className="admin-login-title">Cổng quản trị</h1>
           </header>
 
           <form className="admin-login-form" onSubmit={handleSubmit}>
             <div className="admin-form-group">
               <label className="admin-form-label" htmlFor="admin-email">
-                Admin Email
+                Email quản trị
               </label>
               <div className="admin-input-wrapper">
                 <input
                   id="admin-email"
                   type="email"
                   className="admin-input"
-                  placeholder="admin@devdocs.hub"
+                  placeholder="Nhập email quản trị"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -88,14 +82,14 @@ const AdminSignIn = () => {
 
             <div className="admin-form-group">
               <label className="admin-form-label" htmlFor="admin-password">
-                Password
+                Mật khẩu
               </label>
               <div className="admin-input-wrapper">
                 <input
                   id="admin-password"
                   type={showPassword ? "text" : "password"}
                   className="admin-input"
-                  placeholder="Enter administrator password"
+                  placeholder="Nhập mật khẩu"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -119,14 +113,14 @@ const AdminSignIn = () => {
                 onChange={(e) => setTrustDevice(e.target.checked)}
               />
               <label htmlFor="trust-device" className="admin-checkbox-label">
-                Trust this device for 30 days
+                Ghi nhớ cho lần đăng nhập sau
               </label>
             </div>
 
             {error && <p className="admin-error-message" style={{ color: "#e53e3e", fontSize: "14px", marginBottom: "16px", textAlign: "center" }}>{error}</p>}
 
             <button type="submit" className="admin-submit-btn" disabled={loading}>
-              {loading ? "Authorizing..." : "Authorize Access"}
+              {loading ? "Đang đăng nhập..." : "Đăng nhập"}
             </button>
 
             <div className="admin-divider"></div>

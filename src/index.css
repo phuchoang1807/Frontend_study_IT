@@ -85,29 +85,27 @@ body {
   transform: translateY(-8px);
 }
 
-.brand-logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
+.auth-logo-wrapper {
+  display: flex;
+  justify-content: center;
   margin-bottom: 20px;
 }
 
-.brand-logo__mark {
-  width: 48px;
-  height: 46px;
+.auth-logo-img {
+  width: 300px;
+  height: 150px;
+  object-fit: contain;
+  padding: 6px;
+  transition: all 0.2s ease;
 }
 
-.brand-logo__text {
-  font-size: 50px;
-  line-height: 1;
-  font-style: italic;
-  font-weight: 700;
-  color: #2b2e83;
+.auth-logo-img:hover {
+  transform: scale(1.05);
 }
 
 .auth-header h1 {
   margin: 0;
-    font-size: 44px;
+    font-size: 32px;
   line-height: 1.1;
   color: #161a24;
 }
@@ -220,7 +218,7 @@ align-items: center;
   border-radius: 8px;
   color: #fff;
   background: #5564f2;
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -393,4 +391,39 @@ align-items: center;
 .notification-toast__close:hover {
   opacity: 1;
   background: rgba(0, 0, 0, 0.06);
+}
+
+.social-button {
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid #d7dce6;
+  background: #fff;
+  color: #1f2937;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.social-button:hover {
+  background: #f9fafb;
+}
+
+/* Icon */
+.social-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Google style */
+.social-button.google:hover {
+  border-color: #4285f4;
+}
+
+/* GitHub style */
+.social-button.github:hover {
+  border-color: #333;
 }

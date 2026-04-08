@@ -33,24 +33,20 @@
 
 .admin-logo-wrapper {
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+}
+.admin-logo-img {
+  width: 250px;
+  height: 150px;
+  object-fit: contain;
+  transition: transform 0.2s ease;
 }
 
-.admin-logo-icon {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+.admin-logo-img:hover {
+  transform: scale(1.05);
 }
 
-.admin-logo-disk {
-  width: 28px;
-  height: 8px;
-  background-color: #1d76e0;
-  border-radius: 4px;
-}
 
 .admin-logo-text {
   font-size: 24px;
@@ -76,12 +72,6 @@
   font-weight: 700;
   color: #1a1a1a;
   margin: 0 0 8px 0;
-}
-
-.admin-login-subtitle {
-  color: #666;
-  font-size: 14px;
-  margin: 0;
 }
 
 .admin-login-form {

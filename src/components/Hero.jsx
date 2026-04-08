@@ -38,7 +38,6 @@ export default function Hero() {
         />
       </div>
 
-      {/* ✅ CHỈ SỬA CHỖ NÀY: gap từ 24 -> 40 */}
       <div
         style={{
           width: "768px",
