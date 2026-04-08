@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { BookmarkIcon, ChevronRightIcon, EyeIcon } from "./icons";
+import BookmarkButton from "./common/BookmarkButton";
+import { ChevronRightIcon, EyeIcon } from "./icons";
 
 const documents = [
   {
@@ -142,9 +143,12 @@ export default function LatestDocuments() {
                   {doc.views}
                 </div>
 
-                <div style={{ color: "#007BFF" }}>
-                  <BookmarkIcon size={14} />
-                </div>
+                <BookmarkButton
+                  isBookmarked={false}
+                  onToggle={() => {}}
+                  disabled
+                  title="Dữ liệu mẫu — dùng trang chủ thật để lưu tài liệu"
+                />
               </div>
 
             </div>

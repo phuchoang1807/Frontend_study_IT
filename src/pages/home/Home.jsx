@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Categories from "../../components/Categories";
 import ContributeSection from "../../components/ContributeSection";
+import DocumentBookmarkControl from "../../components/common/DocumentBookmarkControl";
 import {
-  BookmarkIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   DocumentIcon,
@@ -51,6 +51,7 @@ function fileTypeBadgeStyle(fileType) {
 
 export default function Home() {
   const navigate = useNavigate();
+  const location = useLocation();
   const notification = useNotification();
   const [keyword, setKeyword] = useState("");
   const [loading, setLoading] = useState(true);
@@ -465,9 +466,11 @@ export default function Home() {
                         {formatCompactNumber(doc.viewCount)}
                       </div>
 
-                      <div style={{ color: "#007BFF" }}>
-                        <BookmarkIcon size={14} />
-                      </div>
+                      <DocumentBookmarkControl
+                        documentId={doc.id}
+                        serverIsBookmarked={doc.isBookmarked}
+                        redirectTo={location.pathname + location.search}
+                      />
                     </div>
                   </div>
                 </div>
@@ -622,15 +625,28 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "12px", display: "inline-flex" }}>
+                    <div
+                      style={{
+                        alignSelf: "stretch",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: "12px",
+                      }}
+                    >
                       <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
                         <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
                           <div style={{ color: "#94A3B8" }}><EyeIcon size={12} /></div>
                         </div>
-                        <div style={{ width: "60px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 600, lineHeight: "16px" }}>
+                        <div style={{ minWidth: "48px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 600, lineHeight: "16px" }}>
                           {formatCompactNumber(doc.viewCount)}
                         </div>
                       </div>
+                      <DocumentBookmarkControl
+                        documentId={doc.id}
+                        serverIsBookmarked={doc.isBookmarked}
+                        redirectTo={location.pathname + location.search}
+                      />
                     </div>
                   </div>
                 </div>

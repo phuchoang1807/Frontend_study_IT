@@ -270,6 +270,20 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+.document-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.document-title-row .document-title {
+  margin-bottom: 0;
+  flex: 1;
+  min-width: 0;
+}
+
 .document-title {
   font-size: 24px;
   font-weight: 700;

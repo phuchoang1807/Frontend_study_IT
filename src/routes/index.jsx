@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 
+import AppShell from "../components/AppShell";
 import AuthLayout from "../layouts/AuthLayout";
 import UserLayout from "../layouts/user/UserLayout";
 import AdminLayout from "../layouts/admin/AdminLayout";
@@ -35,6 +36,9 @@ import TagPage from "../pages/admin/TagPage";
 import PermissionsPage from "../pages/admin/PermissionsPage";
 
 export const router = createBrowserRouter([
+  {
+    element: <AppShell />,
+    children: [
   {
     path: "/",
     element: <UserLayout />,
@@ -122,5 +126,7 @@ export const router = createBrowserRouter([
         <OAuth2Success />
       </AuthLayout>
     ),
+  },
+    ],
   },
 ]);
