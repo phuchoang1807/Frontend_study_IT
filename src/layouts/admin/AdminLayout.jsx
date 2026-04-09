@@ -4,15 +4,95 @@ import { useAuth } from '../../context/AuthContext';
 import { getMyMenus } from '../../api/menuApi';
 import '../../styles/admin/adminLayout.css';
 
-/** Icon mặc định cho mục menu từ API (giữ nguyên shape JSX sidebar). */
-const DEFAULT_MENU_ICON = (
-  <svg className="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <rect x="3" y="3" width="7" height="7"></rect>
-    <rect x="14" y="3" width="7" height="7"></rect>
-    <rect x="14" y="14" width="7" height="7"></rect>
-    <rect x="3" y="14" width="7" height="7"></rect>
-  </svg>
-);
+// ==================== BẢNG DỊCH MENU SANG TIẾNG VIỆT ====================
+const MENU_TRANSLATIONS = {
+  "Dashboard": "Bảng điều khiển",
+  "Access Control": "Quản lý Truy cập",
+  "Users": "Người dùng",
+  "Roles": "Vai trò",
+  "Permissions": "Quyền hạn",
+  "Categories": "Danh mục",
+  "Tags": "Thẻ",
+  "Settings": "Cài đặt",
+};
+
+// Hàm dịch label
+const translateMenuLabel = (label) => {
+  if (!label || typeof label !== 'string') return label;
+  return MENU_TRANSLATIONS[label] || label;   // Nếu không có trong bảng thì giữ nguyên
+};
+
+/** Trả về icon giống với ảnh bạn gửi */
+const getMenuIcon = (label) => {
+  const props = {
+    className: "menu-icon",
+    width: "20",
+    height: "20",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2.25",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  };
+
+  switch (label) {
+    case "Bảng điều khiển":
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard-icon lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+      );
+
+    case "Quản lý Truy cập":
+    case "Kiểm soát truy cập":
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-cog-icon lucide-user-cog"><path d="M10 15H6a4 4 0 0 0-4 4v2"/><path d="m14.305 16.53.923-.382"/><path d="m15.228 13.852-.923-.383"/><path d="m16.852 12.228-.383-.923"/><path d="m16.852 17.772-.383.924"/><path d="m19.148 12.228.383-.923"/><path d="m19.53 18.696-.382-.924"/><path d="m20.772 13.852.924-.383"/><path d="m20.772 16.148.924.383"/><circle cx="18" cy="15" r="3"/><circle cx="9" cy="7" r="4"/></svg>
+      );
+
+    case "Người dùng":
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      );
+
+    case "Vai trò":
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-key-icon lucide-user-key"><path d="M20 11v6"/><path d="M20 13h2"/><path d="M3 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 2.072.578"/><circle cx="10" cy="7" r="4"/><circle cx="20" cy="19" r="2"/></svg>
+      );
+
+    case "Quyền hạn":
+    case "Quyền":
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-metronome-icon lucide-metronome"><path d="M12 11.4V9.1"/><path d="m12 17 6.59-6.59"/><path d="m15.05 5.7-.218-.691a3 3 0 0 0-5.663 0L4.418 19.695A1 1 0 0 0 5.37 21h13.253a1 1 0 0 0 .951-1.31L18.45 16.2"/><circle cx="20" cy="9" r="2"/></svg>
+      );
+
+    case "Danh mục":
+    case "Quản lý danh mục":
+      return (
+        <svg {...props}>
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <path d="M3 9h18" />
+        </svg>
+      );
+
+    case "Thẻ":
+    case "Quản lý thẻ":
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-tag-icon lucide-tag"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg>
+      );
+
+    case "Cài đặt":
+    case "Cấu hình":
+      return (
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-icon lucide-settings"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>
+      );
+
+    default:
+      return (
+        <svg {...props}>
+          <circle cx="12" cy="12" r="10" />
+        </svg>
+      );
+  }
+};
 
 /** Chuẩn hóa node API → { label, path?, children } — giữ cấu trúc cây, không flatten. */
 function normalizeMenuTree(nodes) {
@@ -20,11 +100,14 @@ function normalizeMenuTree(nodes) {
   return nodes
     .filter((n) => n && typeof n === 'object')
     .map((n) => {
-      const label = n.name ?? n.label;
+      const originalLabel = n.name ?? n.label ?? "";
+      const label = translateMenuLabel(originalLabel);   // ← Dịch ở đây
+
       const pathRaw = n.route ?? n.path;
       const path = typeof pathRaw === 'string' && pathRaw.trim() ? pathRaw.trim() : undefined;
       const rawChildren = Array.isArray(n.children) ? n.children : [];
       const children = normalizeMenuTree(rawChildren);
+
       return { label, path, children };
     })
     .filter((n) => n.label);
@@ -89,7 +172,7 @@ function renderMenu(items, ctx) {
             className={`menu-group-header ${parentActive ? 'menu-group-header--active-branch' : ''}`}
             style={{ paddingLeft: indentPx }}
           >
-            {DEFAULT_MENU_ICON}
+            {getMenuIcon(item.label)}
             {item.path ? (
               <Link
                 to={item.path}
@@ -131,7 +214,7 @@ function renderMenu(items, ctx) {
           className={`menu-item ${location.pathname === item.path ? 'active' : ''}`}
           style={{ paddingLeft: indentPx }}
         >
-          {DEFAULT_MENU_ICON}
+          {getMenuIcon(item.label)}
           {item.label}
         </Link>
       );
@@ -139,7 +222,7 @@ function renderMenu(items, ctx) {
 
     return (
       <div key={key} className="menu-item menu-item--disabled" style={{ paddingLeft: indentPx }}>
-        {DEFAULT_MENU_ICON}
+        {getMenuIcon(item.label)}
         <span className="menu-item-label">{item.label}</span>
       </div>
     );
@@ -147,10 +230,10 @@ function renderMenu(items, ctx) {
 }
 
 function pickDisplayRole(roles) {
-  if (!roles?.length) return 'Moderator';
-  if (roles.includes('ADMIN')) return 'Admin';
-  if (roles.includes('USER_MODERATOR')) return 'Moderator';
-  if (roles.includes('CONTENT_MODERATOR')) return 'Content Moderator';
+  if (!roles?.length) return 'Kiểm duyệt viên';
+  if (roles.includes('ADMIN')) return 'Quản trị viên';
+  if (roles.includes('USER_MODERATOR')) return 'Kiểm duyệt người dùng';
+  if (roles.includes('CONTENT_MODERATOR')) return 'Kiểm duyệt nội dung';
   return roles[0];
 }
 
@@ -224,13 +307,13 @@ const AdminLayout = () => {
       {/* Sidebar */}
       <aside className="admin-sidebar">
         <div className="sidebar-logo">
-          <div className="logo-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            </svg>
-          </div>
+          <img 
+            src="/Logo_Icon.png" 
+            alt="StudyIT Logo" 
+            className="sidebar-logo-img"
+          />
           <div className="logo-text">
-            <h2>ADMIN PANEL</h2>
+            <h2>TRANG QUẢN TRỊ</h2>
             <p>Hệ thống quản trị</p>
           </div>
         </div>
@@ -246,10 +329,10 @@ const AdminLayout = () => {
               </svg>
             </div>
             <div className="user-info">
-              <span className="user-name">{user?.fullName || 'Admin'}</span>
+              <span className="user-name">{user?.fullName || 'Quản trị viên'}</span>
               <span className="user-role">{pickDisplayRole(user?.roles)}</span>
             </div>
-            <button className="logout-button" onClick={handleLogout} title="Logout">
+            <button className="logout-button" onClick={handleLogout} title="Đăng xuất">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                 <polyline points="16 17 21 12 16 7"></polyline>
@@ -267,7 +350,7 @@ const AdminLayout = () => {
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <input type="text" placeholder="Tìm kiếm yêu cầu..." />
+            <input type="text" placeholder="Tìm kiếm..." />
           </div>
           <div className="top-nav-actions">
             <button className="nav-action-btn">

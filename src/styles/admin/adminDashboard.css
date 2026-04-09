@@ -137,7 +137,7 @@
 
 .chart-filter {
   padding: 8px 12px;
-  border: 1px solid #D0D5DD;
+  border: 1px solid #1264e7;
   border-radius: 8px;
   font-size: 14px;
   color: #344054;
@@ -148,7 +148,6 @@
   position: relative;
 }
 
-/* Table Section */
 .table-card {
   background-color: white;
   border: 1px solid #E4E7F1;
@@ -165,9 +164,10 @@
 }
 
 .table-header h3 {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
   color: #101828;
+  margin: 0;
 }
 
 .btn-view-all {
@@ -177,74 +177,66 @@
   text-decoration: none;
 }
 
-.admin-table {
+.new-users-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;           /* Rất quan trọng để chia đều */
 }
 
-.admin-table th {
+.new-users-table th,
+.new-users-table td {
+  padding: 20px 24px;
+  border-bottom: 1px solid #E4E7F1;
+}
+
+.new-users-table th {
   background-color: #F9FAFB;
-  padding: 12px 24px;
-  text-align: left;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: #667085;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
 }
 
-.admin-table td {
-  padding: 16px 24px;
-  border-bottom: 1px solid #E4E7F1;
-  font-size: 14px;
-  color: #344054;
+.new-users-table th:first-child{
+  width: 65%;
+  color: #101010;
+  text-align: left;
+  font-weight: 700;
+  font-size: 15px;
+}
+.new-users-table td:first-child {
+  width: 65%;
+  color: #101010;
+  text-align: left;
+  font-weight: 400;
+  font-size: 15px;
 }
 
-.file-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.new-users-table th:last-child{
+  width: 35%;
+  color: #101010;
+  text-align: left;
+  font-weight: 700;
+  font-size: 15px;
 }
 
-.file-icon {
-  width: 32px;
-  height: 32px;
-  background-color: #F2F4F7;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #667085;
+.new-users-table td:last-child {
+  width: 35%;
+  color: #101010;
+  text-align: left;
+  font-weight: 400;
+  font-size: 15px;
 }
 
-.status-badge {
-  padding: 4px 12px;
-  border-radius: 16px;
-  font-size: 12px;
-  font-weight: 600;
+.new-users-table tr:hover {
+  background-color: #F9FAFB;
 }
 
-.status-pending { background-color: #FFFAEB; color: #B54708; }
-.status-approved { background-color: #ECFDF3; color: #027A48; }
-.status-rejected { background-color: #FEF3F2; color: #B42318; }
-
-.actions-cell {
-  display: flex;
-  gap: 8px;
+/* Responsive */
+@media (max-width: 768px) {
+  .new-users-table th,
+  .new-users-table td {
+    padding: 16px 20px;
+  }
 }
-
-.action-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  border: 1px solid #D0D5DD;
-  background-color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #667085;
-}
-
-.action-btn.approve { color: #12B76A; border-color: #D1FADF; }
-.action-btn.reject { color: #F04438; border-color: #FEE4E2; }

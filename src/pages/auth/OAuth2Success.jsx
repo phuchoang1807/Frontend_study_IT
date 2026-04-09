@@ -13,7 +13,7 @@ import BrandLogo from "../../components/BrandLogo";
 export default function OAuth2Success() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [message, setMessage] = useState("Completing sign-in…");
+  const [message, setMessage] = useState("Đang hoàn tất đăng nhập...");
 
   useEffect(() => {
     const error = searchParams.get("error");
@@ -21,14 +21,14 @@ export default function OAuth2Success() {
     const refreshToken = searchParams.get("refreshToken");
 
     if (error) {
-      setMessage("Sign-in failed. Redirecting…");
+      setMessage("Đăng nhập thất bại. Đang chuyển hướng...");
       const q = new URLSearchParams({ oauthError: error });
       navigate(`/login?${q.toString()}`, { replace: true });
       return;
     }
 
     if (!accessToken || !refreshToken) {
-      setMessage("Missing tokens. Redirecting…");
+      setMessage("Thiếu thông tin xác thực. Đang chuyển hướng...");
       navigate("/login", { replace: true });
       return;
     }
@@ -47,7 +47,7 @@ export default function OAuth2Success() {
       } catch {
         if (cancelled) return;
         clearTokens();
-        setMessage("Could not verify session. Redirecting…");
+        setMessage("Không thể xác thực phiên đăng nhập. Đang chuyển hướng...");
         navigate("/login", { replace: true });
       }
     })();
@@ -59,9 +59,13 @@ export default function OAuth2Success() {
 
   return (
     <div className="auth-form-wrap">
-      <BrandLogo />
+      <img 
+        src="/Logo_Icon.png" 
+        alt="StudyIT Logo" 
+        className="auth-logo"
+      />
       <header className="auth-header">
-        <h1>Signing you in</h1>
+        <h1>Đang đăng nhập</h1>
         <p>{message}</p>
       </header>
     </div>
