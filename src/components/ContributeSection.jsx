@@ -1,4 +1,5 @@
 import { GiftIcon, ShieldIcon } from "./icons";
+import bannerHome from "../assets/BannerHome.jpg";
 export default function ContributeSection() {
   return (
     <div
@@ -19,13 +20,13 @@ export default function ContributeSection() {
         <div style={{ flex: "1 1 0", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", gap: "24px", display: "inline-flex" }}>
           <div style={{ alignSelf: "stretch", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "flex" }}>
             <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#0F172A", fontSize: "30px", fontWeight: 900, lineHeight: "36px" }}>
-              Do you have documents to share?
+              Bạn có tài liệu nào muốn chia sẻ không?
             </div>
           </div>
 
           <div style={{ alignSelf: "stretch", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "flex" }}>
             <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#475569", fontSize: "16px", fontWeight: 400, lineHeight: "26px" }}>
-              Join the StudyIT community by contributing your valuable knowledge.<br />Every document you share helps thousands of students and learners across Vietnam.
+              Tham gia cộng đồng StudyIT bằng cách chia sẻ kiến thức giá trị của bạn.<br />Mỗi tài liệu bạn chia sẻ sẽ giúp hàng ngàn học sinh, sinh viên và người học trên khắp Việt Nam.
             </div>
           </div>
 
@@ -49,7 +50,7 @@ export default function ContributeSection() {
               </div>
               <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
                 <div style={{ width: "158.56px", height: "20px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#0F172A", fontSize: "14px", fontWeight: 600, lineHeight: "20px" }}>
-                  Copyright Protected
+                  Được bảo vệ bản quyền
                 </div>
               </div>
             </div>
@@ -72,8 +73,8 @@ export default function ContributeSection() {
                 <div style={{ color: "#007BFF" }}><GiftIcon size={20} /></div>
               </div>
               <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div style={{ width: "173px", height: "20px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#0F172A", fontSize: "14px", fontWeight: 600, lineHeight: "20px" }}>
-                  Earn Contribution Rewards
+                <div style={{ width: "173px", height: "30px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#0F172A", fontSize: "14px", fontWeight: 600, lineHeight: "20px" }}>
+                  Nhận thưởng khi đóng góp
                 </div>
               </div>
             </div>
@@ -103,23 +104,22 @@ export default function ContributeSection() {
               }}
             ></div>
             <div style={{ width: "173.66px", height: "24px", textAlign: "center", justifyContent: "center", display: "flex", flexDirection: "column", color: "white", fontSize: "16px", fontWeight: 700, lineHeight: "24px" }}>
-              Contribute Document Now
+              Đóng góp tài liệu ngay
             </div>
           </div>
         </div>
 
-        <div style={{ flex: "1 1 0", position: "relative", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-          <img style={{ width: "525px", height: "296px" }} src="https://placehold.co/525x296" alt="Contribute Illustration" />
+        <div style={{ flex: "1 1 0", position: "relative", overflow: "hidden", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
+          <img style={{ width: "525px", height: "296px", objectFit: "cover" }} src={bannerHome} alt="Contribute Illustration" />
 
           <div
             style={{
-              width: "96px",
-              height: "96px",
+              width: "70px",
+              height: "400px",
               left: "471px",
-              top: "-16px",
+              top: "0px",
               position: "absolute",
               background: "rgba(0,123,255,0.20)",
-              boxShadow: "40px 40px 40px",
               borderRadius: "9999px",
               filter: "blur(20px)",
             }}
@@ -133,7 +133,6 @@ export default function ContributeSection() {
               top: "192px",
               position: "absolute",
               background: "rgba(168,85,247,0.10)",
-              boxShadow: "40px 40px 40px",
               borderRadius: "9999px",
               filter: "blur(20px)",
             }}

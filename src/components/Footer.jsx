@@ -56,7 +56,7 @@ export default function Footer() {
           >
             <img
               style={{ width: "302.42px", height: "112px", objectFit: "contain", marginBottom: "8px" }}
-              src="/imgs/logo.png"
+              src="/imgs/Logo_Icon.png"
               alt="StudyIT Logo"
             />
 
@@ -83,8 +83,8 @@ export default function Footer() {
                   lineHeight: "26px",
                 }}
               >
-                Leading IT learning document sharing and management platform<br />
-                for the Vietnamese developer community.
+                Nền tảng chia sẻ và quản lý tài liệu học tập CNTT hàng đầu<br />
+                dành cho cộng đồng lập trình viên Việt Nam.
               </div>
             </div>
 
@@ -182,7 +182,7 @@ export default function Footer() {
                   lineHeight: "24px",
                 }}
               >
-                About Us
+                Về chúng tôi
               </div>
             </div>
 
@@ -197,16 +197,16 @@ export default function Footer() {
               }}
             >
               <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "14px", fontWeight: 500, lineHeight: "20px" }}>
-                Introduction
+                Giới thiệu
               </div>
               <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "14px", fontWeight: 500, lineHeight: "20px" }}>
-                Terms of Service
+                Điều khoản dịch vụ
               </div>
               <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "14px", fontWeight: 500, lineHeight: "20px" }}>
-                Privacy Policy
+                Chính sách bảo mật
               </div>
               <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "14px", fontWeight: 500, lineHeight: "20px" }}>
-                Contact
+                Liên hệ
               </div>
             </div>
           </div>
@@ -246,7 +246,7 @@ export default function Footer() {
                   lineHeight: "24px",
                 }}
               >
-                Resources
+                Tài nguyên
               </div>
             </div>
 
@@ -261,16 +261,16 @@ export default function Footer() {
               }}
             >
               <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "14px", fontWeight: 500, lineHeight: "20px" }}>
-                Learning Materials
+                Tài liệu học tập
               </div>
               <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "14px", fontWeight: 500, lineHeight: "20px" }}>
-                Video Courses
+                Khóa học video
               </div>
               <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "14px", fontWeight: 500, lineHeight: "20px" }}>
-                In-depth Articles
+                Bài viết chuyên sâu
               </div>
               <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "14px", fontWeight: 500, lineHeight: "20px" }}>
-                Roadmaps
+                Lộ trình học
               </div>
             </div>
           </div>
@@ -310,7 +310,7 @@ export default function Footer() {
                   lineHeight: "24px",
                 }}
               >
-                Support
+                Hỗ trợ
               </div>
             </div>
 
@@ -325,16 +325,16 @@ export default function Footer() {
               }}
             >
               <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "14px", fontWeight: 500, lineHeight: "20px" }}>
-                Help Center
+                Trung tâm trợ giúp
               </div>
               <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "14px", fontWeight: 500, lineHeight: "20px" }}>
-                Usage Guide
+                Hướng dẫn sử dụng
               </div>
               <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "14px", fontWeight: 500, lineHeight: "20px" }}>
-                Report Bug
+                Báo lỗi
               </div>
               <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "14px", fontWeight: 500, lineHeight: "20px" }}>
-                FAQ
+                Câu hỏi thường gặp
               </div>
             </div>
           </div>
@@ -374,7 +374,7 @@ export default function Footer() {
                 lineHeight: "20px",
               }}
             >
-              © 2026 StudyIT. All rights reserved.
+              © 2026 StudyIT. Bảo lưu mọi quyền.
             </div>
           </div>
 
@@ -405,7 +405,7 @@ export default function Footer() {
                   lineHeight: "20px",
                 }}
               >
-                English
+                Tiếng Việt
               </div>
             </div>
 
@@ -435,7 +435,7 @@ export default function Footer() {
                   lineHeight: "20px",
                 }}
               >
-                Global
+                Toàn cầu
               </div>
             </div>
           </div>
