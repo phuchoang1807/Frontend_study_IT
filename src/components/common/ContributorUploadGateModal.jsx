@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import "../../styles/loginRequiredModal.css";
 
@@ -34,6 +36,15 @@ export default function ContributorUploadGateModal({
 }) {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handlePrimary = () => {
@@ -43,7 +54,7 @@ export default function ContributorUploadGateModal({
     onClose();
   };
 
-  return (
+  return createPortal(
     <div
       className="login-required-modal-overlay"
       role="presentation"
@@ -103,6 +114,7 @@ export default function ContributorUploadGateModal({
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

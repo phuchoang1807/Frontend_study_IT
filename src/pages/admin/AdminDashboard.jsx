@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import JustChatWidget from '../../components/common/JustChatWidget';
 import '../../styles/admin/adminDashboard.css';
 
 const AdminDashboard = () => {
@@ -12,6 +13,7 @@ const AdminDashboard = () => {
 
   return (
     <main className="admin-main">
+      <JustChatWidget />
       <header className="dashboard-header">
         <div className="header-title">
           <h1>Tổng quan Dashboard</h1>

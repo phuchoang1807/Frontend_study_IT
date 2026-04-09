@@ -229,6 +229,11 @@ export const quizService = {
     const res = await axiosClient.get(`/quizzes/attempts/${attemptId}`);
     return unwrapApiResponse(res);
   },
+  /** @param {{ page?: number, size?: number }} params */
+  async getQuizHistory(params = {}) {
+    const res = await axiosClient.get("/quizzes/history", { params });
+    return unwrapApiResponse(res);
+  },
 };
 
 export async function getComments(documentId, page) {
