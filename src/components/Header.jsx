@@ -5,6 +5,7 @@ import { useNotification } from "../context/NotificationContext";
 import { useRef, useState, useEffect } from "react";
 import UserPopup from "./UserPopup";
 import UserAvatarDisplay from "./UserAvatarDisplay";
+import { hasRole } from "../utils/permissionUtils";
 
 const navLinkBaseStyle = {
   textAlign: "center",
@@ -14,7 +15,7 @@ const navLinkBaseStyle = {
 };
 export default function Header() {
   const navigate = useNavigate();
-  const { user, isAuthenticated, logout, contributorStatus, initializing, loading } = useAuth();
+  const { user, isAuthenticated, logout, initializing, loading } = useAuth();
   const notification = useNotification();
   const [keyword, setKeyword] = useState("");
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
@@ -36,7 +37,8 @@ export default function Header() {
     setAvatarMenuOpen(false);
     try {
       await logout();
-      notification.success("You have been logged out.");
+      notification.success("Đăng xuất thành công.");
+      navigate("/login", { replace: true });
     } catch (err) {
       const msg =
         err?.response?.data?.message ||
@@ -53,23 +55,20 @@ export default function Header() {
       return;
     }
 
-    // Wait for initialization to complete and contributorStatus to be determined
     if (initializing || loading) {
-      // Optionally, show a loading indicator or disable the button
-      // For now, we can just return to prevent premature navigation
       return;
     }
 
-    // Now that initialization is complete, we can confidently check the status
-    if (contributorStatus === "APPROVED") {
+    if (hasRole(user, "CONTRIBUTOR")) {
       navigate("/upload-document");
-    } else if (contributorStatus) {
-      // Nếu đã có trạng thái (PENDING, REJECTED)
-      navigate("/contributor-status");
-    } else {
-      // Nếu chưa gửi yêu cầu bao giờ
-      navigate("/contributor-request");
+      return;
     }
+    if (hasRole(user, "USER")) {
+      navigate("/contributor-request");
+      return;
+    }
+
+    navigate("/contributor-request");
   };
 
   return (

@@ -23,6 +23,10 @@ import {
   downloadFileViaFetch,
   getApiErrorMessage,
 } from "../../services/api";
+import {
+  getDocumentThumbnailUrl,
+  onDocumentThumbnailError,
+} from "../../utils/documentThumbnail";
 
 const pdfPageFallback =
   "https://placehold.co/800x1132/white/black?text=TÀI+LIỆU";
@@ -749,9 +753,10 @@ export default function DocumentDetail() {
                     onKeyDown={(e) => e.key === "Enter" && doc.id && navigate(`/documents/${doc.id}`)}
                   >
                     <img
-                      src={doc.thumbnail || "https://placehold.co/64x64"}
+                      src={getDocumentThumbnailUrl(doc)}
                       alt={doc.title || ""}
                       className="related-thumb"
+                      onError={onDocumentThumbnailError}
                     />
                     <div className="related-info">
                       <div className="related-title">{doc.title}</div>

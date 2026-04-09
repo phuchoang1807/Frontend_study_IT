@@ -19,6 +19,10 @@ import {
   getApiErrorMessage,
   sidebarService,
 } from "../services/api";
+import {
+  getDocumentThumbnailUrl,
+  onDocumentThumbnailError,
+} from "../utils/documentThumbnail";
 
 const SORT_OPTIONS = [
   { label: "Phổ biến", value: "popular" },
@@ -311,7 +315,7 @@ export default function DocumentsList() {
   const title = isSearchMode ? "Kết quả tìm kiếm" : "Danh sách tài liệu";
   const subtitle = isSearchMode
     ? "Kết quả tìm kiếm của bạn"
-    : "Tìm kiếm và tải xuống hơn 10.000 tài liệu học IT chất lượng cao.";
+    : "Tìm kiếm và tải xuống tài liệu học IT chất lượng cao.";
 
   const sortLabel = SORT_OPTIONS.find((o) => o.value === pendingSort)?.label || "Mới nhất";
   const pageItems = computePageItems(page + 1, totalPages);
@@ -879,11 +883,12 @@ export default function DocumentsList() {
                       display: "flex",
                     }}
                   >
-                    {doc.thumbnail ? (
-                      <img src={doc.thumbnail} alt={doc.title || "thumbnail"} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    ) : (
-                      <div style={{ width: "32px", height: "40px", background: "rgba(0, 123, 255, 0.40)" }} />
-                    )}
+                    <img
+                      src={getDocumentThumbnailUrl(doc)}
+                      alt={doc.title || "thumbnail"}
+                      onError={onDocumentThumbnailError}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
 
                     <div
                       style={{

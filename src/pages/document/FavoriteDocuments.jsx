@@ -10,6 +10,10 @@ import {
   ChevronRightIcon,
 } from "../../components/icons";
 import { documentService, getApiErrorMessage } from "../../services/api";
+import {
+  getDocumentThumbnailUrl,
+  onDocumentThumbnailError,
+} from "../../utils/documentThumbnail";
 import "../../styles/favoriteDocuments.css";
 
 // Local Trash Icon
@@ -110,8 +114,6 @@ export default function FavoriteDocuments() {
             items.map((item) => {
               const cat = item.categoryName || "—";
               const catColor = categoryColor(cat);
-              const thumb = item.thumbnail;
-              const fileLabel = item.fileType ? String(item.fileType) : "";
 
               return (
                 <div key={item.id} className="favorite-card">
@@ -119,17 +121,12 @@ export default function FavoriteDocuments() {
                     <div className="category-badge" style={{ backgroundColor: catColor }}>
                       {cat}
                     </div>
-                    {thumb ? (
-                      <img
-                        src={thumb}
-                        alt=""
-                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                      />
-                    ) : fileLabel ? (
-                      <span style={{ fontSize: "28px", fontWeight: 800, color: "#94a3b8" }}>{fileLabel}</span>
-                    ) : (
-                      <span style={{ fontSize: "28px", fontWeight: 800, color: "#94a3b8" }}>—</span>
-                    )}
+                    <img
+                      src={getDocumentThumbnailUrl(item)}
+                      alt=""
+                      onError={onDocumentThumbnailError}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
                   </div>
 
                   <div className="card-info">

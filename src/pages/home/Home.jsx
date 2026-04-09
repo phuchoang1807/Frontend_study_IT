@@ -16,6 +16,10 @@ import {
 } from "../../components/icons";
 import { useNotification } from "../../context/NotificationContext";
 import { homepageService } from "../../services/api";
+import {
+  getDocumentThumbnailUrl,
+  onDocumentThumbnailError,
+} from "../../utils/documentThumbnail";
 
 const lineClampTitle = {
   display: "-webkit-box",
@@ -425,11 +429,12 @@ export default function Home() {
                   onClick={() => navigate(`/documents?keyword=${encodeURIComponent(doc.title || "")}`)}
                 >
                   <div style={{ height: "192px", position: "relative", background: "#E2E8F0", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                    {doc.thumbnail ? (
-                      <img src={doc.thumbnail} alt={doc.title || "thumbnail"} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "cover" }} />
-                    ) : (
-                      <div style={{ width: "32px", height: "40px", background: "rgba(0, 123, 255, 0.40)" }} />
-                    )}
+                    <img
+                      src={getDocumentThumbnailUrl(doc)}
+                      alt={doc.title || "thumbnail"}
+                      onError={onDocumentThumbnailError}
+                      style={{ maxWidth: "100%", maxHeight: "100%", width: "100%", height: "100%", objectFit: "cover" }}
+                    />
 
                     <div
                       style={{
@@ -584,11 +589,12 @@ export default function Home() {
                       position: "relative",
                     }}
                   >
-                    {doc.thumbnail ? (
-                      <img style={{ width: "100%", height: "100%", objectFit: "cover" }} src={doc.thumbnail} alt={doc.title || "thumbnail"} />
-                    ) : (
-                      <img style={{ width: "134px", height: "135px" }} src="https://placehold.co/134x135" alt="placeholder" />
-                    )}
+                    <img
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      src={getDocumentThumbnailUrl(doc)}
+                      alt={doc.title || "thumbnail"}
+                      onError={onDocumentThumbnailError}
+                    />
                     <div
                       style={{
                         padding: "4px 8px",

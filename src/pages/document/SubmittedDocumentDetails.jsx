@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useNotification } from "../../context/NotificationContext";
 import { documentService } from "../../services/api";
+import {
+  getDocumentThumbnailUrl,
+  hasDocumentThumbnailValue,
+  onDocumentThumbnailError,
+} from "../../utils/documentThumbnail";
 import "../../styles/submittedDocumentDetails.css";
 
 const BookOpenIcon = () => (
@@ -116,7 +121,7 @@ const SubmittedDocumentDetails = () => {
       time: formatDateTime(createdAt) || uploadDate,
       tone: "primary",
     },
-    thumbnailUrl
+    hasDocumentThumbnailValue(thumbnailUrl)
       ? {
           title: "Đã đính kèm ảnh minh họa",
           time: "Hình ảnh bìa đã sẵn sàng",
@@ -189,7 +194,12 @@ const SubmittedDocumentDetails = () => {
           <div className="details-top-grid">
             <div className="details-preview-card">
               <div className="thumbnail-wrapper">
-                <img src={thumbnailUrl} alt={title} className="document-thumbnail-large" />
+                <img
+                  src={getDocumentThumbnailUrl({ thumbnailUrl })}
+                  alt={title}
+                  className="document-thumbnail-large"
+                  onError={onDocumentThumbnailError}
+                />
                 <div className="file-type-overlay">{documentFileType}</div>
               </div>
             </div>
