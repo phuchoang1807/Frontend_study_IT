@@ -1,9 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import '../../../styles/admin/contributorDetailModal.css';
-import { ContributorRequestStatus, ContributorStatusLabel } from '../../../constants/contributorStatus';
-import axiosClient from '../../../api/axiosClient'; // Import axiosClient
+import { ContributorRequestStatus } from '../../../constants/contributorStatus';
+import axiosClient from '../../../api/axiosClient';
+import {
+  assignUserRoles,
+  findAssignableRoleIdByName,
+  getApiErrorMessage,
+  getUser,
+  listAssignableRoles,
+  removeUserRole,
+} from '../../../api/userApi';
+import { useAuth } from '../../../context/AuthContext';
 
 const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }) => {
+  const { user: currentUser, refreshUserProfile } = useAuth();
   const [isRequestMode, setIsRequestMode] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showApproveModal, setShowApproveModal] = useState(false);
@@ -26,6 +36,7 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
   });
 
   const [requestedFields, setRequestedFields] = useState({});
+  const [approveBusy, setApproveBusy] = useState(false);
 
   useEffect(() => {
     if (isOpen && contributor) {
@@ -65,11 +76,61 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
         rejectionReason: reason,
       };
       await axiosClient.post(`/admin/contributor-requests/${contributor.id}/status`, payload);
-      onUpdateStatus(); // Trigger re-fetch in parent
+      onUpdateStatus();
       handleClose();
     } catch (error) {
       console.error(`❌ Lỗi cập nhật trạng thái yêu cầu Contributor thành ${status}:`, error);
-      alert(`Có lỗi xảy ra khi cập nhật trạng thái. Vui lòng thử lại. Lỗi: ${error.message}`);
+      alert(`Có lỗi xảy ra khi cập nhật trạng thái. Vui lòng thử lại. Lỗi: ${getApiErrorMessage(error)}`);
+    }
+  };
+
+  /**
+   * Phê duyệt: gỡ USER → gán CONTRIBUTOR (API admin users có sẵn), sau đó cập nhật trạng thái yêu cầu.
+   */
+  const approveContributor = async () => {
+    const userId = contributor.userId != null ? String(contributor.userId) : '';
+    if (!userId) {
+      alert('Thiếu userId trên yêu cầu. Vui lòng làm mới trang hoặc kiểm tra API.');
+      return;
+    }
+
+    setApproveBusy(true);
+    try {
+      const roleOptions = await listAssignableRoles();
+      const userRoleId = findAssignableRoleIdByName(roleOptions, 'USER');
+      const contributorRoleId = findAssignableRoleIdByName(roleOptions, 'CONTRIBUTOR');
+      if (!userRoleId || !contributorRoleId) {
+        throw new Error('Không tìm thấy role USER hoặc CONTRIBUTOR trong hệ thống.');
+      }
+
+      const detail = await getUser(userId);
+      const hasUser =
+        (Array.isArray(detail?.roleIds) && detail.roleIds.map(String).includes(String(userRoleId))) ||
+        (Array.isArray(detail?.roles) &&
+          detail.roles.some((r) => String(r).toUpperCase() === 'USER'));
+      if (hasUser) {
+        await removeUserRole(userId, userRoleId);
+      }
+
+      await assignUserRoles(userId, contributorRoleId);
+
+      const payload = {
+        requestId: contributor.id,
+        status: ContributorRequestStatus.APPROVED,
+        rejectionReason: null,
+      };
+      await axiosClient.post(`/admin/contributor-requests/${contributor.id}/status`, payload);
+      if (currentUser?.id && String(currentUser.id) === userId) {
+        await refreshUserProfile();
+      }
+      onUpdateStatus();
+      handleClose();
+    } catch (error) {
+      console.error('❌ Lỗi phê duyệt contributor:', error);
+      alert(`Phê duyệt thất bại: ${getApiErrorMessage(error)}`);
+    } finally {
+      setApproveBusy(false);
+      setShowApproveModal(false);
     }
   };
 
@@ -101,8 +162,7 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
   };
 
   const confirmApprove = () => {
-    sendUpdateRequest(ContributorRequestStatus.APPROVED);
-    setShowApproveModal(false);
+    approveContributor();
   };
 
   const handleClose = () => {
@@ -409,7 +469,13 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
               <p>Bạn có chắc chắn muốn phê duyệt người dùng này thành Contributor không?</p>
               <div className="mini-modal-actions">
                 <button className="btn-mini btn-cancel" onClick={() => setShowApproveModal(false)}>Hủy</button>
-                <button className="btn-mini btn-confirm" onClick={confirmApprove}>Phê duyệt</button>
+                <button
+                  className="btn-mini btn-confirm"
+                  onClick={confirmApprove}
+                  disabled={approveBusy}
+                >
+                  {approveBusy ? 'Đang xử lý…' : 'Phê duyệt'}
+                </button>
               </div>
             </div>
           </div>

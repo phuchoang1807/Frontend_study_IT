@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../api/axiosClient";
-import { useNotification } from "../../context/NotificationContext";
+import { useAuth } from "../../context/AuthContext";
 import "../../styles/contributorStatus.css";
 
 export default function ContributorStatus() {
   const [statusInfo, setStatusInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const notification = useNotification();
+  const { refreshUserProfile } = useAuth();
 
   useEffect(() => {
     const fetchStatus = async () => {
       try {
         const response = await axiosClient.get("/contributor/registration-status");
         if (response.data.success) {
-          setStatusInfo(response.data.data);
+          const data = response.data.data;
+          setStatusInfo(data);
+          if (data?.status === "APPROVED") {
+            await refreshUserProfile();
+          }
         }
       } catch (error) {
         console.error("Error fetching status:", error);
@@ -24,7 +28,29 @@ export default function ContributorStatus() {
       }
     };
     fetchStatus();
-  }, []);
+  }, [refreshUserProfile]);
+
+  useEffect(() => {
+    if (!statusInfo || statusInfo.status !== "PENDING") {
+      return undefined;
+    }
+    const id = setInterval(async () => {
+      try {
+        const response = await axiosClient.get("/contributor/registration-status");
+        if (!response.data.success) {
+          return;
+        }
+        const data = response.data.data;
+        setStatusInfo(data);
+        if (data?.status === "APPROVED") {
+          await refreshUserProfile();
+        }
+      } catch {
+        /* ignore */
+      }
+    }, 20000);
+    return () => clearInterval(id);
+  }, [statusInfo, refreshUserProfile]);
 
   if (loading) return <div className="loading-container">Đang tải...</div>;
   if (!statusInfo) {

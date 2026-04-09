@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   getCurrentUser,
   login as loginApi,
@@ -25,6 +32,8 @@ type AuthContextValue = {
   login: (payload: LoginRequest) => Promise<UserInfo>;
   logout: () => Promise<void>;
   fetchMe: () => Promise<void>;
+  /** Gọi GET /auth/me và đồng bộ user + roles/permissions (localStorage) + contributorStatus — không bật loading toàn cục. */
+  refreshUserProfile: () => Promise<void>;
   refreshContributorStatus: () => Promise<void>; // Hàm để cập nhật lại trạng thái khi cần
   error: string | null;
   setError: (message: string | null) => void;
@@ -41,7 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const isAuthenticated = !!user;
 
-  const refreshContributorStatus = async () => {
+  const refreshContributorStatus = useCallback(async () => {
     try {
       const response = await axiosClient.get("/contributor/registration-status");
       if (response.data.success && response.data.data) {
@@ -56,9 +65,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // This preserves the existing contributorStatus if one exists,
       // preventing incorrect navigation due to temporary API errors.
     }
-  };
+  }, []);
 
-  const fetchMe = async () => {
+  const refreshUserProfile = useCallback(async () => {
+    if (!getAccessToken() && !getRefreshToken()) {
+      return;
+    }
+    try {
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
+      setRoles(currentUser.roles || []);
+      setPermissions(currentUser.permissions || []);
+      await refreshContributorStatus();
+    } catch (e) {
+      console.error("refreshUserProfile failed:", e);
+    }
+  }, [refreshContributorStatus]);
+
+  const fetchMe = useCallback(async () => {
     try {
       setLoading(true);
       const currentUser = await getCurrentUser();
@@ -74,30 +98,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [refreshContributorStatus]);
 
-  const login = async (payload: LoginRequest) => {
-    setError(null);
-    setLoading(true);
-    try {
-      const tokenResponse = await loginApi(payload);
-      setUser(tokenResponse.user);
-      // Sau khi login thành công, lấy trạng thái contributor
-      await refreshContributorStatus();
-      return tokenResponse.user;
-    } catch (err: any) {
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Login failed. Please try again.";
-      setError(message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+  const login = useCallback(
+    async (payload: LoginRequest) => {
+      setError(null);
+      setLoading(true);
+      try {
+        const tokenResponse = await loginApi(payload);
+        setUser(tokenResponse.user);
+        setRoles(tokenResponse.user.roles || []);
+        setPermissions(tokenResponse.user.permissions || []);
+        await refreshContributorStatus();
+        return tokenResponse.user;
+      } catch (err: any) {
+        const message =
+          err?.response?.data?.message ||
+          err?.message ||
+          "Login failed. Please try again.";
+        setError(message);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [refreshContributorStatus]
+  );
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     setError(null);
     setLoading(true);
     try {
@@ -110,7 +138,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setContributorStatus(null);
       setLoading(false);
     }
-  };
+  }, []);
 
   // Init auth khi app mount
   useEffect(() => {
@@ -135,11 +163,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         if (!cancelled) {
-          setUser(tokenData.user);
-          setRoles(tokenData.user.roles || []);
-          setPermissions(tokenData.user.permissions || []);
-          // Refresh trạng thái contributor sau khi phục hồi session
-          await refreshContributorStatus();
+          try {
+            const currentUser = await getCurrentUser();
+            if (cancelled) {
+              return;
+            }
+            setUser(currentUser);
+            setRoles(currentUser.roles || []);
+            setPermissions(currentUser.permissions || []);
+            await refreshContributorStatus();
+          } catch {
+            if (cancelled) {
+              return;
+            }
+            setUser(tokenData.user);
+            setRoles(tokenData.user.roles || []);
+            setPermissions(tokenData.user.permissions || []);
+            await refreshContributorStatus();
+          }
         }
       } catch {
         clearTokens();
@@ -157,7 +198,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [fetchMe, refreshContributorStatus]);
 
   const value: AuthContextValue = useMemo(
     () => ({
@@ -169,11 +210,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       login,
       logout,
       fetchMe,
+      refreshUserProfile,
       refreshContributorStatus,
       error,
       setError,
     }),
-    [user, isAuthenticated, contributorStatus, loading, initializing, error]
+    [
+      user,
+      isAuthenticated,
+      contributorStatus,
+      loading,
+      initializing,
+      error,
+      login,
+      logout,
+      fetchMe,
+      refreshUserProfile,
+      refreshContributorStatus,
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

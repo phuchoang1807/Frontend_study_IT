@@ -164,3 +164,11 @@ function normalizeRoleOption(r) {
   const label = r.label ?? r.name ?? r.code ?? id;
   return { id, label: label || id };
 }
+
+/** Tìm UUID role trong danh sách từ GET /admin/roles (so khớp tên, không phân biệt hoa thường). */
+export function findAssignableRoleIdByName(roleOptions, roleName) {
+  if (!Array.isArray(roleOptions) || !roleName) return null;
+  const target = String(roleName).trim().toUpperCase();
+  const match = roleOptions.find((o) => String(o.label).toUpperCase() === target);
+  return match?.id ?? null;
+}
