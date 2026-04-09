@@ -3,33 +3,31 @@ import { Link } from 'react-router-dom';
 import '../../styles/admin/adminDashboard.css';
 
 const AdminDashboard = () => {
+  const newUsers = [
+    { name: "Lê Minh Tâm", date: "12/10/2023" },
+    { name: "Trần Hoàng Nam", date: "11/10/2023" },
+    { name: "Phạm Mỹ Linh", date: "10/10/2023" },
+    { name: "Nguyễn Gia Huy", date: "09/10/2023" },
+  ];
+
   return (
     <main className="admin-main">
-        <header className="dashboard-header">
-          <div className="header-title">
-            <h1>Tổng quan Dashboard</h1>
-            <p>Chào mừng quay trở lại, quản trị viên.</p>
-          </div>
-          <div className="header-actions">
-            <button className="btn-date">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-              </svg>
-              Tháng này
-            </button>
-            <button className="btn-export">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-              </svg>
-              Xuất báo cáo
-            </button>
-          </div>
-        </header>
+      <header className="dashboard-header">
+        <div className="header-title">
+          <h1>Tổng quan Dashboard</h1>
+          <p>Chào mừng quay trở lại, quản trị viên.</p>
+        </div>
+        <div className="header-actions">
+          <button className="btn-date">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-icon lucide-calendar"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+            Tháng này
+          </button>
+          <button className="btn-export">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload-icon lucide-upload"><path d="M12 3v12"/><path d="m17 8-5-5-5 5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>
+            Xuất báo cáo
+          </button>
+        </div>
+      </header>
 
         {/* Stats Grid */}
         <section className="stats-grid">
@@ -126,131 +124,28 @@ const AdminDashboard = () => {
 
         {/* Table Section */}
         <section className="table-card">
-          <div className="table-header">
-            <h3>Yêu cầu kiểm duyệt gần đây</h3>
-            <Link to="/admin/content" className="btn-view-all">Xem tất cả</Link>
-          </div>
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Tên tài liệu</th>
-                <th>Người gửi</th>
-                <th>Ngày</th>
-                <th>Trạng thái</th>
-                <th>Hành động</th>
+        <div className="table-header">
+          <h3>Người dùng mới tham gia</h3>
+          <Link to="/admin/users" className="btn-view-all">Xem tất cả</Link>
+        </div>
+
+        <table className="admin-table new-users-table">
+          <thead>
+            <tr>
+              <th>TÊN NGƯỜI DÙNG</th>
+              <th>NGÀY</th>
+            </tr>
+          </thead>
+          <tbody>
+            {newUsers.map((user, index) => (
+              <tr key={index}>
+                <td className="user-name-cell">{user.name}</td>
+                <td className="date-cell">{user.date}</td>
               </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div className="file-info">
-                    <div className="file-icon">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                      </svg>
-                    </div>
-                    <span>Báo cáo Q3 2023.pdf</span>
-                  </div>
-                </td>
-                <td>Lê Minh Tâm</td>
-                <td>12/10/2023</td>
-                <td><span className="status-badge status-pending">ĐANG CHỜ</span></td>
-                <td className="actions-cell">
-                  <button className="action-btn approve">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                  </button>
-                  <button className="action-btn reject">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div className="file-info">
-                    <div className="file-icon">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                        <polyline points="21 15 16 10 5 21"></polyline>
-                      </svg>
-                    </div>
-                    <span>Banner_QC_Final.jpg</span>
-                  </div>
-                </td>
-                <td>Trần Hoàng Nam</td>
-                <td>11/10/2023</td>
-                <td><span className="status-badge status-approved">ĐÃ DUYỆT</span></td>
-                <td className="actions-cell">
-                  <button className="action-btn">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                      <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div className="file-info">
-                    <div className="file-icon">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                      </svg>
-                    </div>
-                    <span>Hop_dong_lao_dong.docx</span>
-                  </div>
-                </td>
-                <td>Phạm Mỹ Linh</td>
-                <td>10/10/2023</td>
-                <td><span className="status-badge status-rejected">TỪ CHỐI</span></td>
-                <td className="actions-cell">
-                  <button className="action-btn">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M12 8V12L14 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div className="file-info">
-                    <div className="file-icon">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                      </svg>
-                    </div>
-                    <span>Quy_che_cong_ty_v2.pdf</span>
-                  </div>
-                </td>
-                <td>Nguyễn Gia Huy</td>
-                <td>09/10/2023</td>
-                <td><span className="status-badge status-pending">ĐANG CHỜ</span></td>
-                <td className="actions-cell">
-                  <button className="action-btn approve">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                  </button>
-                  <button className="action-btn reject">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
+            ))}
+          </tbody>
+        </table>
+      </section>
       </main>
   );
 };
