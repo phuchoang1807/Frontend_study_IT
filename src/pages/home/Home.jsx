@@ -195,7 +195,7 @@ export default function Home() {
                     lineHeight: "1.05",
                   }}
                 >
-                  Kho tri thức
+                  Kho tàng tri thức
                 </span>
                 <span
                   style={{

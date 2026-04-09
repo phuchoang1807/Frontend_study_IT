@@ -6,12 +6,10 @@ import {
   ChevronRightIcon,
   DownloadIcon,
   MessageIcon,
-  SearchIcon,
   HeartIcon,
   AlertIcon,
   ListIcon,
   ClockIcon,
-  MaximizeIcon,
 } from "../../components/icons";
 import "../../styles/documentDetail.css";
 import { useLoginRequired } from "../../context/LoginRequiredModalContext";
@@ -27,9 +25,7 @@ import {
   getDocumentThumbnailUrl,
   onDocumentThumbnailError,
 } from "../../utils/documentThumbnail";
-
-const pdfPageFallback =
-  "https://placehold.co/800x1132/white/black?text=TÀI+LIỆU";
+import DocumentPreview from "../../components/document/DocumentPreview";
 
 function formatFileSize(bytes) {
   if (bytes == null || bytes === "") return "";
@@ -403,8 +399,6 @@ export default function DocumentDetail() {
   const related = detail?.relatedDocuments || [];
 
   const titleText = loading ? "Đang tải…" : error ? "Không tải được tài liệu" : info?.title || "";
-  const previewSrc = file?.fileUrl || pdfPageFallback;
-  const fileBadge = (file?.fileType || info?.documentType || "PDF").toString().toUpperCase();
   const downloadLabel = file?.fileSize
     ? `Tải xuống ngay (${formatFileSize(file.fileSize)})`
     : "Tải xuống ngay";
@@ -539,34 +533,9 @@ export default function DocumentDetail() {
         <div className="document-main-layout">
           {/* Left Column */}
           <div className="document-left-column">
-            {/* PDF Viewer */}
             <div className="pdf-viewer-container">
-              <div className="pdf-viewer-header">
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <span className="pdf-badge">{fileBadge}</span>
-                  <span className="pdf-page-info">Trang 1 / 45</span>
-                </div>
-                <div className="pdf-controls">
-                  <div className="pdf-control-btn">
-                    <SearchIcon size={16} />
-                  </div>
-                  <div className="pdf-control-btn">
-                    <SearchIcon size={16} />
-                  </div>
-                  <div className="pdf-control-btn">
-                    <MaximizeIcon size={16} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="pdf-content">
-                <img src={previewSrc} alt="Preview tài liệu" className="pdf-page-image" />
-                <div className="view-more-overlay">
-                  <button type="button" className="view-more-btn">
-                    <ChevronRightIcon size={14} style={{ transform: "rotate(90deg)" }} />
-                    Xem thêm các trang khác
-                  </button>
-                </div>
+              <div className="document-preview-container">
+                <DocumentPreview fileUrl={file?.fileUrl} />
               </div>
             </div>
 
