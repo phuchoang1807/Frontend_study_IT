@@ -148,16 +148,40 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
               <img src={contributor.avatar} alt={contributor.name} className="profile-img" />
             </div>
             <div className="info-grid">
-              <div className="info-item">
-                <label>HỌ TÊN</label>
+              <div className={`info-item ${getFieldClass('fullName')}`}>
+                <div className="label-with-dot">
+                  {isRequestMode && (
+                    <span 
+                      className={`section-dot ${selectedFields.fullName ? 'selected' : ''}`}
+                      onClick={() => toggleField('fullName')}
+                    ></span>
+                  )}
+                  <label>HỌ TÊN:</label>
+                </div>
                 <p>{contributor.name}</p>
               </div>
-              <div className="info-item">
-                <label>EMAIL</label>
+              <div className={`info-item ${getFieldClass('email')}`}>
+                <div className="label-with-dot">
+                  {isRequestMode && (
+                    <span 
+                      className={`section-dot ${selectedFields.email ? 'selected' : ''}`}
+                      onClick={() => toggleField('email')}
+                    ></span>
+                  )}
+                  <label>EMAIL:</label>
+                </div>
                 <p>{contributor.email}</p>
               </div>
-              <div className="info-item full-width">
-                <label>LINK PORTFOLIO / WEBSITE</label>
+              <div className={`info-item full-width ${getFieldClass('portfolioLink')}`}>
+                <div className="label-with-dot">
+                  {isRequestMode && (
+                    <span 
+                      className={`section-dot ${selectedFields.portfolioLink ? 'selected' : ''}`}
+                      onClick={() => toggleField('portfolioLink')}
+                    ></span>
+                  )}
+                  <label>LINK PORTFOLIO / WEBSITE:</label>
+                </div>
                 <p className="bio-text">
                   {contributor.portfolioLink ? (
                     <a

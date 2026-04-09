@@ -11,6 +11,7 @@ import {
   GlobeIcon,
   ShieldIcon,
   UsersIcon,
+  DownloadIcon,
 } from "./icons";
 import {
   buildDocumentDownloadName,
@@ -1060,88 +1061,65 @@ export default function DocumentsList() {
                       </div>
                     </div>
 
-                    <div
-                      style={{
-                        alignSelf: "stretch",
-                        paddingTop: "16px",
-                        borderTop: "1px solid #F1F5F9",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        display: "inline-flex",
-                      }}
+                    <div 
+                      style={{ 
+                        alignSelf: "stretch", 
+                        paddingTop: "16px", 
+                        borderTop: "1px solid #F1F5F9", 
+                        display: "flex", 
+                        justifyContent: "space-between", 
+                        alignItems: "center" 
+                      }} 
                     >
-                      <div style={{ justifyContent: "flex-start", alignItems: "flex-start", gap: "16px", display: "flex" }}>
-                        <div style={{ alignSelf: "stretch", justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
-                          <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                            <EyeIcon size={14} color="#64748B" />
-                          </div>
-                          <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                            <div
-                              style={{
-                                width: "60px",
-                                height: "16px",
-                                justifyContent: "center",
-                                display: "flex",
-                                flexDirection: "column",
-                                color: "#64748B",
-                                fontSize: "12px",
-                                fontFamily: "Inter",
-                                fontWeight: 500,
-                                lineHeight: "16px",
-                              }}
-                            >
-                              {formatCompactNumber(doc.viewCount)}
-                            </div>
-                          </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+                        
+                        {/* View Count */}
+                        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                          <EyeIcon size={25} color="#64748B" />
+                          <span style={{ 
+                            color: "#64748B", 
+                            fontSize: "16px", 
+                            fontFamily: "Inter", 
+                            fontWeight: 500 
+                          }}>
+                            {formatCompactNumber(doc.viewCount)}
+                          </span>
                         </div>
 
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDownload(doc);
-                          }}
-                          style={{
-                            alignSelf: "stretch",
-                            justifyContent: "flex-start",
-                            alignItems: "center",
-                            gap: "4px",
-                            display: "flex",
-                            border: "none",
-                            background: "transparent",
-                            cursor: "pointer",
-                            padding: 0,
-                          }}
-                          title="Download"
+                        {/* Download Count */}
+                        <button 
+                          type="button" 
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            handleDownload(doc); 
+                          }} 
+                          style={{ 
+                            display: "flex", 
+                            alignItems: "center", 
+                            gap: "5px", 
+                            border: "none", 
+                            background: "transparent", 
+                            cursor: "pointer", 
+                            padding: 0 
+                          }} 
+                          title="Tải xuống"
                         >
-                          <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                            <UsersIcon size={12} color="#64748B" />
-                          </div>
-                          <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                            <div
-                              style={{
-                                width: "60px",
-                                height: "16px",
-                                justifyContent: "center",
-                                display: "flex",
-                                flexDirection: "column",
-                                color: "#64748B",
-                                fontSize: "12px",
-                                fontFamily: "Inter",
-                                fontWeight: 500,
-                                lineHeight: "16px",
-                              }}
-                            >
-                              {formatCompactNumber(doc.downloadCount)}
-                            </div>
-                          </div>
+                          <DownloadIcon size={25} color="#64748B" />
+                          <span style={{ 
+                            color: "#64748B", 
+                            fontSize: "16px", 
+                            fontFamily: "Inter", 
+                            fontWeight: 500 
+                          }}>
+                            {formatCompactNumber(doc.downloadCount)}
+                          </span>
                         </button>
                       </div>
 
-                      <DocumentBookmarkControl
+                      <DocumentBookmarkControl 
                         documentId={doc.id}
                         serverIsBookmarked={doc.isBookmarked}
-                        redirectTo={location.pathname + location.search}
+                        redirectTo={location.pathname + location.search} 
                       />
                     </div>
                   </div>
