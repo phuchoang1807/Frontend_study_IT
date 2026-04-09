@@ -12,7 +12,16 @@ import {
 } from '../../../api/userApi';
 import { useAuth } from '../../../context/AuthContext';
 
-const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }) => {
+const ContributorDetailModal = ({
+  isOpen,
+  onClose,
+  contributor,
+  onUpdateStatus,
+  /** Admin “chọn trường cần bổ sung” — mặc định tắt (chỉ xem hồ sơ) */
+  isRequestMode = false,
+  selectedFields = { fullName: false, email: false, portfolioLink: false },
+  toggleField = () => {},
+}) => {
   const { user: currentUser, refreshUserProfile } = useAuth();
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -26,6 +35,22 @@ const ContributorDetailModal = ({ isOpen, onClose, contributor, onUpdateStatus }
   }, [isOpen, contributor]);
 
   if (!isOpen || !contributor) return null;
+
+  /**
+   * Highlight ô thông tin khi trạng thái NEED_INFO và dữ liệu trường còn thiếu / rỗng.
+   * Khớp với class `.requested-field-box` trong contributorDetailModal.css
+   */
+  const getFieldClass = (fieldName) => {
+    if (contributor.statusKey !== ContributorRequestStatus.NEED_INFO) return '';
+    const values = {
+      fullName: contributor.name,
+      email: contributor.email,
+      portfolioLink: contributor.portfolioLink,
+    };
+    const raw = values[fieldName];
+    const empty = raw == null || (typeof raw === 'string' && raw.trim() === '');
+    return empty ? 'requested-field-box' : '';
+  };
 
   const sendUpdateRequest = async (status, reason = null) => {
     try {

@@ -1,9 +1,9 @@
-﻿import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useNotification } from "../../context/NotificationContext";
 import { documentService, sidebarService } from "../../services/api";
 import "../../styles/uploadDocument.css";
-import { uploadToCloudinary } from "../../utils/uploadCloudinary";
+import { uploadDocumentToSupabase } from "../../utils/uploadDocumentSupabase";
 
 const FileUploadIcon = () => (
   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -252,7 +252,7 @@ export default function UploadDocument() {
       let docFileSizeBytes = formData.existingFileSizeBytes;
 
       if (formData.documentFile) {
-        const docResult = await uploadToCloudinary(
+        const docResult = await uploadDocumentToSupabase(
           formData.documentFile,
           "assets/UploadedDocuments"
         );
@@ -262,7 +262,7 @@ export default function UploadDocument() {
       }
 
       if (formData.thumbnailFile) {
-        const thumbResult = await uploadToCloudinary(
+        const thumbResult = await uploadDocumentToSupabase(
           formData.thumbnailFile,
           "assets/UploadedDocuments"
         );
