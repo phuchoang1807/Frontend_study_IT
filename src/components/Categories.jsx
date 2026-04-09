@@ -2,7 +2,7 @@ export default function Categories() {
   return (
     <div style={{ width: "1215px", height: "248px", background: "#F5F7F8", display: "flex", flexDirection: "column", gap: "0" }}>
       <div style={{ width: "1215px", height: "47px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-        <div style={{ color: "#0F172A", fontSize: "24px", fontWeight: 700, lineHeight: "32px" }}>Document Categories</div>
+        <div style={{ color: "#0F172A", fontSize: "24px", fontWeight: 700, lineHeight: "32px" }}>Danh mục tài liệu</div>
       </div>
 
       <div style={{ width: "1215px", display: "flex", gap: "16px", justifyContent: "center", alignItems: "flex-start" }}>

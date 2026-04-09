@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Categories from "../../components/Categories";
 import ContributeSection from "../../components/ContributeSection";
 import DocumentBookmarkControl from "../../components/common/DocumentBookmarkControl";
+import bannerHome from "../../assets/BannerHome.jpg";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -79,7 +80,7 @@ export default function Home() {
         setTrending(Array.isArray(t) ? t : []);
         setTrendingIndex(0);
       } catch (e) {
-        if (!cancelled) setError(e?.message || "Failed to load homepage.");
+        if (!cancelled) setError(e?.message || "Không thể tải trang chủ.");
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -190,7 +191,7 @@ export default function Home() {
                     lineHeight: "1.05",
                   }}
                 >
-                  Knowledge Treasure
+                  Kho tri thức
                 </span>
                 <span
                   style={{
@@ -200,7 +201,7 @@ export default function Home() {
                     lineHeight: "1.05",
                   }}
                 >
-                  Trove
+                  Phong phú
                 </span>
                 <span
                   style={{
@@ -210,7 +211,7 @@ export default function Home() {
                     lineHeight: "1.05",
                   }}
                 >
-                  Open for Community
+                  Chia sẻ trong cộng đồng
                 </span>
               </div>
             </div>
@@ -225,10 +226,9 @@ export default function Home() {
                 width: "100%",
               }}
             >
-              Search, download and share thousands of academic, economic and
-              technology
+              Tìm kiếm, tải xuống và chia sẻ hàng ngàn tài liệu về học thuật, kinh tế và công nghệ 
               <br />
-              documents completely free.
+              hoàn toàn miễn phí!
             </div>
 
             <form
@@ -280,7 +280,7 @@ export default function Home() {
                 <input
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
-                  placeholder="Enter document name, topic or keyword..."
+                  placeholder="Nhập tên tài liệu, chủ đề hoặc từ khóa..."
                   style={{
                     flex: 1,
                     padding: "14px 12px",
@@ -310,7 +310,7 @@ export default function Home() {
                   zIndex: 1,
                 }}
               >
-                Search
+                Tìm kiếm
               </button>
             </form>
           </div>
@@ -320,28 +320,28 @@ export default function Home() {
         <div style={{ alignSelf: "stretch", display: "flex", gap: "16px", justifyContent: "center", alignItems: "flex-start" }}>
           {[
             {
-              label: "Documents",
+              label: "Tài liệu",
               value: stats?.totalApprovedDocuments ?? 0,
               icon: <DocumentIcon size={20} />,
               iconBg: "#EFF6FF",
               iconColor: "#2563EB",
             },
             {
-              label: "Members",
+              label: "Thành viên",
               value: stats?.totalActiveUsers ?? 0,
               icon: <UsersIcon size={20} />,
               iconBg: "#F0FDF4",
               iconColor: "#16A34A",
             },
             {
-              label: "Downloads",
+              label: "Lượt tải",
               value: stats?.totalDownloads ?? 0,
               icon: <DownloadIcon size={18} />,
               iconBg: "#FFF7ED",
               iconColor: "#EA580C",
             },
             {
-              label: "Contributions",
+              label: "Đóng góp",
               value: stats?.totalContributors ?? 0,
               icon: <TrophyIcon size={20} />,
               iconBg: "#FAF5FF",
@@ -385,10 +385,10 @@ export default function Home() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <div style={{ color: "#0F172A", fontSize: "24px", fontWeight: 700 }}>
-                Latest Documents
+                Tài liệu mới nhất
               </div>
               <div style={{ color: "#64748B", fontSize: "14px" }}>
-                Continuously updated by the community
+                Được cộng đồng cập nhật liên tục
               </div>
             </div>
 
@@ -397,7 +397,7 @@ export default function Home() {
               onClick={() => navigate("/documents?sort=newest")}
             >
               <div style={{ color: "#007BFF", fontSize: "14px", fontWeight: 600 }}>
-                View All
+                Xem tất cả
               </div>
               <div style={{ paddingLeft: "4px", color: "#007BFF" }}>
                 <ChevronRightIcon size={14} />
@@ -444,7 +444,7 @@ export default function Home() {
                         borderRadius: "4px",
                       }}
                     >
-                      {doc.categoryName || "Unknown"}
+                      {doc.categoryName || "Không xác định"}
                     </div>
                   </div>
 
@@ -455,7 +455,7 @@ export default function Home() {
 
                     <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", color: "#64748B" }}>
                       <img src="https://placehold.co/24x24" style={{ borderRadius: "50%" }} alt="avatar" />
-                      <span>{doc.authorName || "Unknown"}</span>
+                      <span>{doc.authorName || "Không xác định"}</span>
                       <span>•</span>
                       <span>{formatDateDDMMYYYY(doc.createdAt)}</span>
                     </div>
@@ -487,12 +487,12 @@ export default function Home() {
             <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
               <div style={{ alignSelf: "stretch", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "flex" }}>
                 <div style={{ width: "235px", height: "32px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#0F172A", fontSize: "24px", fontWeight: 700, lineHeight: "32px" }}>
-                  Popular Documents
+                  Tài liệu phổ biến
                 </div>
               </div>
               <div style={{ width: "367px", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "flex" }}>
                 <div style={{ width: "326px", height: "20px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "14px", fontWeight: 400, lineHeight: "20px" }}>
-                  Most interested by the community this week
+                  Được cộng đồng quan tâm nhiều nhất tuần này
                 </div>
               </div>
             </div>
@@ -611,7 +611,7 @@ export default function Home() {
                   <div style={{ width: "244px", paddingTop: "4px", paddingBottom: "4px", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start", display: "inline-flex" }}>
                     <div style={{ width: "233px", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", gap: "4.5px", display: "flex" }}>
                       <div style={{ width: "140px", height: "15px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#007BFF", fontSize: "10px", fontWeight: 700, textTransform: "uppercase", lineHeight: "15px" }}>
-                        {doc.categoryName || "CATEGORY"}
+                        {doc.categoryName || "DANH MỤC"}
                       </div>
                       <div style={{ alignSelf: "stretch", overflow: "hidden", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "flex" }}>
                         <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#0F172A", fontSize: "16px", fontWeight: 700, lineHeight: "24px" }}>
@@ -620,7 +620,7 @@ export default function Home() {
                       </div>
                       <div style={{ alignSelf: "stretch", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "flex" }}>
                         <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "12px", fontWeight: 400, lineHeight: "16px" }}>
-                          Posted by: {doc.authorName || "Unknown"}
+                          Đăng bởi: {doc.authorName || "Không xác định"}
                         </div>
                       </div>
                     </div>
