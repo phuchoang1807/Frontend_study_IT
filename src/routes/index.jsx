@@ -21,6 +21,7 @@ import ViewHistory from "../pages/history/ViewHistory";
 import Profile from "../pages/user/Profile";
 import ManageDocuments from "../pages/document/ManageDocuments";
 import UploadDocument from "../pages/document/UploadDocument";
+import SubmittedDocumentDetails from "../pages/document/SubmittedDocumentDetails.jsx";
 import StyleGuide from "../pages/about/StyleGuide";
 import AboutUs from "../pages/about/AboutUs";
 import FavoriteDocuments from "../pages/document/FavoriteDocuments";
@@ -56,6 +57,7 @@ export const router = createBrowserRouter([
       { path: "profile", element: <Profile /> },
       { path: "manage-documents", element: <ManageDocuments /> },
       { path: "upload-document", element: <UploadDocument /> },
+      { path: "submitted-document-details", element: <SubmittedDocumentDetails /> },
       { path: "document/:id", element: <DocumentDetail /> },
       { path: "view-history", element: <ViewHistory /> },
       { path: "contributor-request", element: <ContributorRequest /> },

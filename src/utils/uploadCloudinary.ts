@@ -2,24 +2,37 @@ const CLOUD_NAME = "doac10qib";
 const UPLOAD_PRESET = "upload_file_demo";
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`;
 
-export const uploadToCloudinary = async (file: File) => {
-  // 1. Validate file size (max 10MB)
-  const maxSize = 10 * 1024 * 1024; // 10MB
+export const uploadToCloudinary = async (file: File, folder?: string) => {
+  // 1. Validate file size (max 25MB for documents, 10MB default)
+  const isDocument = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf") || 
+                     file.name.toLowerCase().endsWith(".docx") || file.name.toLowerCase().endsWith(".pptx");
+  const maxSize = isDocument ? 25 * 1024 * 1024 : 10 * 1024 * 1024; 
+
   if (file.size > maxSize) {
-    throw new Error("File size exceeds 10MB limit.");
+    throw new Error(`File size exceeds ${isDocument ? '25MB' : '10MB'} limit.`);
   }
 
   // 2. Validate file type
-  const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
-  if (!allowedTypes.includes(file.type)) {
-    throw new Error("Invalid file type. Only JPG, PNG, and PDF are allowed.");
+  const allowedTypes = [
+    "image/jpeg", "image/png", "image/webp",
+    "application/pdf", 
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+  ];
+  
+  if (!allowedTypes.includes(file.type) && !isDocument) {
+    throw new Error("Invalid file type. Only JPG, PNG, WEBP, PDF, DOCX, and PPTX are allowed.");
   }
 
   // 3. Prepare Form Data
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", UPLOAD_PRESET);
-  formData.append("resource_type", "auto"); // Tự động nhận diện loại tài nguyên
+  formData.append("resource_type", "auto"); 
+  
+  if (folder) {
+    formData.append("folder", folder);
+  }
 
   try {
     const response = await fetch(CLOUDINARY_URL, {

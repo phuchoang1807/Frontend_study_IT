@@ -12,16 +12,28 @@ const PERMISSIONS_KEY = 'permissions';
 let accessTokenMemory: string | null = null;
 
 export function getAccessToken(): string | null {
-  if (accessTokenMemory) return accessTokenMemory;
-  if (typeof window === 'undefined') return null;
+  if (accessTokenMemory) {
+    console.log("getAccessToken: from memory", accessTokenMemory ? "exists" : "null");
+    return accessTokenMemory;
+  }
+  if (typeof window === 'undefined') {
+    console.log("getAccessToken: window is undefined");
+    return null;
+  }
 
   try {
-    const token =
-      window.sessionStorage.getItem(ACCESS_TOKEN_KEY) ||
-      window.localStorage.getItem(ACCESS_TOKEN_LOCAL_KEY);
+    const sessionToken = window.sessionStorage.getItem(ACCESS_TOKEN_KEY);
+    const localToken = window.localStorage.getItem(ACCESS_TOKEN_LOCAL_KEY);
+    const token = sessionToken || localToken;
     accessTokenMemory = token;
+    console.log("getAccessToken: from storage", {
+      sessionToken: sessionToken ? "exists" : "null",
+      localToken: localToken ? "exists" : "null",
+      result: token ? "exists" : "null"
+    });
     return token;
-  } catch {
+  } catch (e) {
+    console.error("getAccessToken: storage error", e);
     return null;
   }
 }
@@ -29,6 +41,7 @@ export function getAccessToken(): string | null {
 export function setAccessToken(token: string | null): void {
   accessTokenMemory = token;
   if (typeof window === 'undefined') {
+    console.log("setAccessToken: window is undefined");
     return;
   }
 
@@ -36,11 +49,14 @@ export function setAccessToken(token: string | null): void {
     if (token) {
       window.sessionStorage.setItem(ACCESS_TOKEN_KEY, token);
       window.localStorage.setItem(ACCESS_TOKEN_LOCAL_KEY, token);
+      console.log("setAccessToken: token set", token.substring(0, 10) + "...");
     } else {
       window.sessionStorage.removeItem(ACCESS_TOKEN_KEY);
       window.localStorage.removeItem(ACCESS_TOKEN_LOCAL_KEY);
+      console.log("setAccessToken: token cleared");
     }
-  } catch {
+  } catch (e) {
+    console.error("setAccessToken: storage error", e);
     // ignore storage errors
   }
 }
