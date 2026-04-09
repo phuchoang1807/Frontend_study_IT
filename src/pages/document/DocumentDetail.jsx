@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import DocumentBookmarkControl from "../../components/common/DocumentBookmarkControl";
+import { useAuth } from "../../context/AuthContext";
 import {
   ChevronRightIcon,
   DownloadIcon,
@@ -17,6 +18,7 @@ import { useLoginRequired } from "../../context/LoginRequiredModalContext";
 import { useNotification } from "../../context/NotificationContext";
 import {
   buildDocumentDownloadName,
+  commentService,
   documentService,
   downloadFileViaFetch,
   getApiErrorMessage,
@@ -40,9 +42,21 @@ function formatCompactNumber(value) {
   return new Intl.NumberFormat("vi", { notation: "compact" }).format(n);
 }
 
-function formatCommentTime(iso) {
-  if (!iso) return "";
-  const d = new Date(iso);
+function formatCommentTime(value) {
+  if (value == null || value === "") return "";
+  if (Array.isArray(value)) {
+    const [y, m, d, h = 0, min = 0, sec = 0] = value;
+    const dt = new Date(y, (m ?? 1) - 1, d ?? 1, h, min, sec);
+    if (Number.isNaN(dt.getTime())) return "";
+    return dt.toLocaleString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+  const d = new Date(value);
   if (Number.isNaN(d.getTime())) return "";
   return d.toLocaleString("vi-VN", {
     day: "2-digit",
@@ -53,33 +67,30 @@ function formatCommentTime(iso) {
   });
 }
 
-function buildDisplayComments(detail) {
-  const list = [];
-  const ids = new Set();
-  const pinned = detail?.comments?.pinnedComment;
-  if (pinned?.id) {
-    list.push(pinned);
-    ids.add(pinned.id);
-  }
-  (detail?.comments?.latestComments || []).forEach((c) => {
-    if (c?.id && !ids.has(c.id)) {
-      list.push(c);
-      ids.add(c.id);
-    }
-  });
-  return list;
-}
-
 export default function DocumentDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const notification = useNotification();
   const requestLogin = useLoginRequired();
+  const { user } = useAuth();
 
   const [detail, setDetail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [comments, setComments] = useState([]);
+  const [commentsPage, setCommentsPage] = useState(0);
+  const [commentsHasMore, setCommentsHasMore] = useState(false);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [totalComment, setTotalComment] = useState(0);
+  const [repliesByParent, setRepliesByParent] = useState({});
+  const [repliesOpen, setRepliesOpen] = useState({});
+  const [repliesLoading, setRepliesLoading] = useState({});
+  const repliesLoadedRef = useRef(new Set());
+  const [newCommentText, setNewCommentText] = useState("");
+  const [replyingToId, setReplyingToId] = useState(null);
+  const [replyBody, setReplyBody] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -112,7 +123,237 @@ export default function DocumentDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- toast API stable enough; avoid refetch loop
   }, [id]);
 
-  const displayComments = useMemo(() => buildDisplayComments(detail), [detail]);
+  useEffect(() => {
+    setNewCommentText("");
+    setReplyingToId(null);
+    setReplyBody("");
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+    repliesLoadedRef.current = new Set();
+    setRepliesByParent({});
+    setRepliesOpen({});
+    setRepliesLoading({});
+    setComments([]);
+    setCommentsPage(0);
+    setCommentsHasMore(false);
+    setTotalComment(0);
+    (async () => {
+      setCommentsLoading(true);
+      try {
+        const data = await commentService.getComments(id, 0);
+        if (cancelled) return;
+        setComments(data.content || []);
+        const p = data.page ?? 0;
+        setCommentsPage(p);
+        setTotalComment(data.totalComment ?? 0);
+        const tp = data.totalPages ?? 0;
+        setCommentsHasMore(p + 1 < tp);
+      } catch (e) {
+        if (!cancelled) notification.error(getApiErrorMessage(e));
+      } finally {
+        if (!cancelled) setCommentsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  const redirectForAuth = useCallback(() => {
+    return requestLogin({
+      redirectTo: id ? `/documents/${id}` : "/documents",
+    });
+  }, [id, requestLogin]);
+
+  const patchComment = useCallback((commentId, patch) => {
+    const cid = String(commentId);
+    setComments((prev) =>
+      prev.map((c) => (String(c.id) === cid ? { ...c, ...patch } : c))
+    );
+    setRepliesByParent((prev) => {
+      const next = { ...prev };
+      for (const k of Object.keys(next)) {
+        next[k] = next[k].map((c) =>
+          String(c.id) === cid ? { ...c, ...patch } : c
+        );
+      }
+      return next;
+    });
+  }, []);
+
+  const bumpReplyCount = useCallback((parentId) => {
+    const pid = String(parentId);
+    setComments((prev) =>
+      prev.map((c) =>
+        String(c.id) === pid
+          ? { ...c, replyCount: (c.replyCount ?? 0) + 1 }
+          : c
+      )
+    );
+    setRepliesByParent((prev) => {
+      const next = { ...prev };
+      for (const k of Object.keys(next)) {
+        next[k] = next[k].map((c) =>
+          String(c.id) === pid
+            ? { ...c, replyCount: (c.replyCount ?? 0) + 1 }
+            : c
+        );
+      }
+      return next;
+    });
+  }, []);
+
+  const loadRepliesFor = useCallback(
+    async (commentId) => {
+      const cid = String(commentId);
+      setRepliesLoading((p) => ({ ...p, [cid]: true }));
+      try {
+        const list = await commentService.getReplies(cid);
+        setRepliesByParent((p) => ({ ...p, [cid]: list || [] }));
+        repliesLoadedRef.current.add(cid);
+      } catch (e) {
+        notification.error(getApiErrorMessage(e));
+        setRepliesOpen((p) => ({ ...p, [cid]: false }));
+      } finally {
+        setRepliesLoading((p) => ({ ...p, [cid]: false }));
+      }
+    },
+    [notification]
+  );
+
+  const toggleReplies = useCallback(
+    (commentId) => {
+      const cid = String(commentId);
+      setRepliesOpen((prev) => {
+        const wasOpen = !!prev[cid];
+        if (wasOpen) return { ...prev, [cid]: false };
+        if (!repliesLoadedRef.current.has(cid)) {
+          void loadRepliesFor(cid);
+        }
+        return { ...prev, [cid]: true };
+      });
+    },
+    [loadRepliesFor]
+  );
+
+  const handleToggleLike = useCallback(
+    async (commentId) => {
+      if (!redirectForAuth()) return;
+      const cid = String(commentId);
+      let target =
+        comments.find((c) => String(c.id) === cid) ||
+        Object.values(repliesByParent)
+          .flat()
+          .find((c) => String(c.id) === cid);
+      if (!target) return;
+      const liked = !!target.isLiked;
+      const before = { isLiked: target.isLiked, likeCount: target.likeCount };
+      patchComment(cid, {
+        isLiked: !liked,
+        likeCount: Math.max(0, (target.likeCount ?? 0) + (liked ? -1 : 1)),
+      });
+      try {
+        const data = await commentService.toggleLike(commentId);
+        patchComment(cid, {
+          isLiked: data.isLiked,
+          likeCount: data.likeCount,
+        });
+      } catch (e) {
+        patchComment(cid, before);
+        notification.error(getApiErrorMessage(e));
+      }
+    },
+    [comments, repliesByParent, patchComment, notification, redirectForAuth]
+  );
+
+  const loadMoreComments = useCallback(async () => {
+    if (!id || commentsLoading || !commentsHasMore) return;
+    setCommentsLoading(true);
+    const nextPage = commentsPage + 1;
+    try {
+      const data = await commentService.getComments(id, nextPage);
+      const incoming = data.content || [];
+      setComments((prev) => {
+        const seen = new Set(prev.map((c) => String(c.id)));
+        const merged = [...prev];
+        for (const c of incoming) {
+          const k = String(c.id);
+          if (!seen.has(k)) {
+            seen.add(k);
+            merged.push(c);
+          }
+        }
+        return merged;
+      });
+      const p = data.page ?? nextPage;
+      setCommentsPage(p);
+      const tp = data.totalPages ?? 0;
+      setCommentsHasMore(p + 1 < tp);
+    } catch (e) {
+      notification.error(getApiErrorMessage(e));
+    } finally {
+      setCommentsLoading(false);
+    }
+  }, [
+    id,
+    commentsLoading,
+    commentsHasMore,
+    commentsPage,
+    notification,
+  ]);
+
+  const submitRootComment = useCallback(async () => {
+    if (!id) return;
+    if (!redirectForAuth()) return;
+    const text = newCommentText.trim();
+    if (!text) return;
+    try {
+      const created = await commentService.postComment(id, text);
+      setNewCommentText("");
+      setComments((prev) => [created, ...prev]);
+      setTotalComment((t) => t + 1);
+    } catch (e) {
+      notification.error(getApiErrorMessage(e));
+    }
+  }, [id, newCommentText, notification, redirectForAuth]);
+
+  const onReplyClick = useCallback(
+    (commentId) => {
+      if (!redirectForAuth()) return;
+      const cid = String(commentId);
+      setReplyingToId((cur) => (String(cur) === cid ? null : cid));
+      setReplyBody("");
+    },
+    [redirectForAuth]
+  );
+
+  const submitReply = useCallback(
+    async (parentId) => {
+      if (!redirectForAuth()) return;
+      const text = replyBody.trim();
+      if (!text) return;
+      const pid = String(parentId);
+      try {
+        const created = await commentService.postReply(parentId, text);
+        setReplyBody("");
+        setReplyingToId(null);
+        setRepliesByParent((p) => ({
+          ...p,
+          [pid]: [...(p[pid] || []), created],
+        }));
+        repliesLoadedRef.current.add(pid);
+        bumpReplyCount(parentId);
+        setRepliesOpen((p) => ({ ...p, [pid]: true }));
+      } catch (e) {
+        notification.error(getApiErrorMessage(e));
+      }
+    },
+    [replyBody, bumpReplyCount, notification, redirectForAuth]
+  );
 
   const handleDownload = useCallback(async () => {
     if (!id) return;
@@ -163,6 +404,117 @@ export default function DocumentDetail() {
   const downloadLabel = file?.fileSize
     ? `Tải xuống ngay (${formatFileSize(file.fileSize)})`
     : "Tải xuống ngay";
+
+  const inputAvatarSrc = user?.avatar || "https://placehold.co/40x40";
+  const commentCountDisplay =
+    totalComment || detail?.comments?.totalComments || 0;
+
+  function renderCommentRow(comment, depth = 0) {
+    const cid = String(comment.id);
+    const avatarSrc = comment.authorAvatar || "https://placehold.co/40x40";
+    const open = !!repliesOpen[cid];
+    const children = repliesByParent[cid] || [];
+    const loadingReplies = !!repliesLoading[cid];
+
+    return (
+      <div
+        key={cid}
+        className="comment-item"
+        style={depth ? { marginLeft: 24, marginTop: 12 } : undefined}
+      >
+        <img src={avatarSrc} alt={comment.authorName || ""} className="user-avatar" />
+        <div className="comment-content-wrapper">
+          <div className="comment-user-info">
+            <span className="comment-user-name">{comment.authorName || "Ẩn danh"}</span>
+            <span className="comment-time">• {formatCommentTime(comment.createdAt)}</span>
+          </div>
+          <p className="comment-text">
+            {comment.replyToUserName ? (
+              <span style={{ color: "#007bff", marginRight: 6 }}>
+                @{comment.replyToUserName}
+              </span>
+            ) : null}
+            {comment.body}
+          </p>
+          <div className="comment-actions">
+            <div
+              role="button"
+              tabIndex={0}
+              className="comment-action-item"
+              onClick={() => void handleToggleLike(comment.id)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") void handleToggleLike(comment.id);
+              }}
+            >
+              <HeartIcon size={14} color={comment.isLiked ? "#007bff" : "#64748b"} />
+              <span>{comment.likeCount ?? 0}</span>
+            </div>
+            {(comment.replyCount ?? 0) > 0 ? (
+              <div className="comment-action-item">
+                <span>{comment.replyCount} phản hồi</span>
+              </div>
+            ) : null}
+            <div
+              role="button"
+              tabIndex={0}
+              className="comment-action-item"
+              onClick={() => onReplyClick(comment.id)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") onReplyClick(comment.id);
+              }}
+            >
+              Phản hồi
+            </div>
+          </div>
+          {(comment.replyCount ?? 0) > 0 ? (
+            <div style={{ marginTop: 8 }}>
+              <button
+                type="button"
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#007bff",
+                  fontSize: "12px",
+                  cursor: "pointer",
+                  padding: 0,
+                }}
+                onClick={() => toggleReplies(comment.id)}
+              >
+                {open ? "Ẩn replies" : `Xem replies (${comment.replyCount})`}
+              </button>
+            </div>
+          ) : null}
+          {open ? (
+            <div className="comment-list" style={{ marginTop: 8 }}>
+              {loadingReplies ? (
+                <div style={{ fontSize: 12, color: "#64748b" }}>Đang tải…</div>
+              ) : (
+                children.map((ch) => renderCommentRow(ch, depth + 1))
+              )}
+            </div>
+          ) : null}
+          {String(replyingToId) === cid ? (
+            <div className="comment-textarea-wrapper" style={{ marginTop: 12 }}>
+              <textarea
+                className="comment-textarea"
+                placeholder="Viết phản hồi…"
+                value={replyBody}
+                onChange={(e) => setReplyBody(e.target.value)}
+                rows={2}
+              />
+              <button
+                type="button"
+                className="submit-comment-btn"
+                onClick={() => void submitReply(comment.id)}
+              >
+                Gửi
+              </button>
+            </div>
+          ) : null}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="document-detail-container">
@@ -218,64 +570,52 @@ export default function DocumentDetail() {
             <div className="comments-section">
               <div className="comments-header">
                 <MessageIcon size={20} color="#007bff" />
-                <h3 className="comments-title">
-                  Bình luận ({detail?.comments?.totalComments ?? 0})
-                </h3>
+                <h3 className="comments-title">Bình luận ({commentCountDisplay})</h3>
               </div>
 
               <div className="comment-input-container">
-                <img src="https://placehold.co/40x40" alt="User Avatar" className="user-avatar" />
+                <img src={inputAvatarSrc} alt="User Avatar" className="user-avatar" />
                 <div className="comment-textarea-wrapper">
                   <textarea
                     className="comment-textarea"
                     placeholder="Chia sẻ cảm nghĩ của bạn về tài liệu này..."
-                  ></textarea>
-                  <button type="button" className="submit-comment-btn">
+                    value={newCommentText}
+                    onChange={(e) => setNewCommentText(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="submit-comment-btn"
+                    onClick={() => void submitRootComment()}
+                  >
                     Gửi bình luận
                   </button>
                 </div>
               </div>
 
               <div className="comment-list">
-                {displayComments.map((comment) => (
-                  <div key={comment.id} className="comment-item">
-                    <img
-                      src="https://placehold.co/40x40"
-                      alt={comment.authorName || ""}
-                      className="user-avatar"
-                    />
-                    <div className="comment-content-wrapper">
-                      <div className="comment-user-info">
-                        <span className="comment-user-name">{comment.authorName || "Ẩn danh"}</span>
-                        <span className="comment-time">• {formatCommentTime(comment.createdAt)}</span>
-                        {comment.isPinned && <AlertIcon size={12} color="#64748b" />}
-                      </div>
-                      <p className="comment-text">{comment.content}</p>
-                      <div className="comment-actions">
-                        <div className="comment-action-item">
-                          <HeartIcon size={14} />
-                          <span>{comment.totalLikes ?? 0}</span>
-                        </div>
-                        <div className="comment-action-item">Phản hồi</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                {commentsLoading && comments.length === 0 ? (
+                  <div style={{ fontSize: 13, color: "#64748b" }}>Đang tải bình luận…</div>
+                ) : null}
+                {comments.map((comment) => renderCommentRow(comment, 0))}
               </div>
 
               <div style={{ textAlign: "center", marginTop: "24px" }}>
-                <button
-                  type="button"
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "#64748b",
-                    fontSize: "12px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Xem thêm
-                </button>
+                {commentsHasMore ? (
+                  <button
+                    type="button"
+                    disabled={commentsLoading}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "#64748b",
+                      fontSize: "12px",
+                      cursor: commentsLoading ? "wait" : "pointer",
+                    }}
+                    onClick={() => void loadMoreComments()}
+                  >
+                    {commentsLoading ? "Đang tải…" : "Xem thêm"}
+                  </button>
+                ) : null}
               </div>
             </div>
           </div>

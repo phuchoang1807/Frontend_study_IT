@@ -156,6 +156,60 @@ export const documentService = {
   },
 };
 
+export const commentService = {
+  /** @param {string} documentId */
+  async getComments(documentId, page = 0) {
+    const res = await axiosClient.get(`/documents/${documentId}/comments`, {
+      params: { page },
+    });
+    return unwrapApiResponse(res);
+  },
+  /** @param {string} commentId */
+  async getReplies(commentId) {
+    const res = await axiosClient.get(`/comments/${commentId}/replies`);
+    return unwrapApiResponse(res);
+  },
+  /** @param {string} documentId @param {string} body */
+  async postComment(documentId, body) {
+    const res = await axiosClient.post(`/documents/${documentId}/comments`, {
+      body,
+    });
+    return unwrapApiResponse(res);
+  },
+  /** @param {string} parentCommentId @param {string} body */
+  async postReply(parentCommentId, body) {
+    const res = await axiosClient.post(`/comments/${parentCommentId}/reply`, {
+      body,
+    });
+    return unwrapApiResponse(res);
+  },
+  /** @param {string} commentId */
+  async toggleLike(commentId) {
+    const res = await axiosClient.post(`/comments/${commentId}/like`);
+    return unwrapApiResponse(res);
+  },
+};
+
+export async function getComments(documentId, page) {
+  return commentService.getComments(documentId, page);
+}
+
+export async function getReplies(commentId) {
+  return commentService.getReplies(commentId);
+}
+
+export async function postComment(documentId, body) {
+  return commentService.postComment(documentId, body);
+}
+
+export async function postReply(parentCommentId, body) {
+  return commentService.postReply(parentCommentId, body);
+}
+
+export async function toggleLike(commentId) {
+  return commentService.toggleLike(commentId);
+}
+
 // Base message (reusable): prompt auth then redirect
 export function requireAuthOrPrompt({ isAuthenticated, navigate, redirectTo }) {
   if (isAuthenticated) return true;
