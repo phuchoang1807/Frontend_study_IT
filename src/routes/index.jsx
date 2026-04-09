@@ -29,6 +29,7 @@ import QuizHistory from "../pages/quiz/QuizHistory";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import ContributorRequests from "../pages/admin/ContributorRequests";
 import AdminSignIn from "../pages/admin/AdminSignIn";
+import ContentModeratorPage from "../pages/admin/ContentModeratorPage.jsx";
 import UsersPage from "../pages/admin/UsersPage";
 import RolesPage from "../pages/admin/RolesPage";
 import CategoryPage from "../pages/admin/CategoryPage";
@@ -85,6 +86,8 @@ export const router = createBrowserRouter([
           { path: "permissions", element: <PermissionsPage /> },
           { path: "categories", element: <CategoryPage /> },
           { path: "tags", element: <TagPage /> },
+          { path: "content-moderator", element: <ContentModeratorPage /> },
+          { path: "user-moderator", element: <UserModeratorPage /> }, // New route for user moderator
         ],
       },
     ],

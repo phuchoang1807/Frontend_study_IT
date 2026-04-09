@@ -3,7 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { EyeIcon } from "../../components/icons";
 import { useAuth } from "../../context/AuthContext";
 import { useNotification } from "../../context/NotificationContext";
-import { userHasAdminPortalRole } from "../../constants/adminPortalRoles";
+import {
+  userHasAdminPortalRole,
+  getAdminLandingRoute,
+} from "../../constants/adminPortalRoles";
 import "../../styles/admin/adminSignIn.css";
 
 const LOGIN_ERROR_FALLBACK =
@@ -29,7 +32,7 @@ const AdminSignIn = () => {
       
       if (userHasAdminPortalRole(user?.roles)) {
         notification.success("Admin access authorized.");
-        navigate("/admin/dashboard");
+        navigate(getAdminLandingRoute(user?.roles));
       } else {
         const msg =
           "You do not have permission to access the admin portal.";

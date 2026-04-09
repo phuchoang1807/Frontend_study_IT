@@ -33,11 +33,20 @@ export default function SignIn() {
     try {
       const user = await login({ email, password, rememberMe });
       notification.success("Login successful.");
+
+      // Determine redirect path based on roles
+      let redirectPath = "/"; // Default path
+
       if (user?.roles?.includes("ADMIN")) {
-        navigate("/admin/dashboard");
-      } else {
-        navigate("/");
+        redirectPath = "/admin/dashboard";
+      } else if (user?.roles?.includes("CONTENT_MODERATOR")) {
+        redirectPath = "/admin/content-moderator";
+      } else if (user?.roles?.includes("USER_MODERATOR")) {
+        redirectPath = "/admin/user-moderator";
       }
+      // If no specific role matches, it defaults to "/"
+
+      navigate(redirectPath);
     } catch (err) {
       const message =
         err?.response?.data?.message ||

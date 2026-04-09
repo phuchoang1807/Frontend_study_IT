@@ -101,7 +101,7 @@ export default function ManageQuizzes() {
         <nav className="breadcrumb">
           <span>CÁ NHÂN</span>
           <span>/</span>
-          <span className="active">QUẢN LÝ BÀI ĐÁNH GIÁ</span>
+          <span className="active">QUẢN LÝ BÀI ĐÁNH GIÁ </span>
         </nav>
 
         <div className="manage-quizzes-header">

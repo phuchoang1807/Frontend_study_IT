@@ -12,3 +12,12 @@ export function userHasAdminPortalRole(
     (ADMIN_PORTAL_ROLES as readonly string[]).includes(r)
   );
 }
+export function getAdminLandingRoute(
+  roles: string[] | undefined | null
+): string {
+  if (!roles?.length) return "/admin/dashboard";
+  if (roles.includes("ADMIN")) return "/admin/dashboard";
+  if (roles.includes("USER_MODERATOR")) return "/admin/contributor-requests";
+  if (roles.includes("CONTENT_MODERATOR")) return "/admin/content-moderator";
+  return "/admin/dashboard";
+}

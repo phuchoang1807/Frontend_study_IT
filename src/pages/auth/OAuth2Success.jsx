@@ -9,6 +9,11 @@ import {
   clearTokens,
 } from "../../api/tokenStorage";
 import BrandLogo from "../../components/BrandLogo";
+import {
+  userHasAdminPortalRole,
+  getAdminLandingRoute,
+} from "../../constants/adminPortalRoles";
+
 
 export default function OAuth2Success() {
   const [searchParams] = useSearchParams();
@@ -43,7 +48,20 @@ export default function OAuth2Success() {
         if (cancelled) return;
         setRoles(user.roles || []);
         setPermissions(user.permissions || []);
-        window.location.replace("/");
+
+        // Implement role-based redirection
+        let redirectPath = "/"; // Default path
+
+        if (user?.roles?.includes("ADMIN")) {
+          redirectPath = "/admin/dashboard";
+        } else if (user?.roles?.includes("CONTENT_MODERATOR")) {
+          redirectPath = "/admin/content-moderator";
+        } else if (user?.roles?.includes("USER_MODERATOR")) {
+          redirectPath = "/admin/user-moderator";
+        }
+        // If no specific role matches, it defaults to "/"
+
+        window.location.replace(redirectPath);
       } catch {
         if (cancelled) return;
         clearTokens();
