@@ -11,13 +11,14 @@ const ContributorRequests = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchRequests = async () => {
-    try {
-      setIsLoading(true);
+  try {
+    setIsLoading(true);
 
-      const response = await axiosClient.get('/admin/contributor-requests');
+    const response = await axiosClient.get('/admin/contributor-requests');
 
-      if (response.data && Array.isArray(response.data.data)) {
-        const mappedData = response.data.data.map(req => {
+    if (response.data && Array.isArray(response.data.data)) {
+      const mappedData = response.data.data
+        .map(req => {
           const status = (req.status || ContributorRequestStatus.PENDING).toUpperCase();
           const statusLabel =
             status === ContributorRequestStatus.NEED_INFO
@@ -38,23 +39,48 @@ const ContributorRequests = () => {
 
             status: status.toLowerCase(),
             statusKey: status,
-            statusLabel,
-            rejectionReason: req.rejectionReason || null, // Ensure rejectionReason is passed
+            statusLabel: ContributorStatusLabel[status] || 'Chưa rõ',
+            rejectionReason: req.rejectionReason || null,
+
+            // === Thêm 2 trường hỗ trợ sắp xếp ===
+            createdAtDate: req.createdAt ? new Date(req.createdAt) : new Date(0),
+            // Giả sử backend có trường updatedAt (thời điểm duyệt/từ chối). Nếu chưa có thì dùng createdAt tạm
+            updatedAtDate: req.updatedAt ? new Date(req.updatedAt) : new Date(req.createdAt || 0),
           };
+        })
+        // ==================== SẮP XẾP THEO YÊU CẦU ====================
+        .sort((a, b) => {
+          const isPendingA = a.statusKey === ContributorRequestStatus.PENDING || 
+                            a.statusKey === ContributorRequestStatus.NEED_INFO;
+          const isPendingB = b.statusKey === ContributorRequestStatus.PENDING || 
+                            b.statusKey === ContributorRequestStatus.NEED_INFO;
+
+          // 1. Nhóm "Chưa thao tác" luôn ở trên nhóm "Đã thao tác"
+          if (isPendingA && !isPendingB) return -1;
+          if (!isPendingA && isPendingB) return 1;
+
+          // 2. Trong cùng nhóm
+          if (isPendingA && isPendingB) {
+            // Yêu cầu chưa thao tác: Mới nhất (createdAt lớn hơn) lên trên
+            return b.createdAtDate - a.createdAtDate;
+          } else {
+            // Yêu cầu đã thao tác: Được xử lý muộn nhất (updatedAt lớn hơn) lên trên
+            return b.updatedAtDate - a.updatedAtDate;
+          }
         });
 
-        setRequests(mappedData);
-      } else {
-        console.warn("Response không đúng format:", response.data);
-        setRequests([]);
-      }
-    } catch (error) {
-      console.error("❌ Lỗi gọi API:", error);
+      setRequests(mappedData);
+    } else {
+      console.warn("Response không đúng format:", response.data);
       setRequests([]);
-    } finally {
-      setIsLoading(false);
     }
-  };
+  } catch (error) {
+    console.error("❌ Lỗi gọi API:", error);
+    setRequests([]);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchRequests();
