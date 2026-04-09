@@ -140,7 +140,9 @@ export default function ContributorRequest() {
           <div className="form-group">
             <label className="form-label">Link Portfolio (nếu có)</label>
             <div className="input-wrapper">
-              <span className="input-icon"><LinkIcon size={16} /></span>
+              <span className="input-icon">
+                <LinkIcon size={16} />
+              </span>
               <input 
                 type="text" 
                 name="portfolioLink"

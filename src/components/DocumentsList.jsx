@@ -21,8 +21,8 @@ import {
 } from "../services/api";
 
 const SORT_OPTIONS = [
-  { label: "Popular", value: "popular" },
-  { label: "Newest", value: "newest" },
+  { label: "Phổ biến", value: "popular" },
+  { label: "Mới nhất", value: "newest" },
 ];
 
 const CARD_POSITIONS = [
@@ -53,7 +53,7 @@ function fileTypeBadge(fileType) {
   if (t === "PDF") return { bg: "#EF4444", label: "PDF" };
   if (t === "DOC") return { bg: "#3B82F6", label: "DOC" };
   if (t === "PPTX") return { bg: "#F59E0B", label: "PPTX" };
-  return { bg: "#64748B", label: t || "FILE" };
+  return { bg: "#64748B", label: t || "TỆP" };
 }
 
 function buildSearchParams({ keyword, categoryId, tagIds, sort, page, size }) {
@@ -68,7 +68,6 @@ function buildSearchParams({ keyword, categoryId, tagIds, sort, page, size }) {
 }
 
 function computePageItems(currentPage, totalPages) {
-  // 1-based for UI
   if (totalPages <= 7) {
     return Array.from({ length: totalPages }, (_, i) => ({ type: "page", page: i + 1 }));
   }
@@ -105,13 +104,11 @@ export default function DocumentsList() {
 
   const size = Number.isFinite(initialSize) && initialSize > 0 ? initialSize : 4;
 
-  // Sidebar data
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
   const [sidebarLoading, setSidebarLoading] = useState(false);
   const [sidebarError, setSidebarError] = useState(null);
 
-  // Pending filters (user selects but not yet applied)
   const [pendingCategoryId, setPendingCategoryId] = useState(initialCategoryId);
   const [pendingTagIds, setPendingTagIds] = useState(new Set(initialTagIds));
   const [pendingSort, setPendingSort] = useState(
@@ -119,7 +116,6 @@ export default function DocumentsList() {
   );
   const [isSortOpen, setIsSortOpen] = useState(false);
 
-  // Applied filters (used for API)
   const [appliedKeyword, setAppliedKeyword] = useState(initialKeyword);
   const [appliedCategoryId, setAppliedCategoryId] = useState(initialCategoryId);
   const [appliedTagIds, setAppliedTagIds] = useState(initialTagIds);
@@ -128,7 +124,6 @@ export default function DocumentsList() {
   );
   const [page, setPage] = useState(Number.isFinite(initialPage) && initialPage >= 0 ? initialPage : 0);
 
-  // Documents data
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [documents, setDocuments] = useState([]);
@@ -316,13 +311,13 @@ export default function DocumentsList() {
   const title = isSearchMode ? "Kết quả tìm kiếm" : "Danh sách tài liệu";
   const subtitle = isSearchMode
     ? "Kết quả tìm kiếm của bạn"
-    : "Search and download more than 10,000 high-quality IT learning documents.";
+    : "Tìm kiếm và tải xuống hơn 10.000 tài liệu học IT chất lượng cao.";
 
-  const sortLabel = SORT_OPTIONS.find((o) => o.value === pendingSort)?.label || "Newest";
+  const sortLabel = SORT_OPTIONS.find((o) => o.value === pendingSort)?.label || "Mới nhất";
   const pageItems = computePageItems(page + 1, totalPages);
 
   const categoryRows = useMemo(() => {
-    const rows = [{ id: "", name: "All" }, ...(categories || [])];
+    const rows = [{ id: "", name: "Tất cả" }, ...(categories || [])];
     const icons = [GlobeIcon, UsersIcon, EyeIcon, DocumentIcon, ShieldIcon];
     return rows.map((c, idx) => ({
       ...c,
@@ -354,22 +349,18 @@ export default function DocumentsList() {
           display: "flex",
         }}
       >
-        {/* Sidebar */}
         <div
           style={{
-            width: "272px",
-            height: "721px",
-            transform: "translateX(-42px)",
-            paddingLeft: "11px",
-            paddingRight: "11px",
-            position: "relative",
+            width: "100%",
+            maxWidth: "272px",
             background: "white",
-            borderBottomRightRadius: "10px",
-            borderBottomLeftRadius: "10px",
+            borderRadius: "10px",
+            padding: "20px 16px",
+            display: "flex",
             flexDirection: "column",
-            justifyContent: "flex-start",
-            alignItems: "flex-start",
-            display: "inline-flex",
+            gap: "24px",
+            alignSelf: "stretch",
+            flexShrink: 0,
           }}
         >
           <div
@@ -383,37 +374,47 @@ export default function DocumentsList() {
               display: "flex",
             }}
           >
-            <div
-              style={{
-                alignSelf: "stretch",
-                justifyContent: "flex-start",
-                alignItems: "center",
-                gap: "8px",
-                display: "inline-flex",
-              }}
-            >
-              <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <DocumentIcon size={18} color="#007BFF" />
-              </div>
-              <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                <div
-                  style={{
-                    width: "132.61px",
-                    height: "28px",
-                    justifyContent: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    color: "#0F172A",
-                    fontSize: "18px",
-                    fontFamily: "Inter",
-                    fontWeight: 700,
-                    lineHeight: "28px",
-                  }}
-                >
-                  Search Filters
-                </div>
+            
+          <div
+            style={{
+              alignSelf: "stretch",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              gap: "8px",
+              display: "inline-flex",
+            }}
+          >
+            <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
+              {/* Icon Filter thay vì DocumentIcon */}
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="20" 
+                height="20" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="#007BFF" 
+                strokeWidth="2.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+              </svg>
+            </div>
+            
+            <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
+              <div
+                style={{
+                  color: "#0F172A",
+                  fontSize: "18px",
+                  fontFamily: "Inter",
+                  fontWeight: 700,
+                  lineHeight: "28px",
+                }}
+              >
+                Bộ lọc tìm kiếm
               </div>
             </div>
+          </div>
 
             {/* Categories */}
             <div
@@ -450,7 +451,7 @@ export default function DocumentsList() {
                     letterSpacing: "0.60px",
                   }}
                 >
-                  IT Fields
+                  Lĩnh vực IT
                 </div>
               </div>
 
@@ -560,7 +561,7 @@ export default function DocumentsList() {
                     letterSpacing: "0.60px",
                   }}
                 >
-                  Popular Tags
+                  Tag phổ biến
                 </div>
               </div>
 
@@ -634,7 +635,7 @@ export default function DocumentsList() {
               }}
             >
               <div style={{ color: "#94A3B8", fontSize: "12px", fontFamily: "Inter", fontWeight: 700, textTransform: "uppercase", lineHeight: "16px", letterSpacing: "0.60px" }}>
-                Sort By
+                Sắp xếp theo
               </div>
 
               <button
@@ -718,7 +719,7 @@ export default function DocumentsList() {
                   "0px 4px 6px -4px rgba(0,123,255,0.25), 0px 10px 15px -3px rgba(0,123,255,0.25)",
               }}
             >
-              Lọc
+              Áp dụng lọc
             </button>
           </div>
         </div>
@@ -761,7 +762,7 @@ export default function DocumentsList() {
                     lineHeight: "20px",
                   }}
                 >
-                  Home
+                  Trang chủ
                 </div>
               </div>
               <div style={{ display: "inline-flex", alignItems: "center" }}>
@@ -828,7 +829,7 @@ export default function DocumentsList() {
 
             {isSearchMode && (
               <div style={{ color: "#94A3B8", fontSize: "12px", fontFamily: "Inter", fontWeight: 500 }}>
-                Keyword: <span style={{ color: "#0F172A" }}>{appliedKeyword}</span>
+                Từ khóa: <span style={{ color: "#0F172A" }}>{appliedKeyword}</span>
               </div>
             )}
           </div>
@@ -981,7 +982,7 @@ export default function DocumentsList() {
                               whiteSpace: "nowrap",
                             }}
                           >
-                            {doc.categoryName || "Unknown"}
+                            {doc.categoryName || "Chưa phân loại"}
                           </div>
                         </div>
 
@@ -1049,7 +1050,7 @@ export default function DocumentsList() {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {doc.authorName || "Unknown"}
+                          {doc.authorName || "Không rõ"}
                         </div>
                       </div>
                     </div>
@@ -1145,7 +1146,7 @@ export default function DocumentsList() {
 
             {!loading && documents.length === 0 && (
               <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#94A3B8" }}>
-                No documents found.
+                Không tìm thấy tài liệu nào.
               </div>
             )}
           </div>

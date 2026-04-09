@@ -109,18 +109,17 @@ export default function ContributeSection() {
           </div>
         </div>
 
-        <div style={{ flex: "1 1 0", position: "relative", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
+        <div style={{ flex: "1 1 0", position: "relative", overflow: "hidden", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
           <img style={{ width: "525px", height: "296px", objectFit: "cover" }} src={bannerHome} alt="Contribute Illustration" />
 
           <div
             style={{
-              width: "96px",
-              height: "96px",
+              width: "70px",
+              height: "400px",
               left: "471px",
-              top: "-16px",
+              top: "0px",
               position: "absolute",
               background: "rgba(0,123,255,0.20)",
-              boxShadow: "40px 40px 40px",
               borderRadius: "9999px",
               filter: "blur(20px)",
             }}
@@ -134,7 +133,6 @@ export default function ContributeSection() {
               top: "192px",
               position: "absolute",
               background: "rgba(168,85,247,0.10)",
-              boxShadow: "40px 40px 40px",
               borderRadius: "9999px",
               filter: "blur(20px)",
             }}
