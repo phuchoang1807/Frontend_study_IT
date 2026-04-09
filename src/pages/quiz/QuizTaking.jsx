@@ -288,9 +288,11 @@ export default function QuizTaking() {
     );
   }
 
-  return (
+    return (
     <div className="quiz-taking-container">
       <div className="quiz-taking-content">
+        
+        {/* Header: Title + Progress */}
         <div className="quiz-header">
           <div className="quiz-title-section">
             <h1>{quizTitle}</h1>
@@ -303,85 +305,97 @@ export default function QuizTaking() {
               </span>
             </div>
           </div>
-
-          <div className="timer-card">
-            <div className="timer-title">THỜI GIAN CÒN LẠI</div>
-            <div className="timer-values">
-              <div className="timer-box">
-                <span className="timer-number">{String(displayMinutes).padStart(2, "0")}</span>
-                <span className="timer-label">PHÚT</span>
-              </div>
-              <div className="timer-box">
-                <span className="timer-number">{String(displaySeconds).padStart(2, "0")}</span>
-                <span className="timer-label">GIÂY</span>
-              </div>
-            </div>
-          </div>
         </div>
 
+        {/* Main Layout - Grid 2 cột */}
         <div className="main-content">
-          <div className="questions-section">
-            {questions.map((q, idx) => (
-              <div key={q.id} id={`quiz-question-${q.id}`} className="question-card">
-                <div className="question-header">
-                  <div className="question-number">{q.number}</div>
-                  <h3 className="question-text">{q.question}</h3>
-                </div>
+          
+          {/* Cột trái: Các câu hỏi */}
+          <div className="left-column">
+            <div className="questions-section">
+              {questions.map((q, idx) => (
+                <div key={q.id} id={`quiz-question-${q.id}`} className="question-card">
+                  <div className="question-header">
+                    <div className="question-number">{q.number}</div>
+                    <h3 className="question-text">{q.question}</h3>
+                  </div>
 
-                <div className="options-list">
-                  {q.options.map((option) => (
-                    <label
-                      key={option.id}
-                      className={`option-item ${answers[q.id] === option.id ? "selected" : ""}`}
-                      onClick={() => handleOptionSelect(q.id, option.id)}
-                    >
-                      <input
-                        type="radio"
-                        name={`question-${q.id}`}
-                        checked={answers[q.id] === option.id}
-                        onChange={() => handleOptionSelect(q.id, option.id)}
-                      />
-                      <span className="option-text">{option.text}</span>
-                    </label>
-                  ))}
+                  <div className="options-list">
+                    {q.options.map((option) => (
+                      <label
+                        key={option.id}
+                        className={`option-item ${answers[q.id] === option.id ? "selected" : ""}`}
+                        onClick={() => handleOptionSelect(q.id, option.id)}
+                      >
+                        <input
+                          type="radio"
+                          name={`question-${q.id}`}
+                          checked={answers[q.id] === option.id}
+                          onChange={() => handleOptionSelect(q.id, option.id)}
+                        />
+                        <span className="option-text">{option.text}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
-          <div className="sidebar">
-            <div className="question-list-card">
-              <h3 className="sidebar-title">DANH SÁCH CÂU HỎI</h3>
-              <div className="question-grid">
-                {questions.map((q, idx) => {
-                  const answered = answeredQuestions.has(q.id);
-                  const current = idx === currentQuestionIndex;
-                  const classNames = ["question-btn"];
-                  if (answered) classNames.push("answered");
-                  if (current) classNames.push("current");
-                  return (
-                    <button
-                      key={q.id}
-                      type="button"
-                      className={classNames.join(" ")}
-                      onClick={() => handleNavClick(idx)}
-                    >
-                      {q.number}
-                    </button>
-                  );
-                })}
+          {/* Cột phải: Timer + Danh sách câu hỏi + Nộp bài */}
+          <div className="right-column">
+            
+            {/* Timer - Ô trên bên phải */}
+            <div className="timer-card">
+              <div className="timer-title">THỜI GIAN CÒN LẠI</div>
+              <div className="timer-values">
+                <div className="timer-box">
+                  <span className="timer-number">{String(displayMinutes).padStart(2, "0")}</span>
+                  <span className="timer-label">PHÚT</span>
+                </div>
+                <div className="timer-box">
+                  <span className="timer-number">{String(displaySeconds).padStart(2, "0")}</span>
+                  <span className="timer-label">GIÂY</span>
+                </div>
               </div>
             </div>
 
-            <button
-              type="button"
-              className="submit-btn"
-              disabled={submitting}
-              onClick={() => performSubmit()}
-            >
-              {submitting ? "Đang nộp…" : "Nộp bài"}
-            </button>
+            {/* Danh sách câu hỏi + Nút nộp bài - Ô dưới bên phải */}
+            <div className="sidebar">
+              <div className="question-list-card">
+                <h3 className="sidebar-title">DANH SÁCH CÂU HỎI</h3>
+                <div className="question-grid">
+                  {questions.map((q, idx) => {
+                    const answered = answeredQuestions.has(q.id);
+                    const current = idx === currentQuestionIndex;
+                    const classNames = ["question-btn"];
+                    if (answered) classNames.push("answered");
+                    if (current) classNames.push("current");
+                    return (
+                      <button
+                        key={q.id}
+                        type="button"
+                        className={classNames.join(" ")}
+                        onClick={() => handleNavClick(idx)}
+                      >
+                        {q.number}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                className="submit-btn"
+                disabled={submitting}
+                onClick={() => performSubmit()}
+              >
+                {submitting ? "Đang nộp…" : "Nộp bài"}
+              </button>
+            </div>
           </div>
+
         </div>
       </div>
     </div>
