@@ -41,6 +41,8 @@ import CategoryPage from "../pages/admin/CategoryPage";
 import TagPage from "../pages/admin/TagPage";
 import PermissionsPage from "../pages/admin/PermissionsPage";
 import AdminSettingsPage from "../pages/admin/AdminSettingsPage";
+import ContentModeratorPage from "../pages/admin/ContentModeratorPage";
+import UserReportsPage from "../pages/admin/UserReportsPage";
 
 export const router = createBrowserRouter([
   {
@@ -94,12 +96,14 @@ export const router = createBrowserRouter([
         ),
         children: [
           { path: "dashboard", element: <AdminDashboard /> },
+          { path: "documents/pending", element: <ContentModeratorPage /> },
           { path: "contributor-requests", element: <ContributorRequests /> },
           { path: "users", element: <UsersPage /> },
           { path: "roles", element: <RolesPage /> },
           { path: "permissions", element: <PermissionsPage /> },
           { path: "categories", element: <CategoryPage /> },
           { path: "tags", element: <TagPage /> },
+          { path: "reports", element: <UserReportsPage /> },
           { path: "config", element: <AdminSettingsPage /> },
         ],
       },

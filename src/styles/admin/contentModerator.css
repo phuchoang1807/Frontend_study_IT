@@ -1,0 +1,186 @@
+/* fe/Frontend_study_IT/src/styles/admin/contentModerator.css */
+
+.content-moderator-page {
+    padding: 20px;
+}
+
+.admin-page-header {
+    margin-bottom: 20px;
+}
+
+.admin-page-header h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.admin-page-header p {
+    font-size: 14px;
+    color: #666;
+}
+
+.content-moderator-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-button,
+.export-report-button {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+
+.filter-button i,
+.export-report-button i {
+    color: #666;
+}
+
+.export-report-button {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.export-report-button i {
+    color: white;
+}
+
+/* Table styles */
+.admin-table-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.admin-table-wrapper th,
+.admin-table-wrapper td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.admin-table-wrapper th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+    color: #555;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.admin-table-wrapper tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.document-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #007bff;
+    font-weight: 500;
+}
+
+.document-name-cell i {
+    color: #6c757d;
+}
+
+.contributor-cell div:first-child {
+    font-weight: 500;
+    color: #333;
+}
+
+.contributor-email {
+    font-size: 12px;
+    color: #888;
+}
+
+.field-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    background-color: #e0f7fa;
+    color: #007bff;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-approved {
+    background-color: #d4edda;
+    color: #28a745;
+}
+
+.status-rejected {
+    background-color: #f8d7da;
+    color: #dc3545;
+}
+
+.action-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.action-link:hover {
+    text-decoration: underline;
+}
+
+.table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-top: 1px solid #eee;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Pagination styles - assuming AdminPagination exists and has its own styles */
+.admin-pagination {
+    display: flex;
+    gap: 5px;
+}
+
+.admin-pagination button {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+}
+
+.admin-pagination button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.admin-pagination button:hover:not(.active) {
+    background-color: #e9e9e9;
+}
