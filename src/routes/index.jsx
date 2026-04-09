@@ -26,6 +26,10 @@ import AboutUs from "../pages/about/AboutUs";
 import FavoriteDocuments from "../pages/document/FavoriteDocuments";
 import ManageQuizzes from "../pages/quiz/ManageQuizzes";
 import QuizHistory from "../pages/quiz/QuizHistory";
+import QuizListPage from "../pages/quiz/QuizListPage";
+import PreviewQuiz from "../pages/quiz/PreviewQuiz";
+import QuizTaking from "../pages/quiz/QuizTaking";
+import QuizResult from "../pages/quiz/QuizResult";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import ContributorRequests from "../pages/admin/ContributorRequests";
 import AdminSignIn from "../pages/admin/AdminSignIn";
@@ -57,6 +61,10 @@ export const router = createBrowserRouter([
       { path: "contributor-request", element: <ContributorRequest /> },
       { path: "contributor-status", element: <ContributorStatus /> },
       { path: "documents/:id", element: <DocumentDetail /> },
+      { path: "documents/:documentId/quizzes", element: <QuizListPage /> },
+      { path: "quiz/:quizId/preview", element: <PreviewQuiz /> },
+      { path: "quiz/:quizId/take", element: <QuizTaking /> },
+      { path: "quiz/result/:attemptId", element: <QuizResult /> },
       { path: "documents", element: <DocumentsList /> },
     ],
   },
