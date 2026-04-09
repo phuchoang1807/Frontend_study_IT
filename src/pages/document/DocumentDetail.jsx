@@ -616,9 +616,6 @@ export default function DocumentDetail() {
                     <span className="author-name">{info?.authorName || "—"}</span>
                   </div>
                 </div>
-                <button type="button" className="follow-btn">
-                  Theo dõi
-                </button>
               </div>
 
               <p className="document-description">{info?.description || ""}</p>
