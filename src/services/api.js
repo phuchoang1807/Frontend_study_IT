@@ -128,6 +128,12 @@ export const documentService = {
     const res = await axiosClient.get(`/documents/${documentId}`);
     return unwrapApiResponse(res);
   },
+  async getDocumentQuizzes(documentId, page = 0, size = 10) {
+    const res = await axiosClient.get(`/documents/${documentId}/quizzes`, {
+      params: { page, size },
+    });
+    return unwrapApiResponse(res);
+  },
   async view(documentId) {
     const res = await axiosClient.post(`/documents/${documentId}/view`);
     return unwrapApiResponse(res);
@@ -152,6 +158,22 @@ export const documentService = {
     const res = await axiosClient.get("/bookmarks/me", {
       params: { page, size },
     });
+    return unwrapApiResponse(res);
+  },
+  async getMyDocuments() {
+    const res = await axiosClient.get("/my-documents");
+    return unwrapApiResponse(res);
+  },
+  async createMyDocument(payload) {
+    const res = await axiosClient.post("/my-documents", payload);
+    return unwrapApiResponse(res);
+  },
+  async updateMyDocument(documentId, payload) {
+    const res = await axiosClient.put(`/my-documents/${documentId}`, payload);
+    return unwrapApiResponse(res);
+  },
+  async deleteMyDocument(documentId) {
+    const res = await axiosClient.delete(`/my-documents/${documentId}`);
     return unwrapApiResponse(res);
   },
 };
@@ -186,6 +208,25 @@ export const commentService = {
   /** @param {string} commentId */
   async toggleLike(commentId) {
     const res = await axiosClient.post(`/comments/${commentId}/like`);
+    return unwrapApiResponse(res);
+  },
+};
+
+export const quizService = {
+  async getQuizPreview(quizId) {
+    const res = await axiosClient.get(`/quizzes/${quizId}/preview`);
+    return unwrapApiResponse(res);
+  },
+  async startQuiz(quizId) {
+    const res = await axiosClient.post(`/quizzes/${quizId}/start`);
+    return unwrapApiResponse(res);
+  },
+  async submitQuiz(body) {
+    const res = await axiosClient.post(`/quizzes/submit`, body);
+    return unwrapApiResponse(res);
+  },
+  async getQuizResult(attemptId) {
+    const res = await axiosClient.get(`/quizzes/attempts/${attemptId}`);
     return unwrapApiResponse(res);
   },
 };

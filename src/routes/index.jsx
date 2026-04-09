@@ -21,11 +21,16 @@ import ViewHistory from "../pages/history/ViewHistory";
 import Profile from "../pages/user/Profile";
 import ManageDocuments from "../pages/document/ManageDocuments";
 import UploadDocument from "../pages/document/UploadDocument";
+import SubmittedDocumentDetails from "../pages/document/SubmittedDocumentDetails.jsx";
 import StyleGuide from "../pages/about/StyleGuide";
 import AboutUs from "../pages/about/AboutUs";
 import FavoriteDocuments from "../pages/document/FavoriteDocuments";
 import ManageQuizzes from "../pages/quiz/ManageQuizzes";
 import QuizHistory from "../pages/quiz/QuizHistory";
+import QuizListPage from "../pages/quiz/QuizListPage";
+import PreviewQuiz from "../pages/quiz/PreviewQuiz";
+import QuizTaking from "../pages/quiz/QuizTaking";
+import QuizResult from "../pages/quiz/QuizResult";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import ContributorRequests from "../pages/admin/ContributorRequests";
 import AdminSignIn from "../pages/admin/AdminSignIn";
@@ -52,11 +57,16 @@ export const router = createBrowserRouter([
       { path: "profile", element: <Profile /> },
       { path: "manage-documents", element: <ManageDocuments /> },
       { path: "upload-document", element: <UploadDocument /> },
+      { path: "submitted-document-details", element: <SubmittedDocumentDetails /> },
       { path: "document/:id", element: <DocumentDetail /> },
       { path: "view-history", element: <ViewHistory /> },
       { path: "contributor-request", element: <ContributorRequest /> },
       { path: "contributor-status", element: <ContributorStatus /> },
       { path: "documents/:id", element: <DocumentDetail /> },
+      { path: "documents/:documentId/quizzes", element: <QuizListPage /> },
+      { path: "quiz/:quizId/preview", element: <PreviewQuiz /> },
+      { path: "quiz/:quizId/take", element: <QuizTaking /> },
+      { path: "quiz/result/:attemptId", element: <QuizResult /> },
       { path: "documents", element: <DocumentsList /> },
     ],
   },

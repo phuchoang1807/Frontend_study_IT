@@ -682,7 +682,7 @@ export default function DocumentDetail() {
               </div>
             </div>
 
-            {/* Exercises List */}
+            {/* Quiz List */}
             <div className="sidebar-card">
               <div className="card-title">
                 <ListIcon size={18} color="#007bff" />
@@ -690,20 +690,47 @@ export default function DocumentDetail() {
               </div>
               <div className="exercise-list">
                 {quizzes.map((ex) => (
-                  <div key={ex.id} className="exercise-item">
+                  <div
+                    key={ex.id}
+                    className="exercise-item"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() =>
+                      ex.id &&
+                      navigate(`/quiz/${ex.id}/preview`, {
+                        state: { documentId: id },
+                      })
+                    }
+                    onKeyDown={(e) =>
+                      e.key === "Enter" &&
+                      ex.id &&
+                      navigate(`/quiz/${ex.id}/preview`, {
+                        state: { documentId: id },
+                      })
+                    }
+                    style={{ cursor: "pointer" }}
+                  >
                     <div className="exercise-name">{ex.title}</div>
                     <div className="exercise-meta">
                       <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                         <MessageIcon size={12} /> {ex.totalQuestions ?? 0} câu hỏi
                       </span>
                       <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                        <ClockIcon size={12} /> {ex.duration != null ? `${ex.duration} phút` : "—"}
+                        <ClockIcon size={12} />{" "}
+                        {ex.durationMinutes != null ? `${ex.durationMinutes} phút` : "—"}
                       </span>
                     </div>
                   </div>
                 ))}
+                {quizzes.length === 0 ? (
+                  <div style={{ fontSize: 13, color: "#64748b" }}>Chưa có bài đánh giá</div>
+                ) : null}
               </div>
-              <button type="button" className="view-all-btn">
+              <button
+                type="button"
+                className="view-all-btn"
+                onClick={() => id && navigate(`/documents/${id}/quizzes`)}
+              >
                 Xem tất cả bài đánh giá
               </button>
             </div>

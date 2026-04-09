@@ -51,7 +51,7 @@ export default function ContributorRequest() {
 
     try {
       setIsUploading(true);
-      const uploadPromises = files.map(file => uploadToCloudinary(file));
+      const uploadPromises = files.map(file => uploadToCloudinary(file, "assets/ContributorRequests"));
       const results = await Promise.all(uploadPromises);
       
       const newCertificates = results.map(res => ({
