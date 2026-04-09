@@ -193,14 +193,14 @@
   background-color: #F9FAFB;
   font-size: 13px;
   font-weight: 600;
-  color: #667085;
+  color: #101828;
   text-transform: uppercase;
   letter-spacing: 0.6px;
 }
 
 .new-users-table th:first-child{
   width: 65%;
-  color: #101010;
+  color: #101828;
   text-align: left;
   font-weight: 700;
   font-size: 15px;
@@ -215,7 +215,7 @@
 
 .new-users-table th:last-child{
   width: 35%;
-  color: #101010;
+  color: #101828;
   text-align: left;
   font-weight: 700;
   font-size: 15px;

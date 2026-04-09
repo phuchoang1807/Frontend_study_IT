@@ -68,7 +68,8 @@
   margin-bottom: 16px;
 }
 
-.avatar-wrapper {
+/* Scoped: tránh ghi đè .avatar-wrapper trên /profile (dashboard.css) sau khi đã vào trang contributor */
+.contributor-profile-container .avatar-wrapper {
   display: inline-block;
 }
 
@@ -183,8 +184,8 @@
   border-color: #94a3b8;
 }
 
-/* Edit Button */
-.edit-profile-btn {
+/* Edit Button — scoped tránh ghi đè nút "Chỉnh sửa hồ sơ" trên /profile */
+.contributor-profile-container .edit-profile-btn {
   width: 100%;
   margin-top: 32px;
   background: #2563eb;
@@ -199,7 +200,7 @@
   transition: all 0.2s;
 }
 
-.edit-profile-btn:hover {
+.contributor-profile-container .edit-profile-btn:hover {
   background: #1d4ed8;
   transform: translateY(-2px);
 }

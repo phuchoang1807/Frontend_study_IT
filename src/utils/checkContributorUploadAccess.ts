@@ -8,13 +8,11 @@ export type ContributorRegistrationSnapshot = {
 };
 
 export const ContributorUploadGateVariant = {
-  NO_REQUEST: "NO_REQUEST",
   PENDING: "PENDING",
   REJECTED_RESUBMIT: "REJECTED_RESUBMIT",
   REJECTED_EXHAUSTED: "REJECTED_EXHAUSTED",
   APPROVED_AWAITING_ROLE: "APPROVED_AWAITING_ROLE",
   INSUFFICIENT_ROLE: "INSUFFICIENT_ROLE",
-  FETCH_ERROR: "FETCH_ERROR",
 } as const;
 
 export type ContributorUploadGateVariant =
@@ -22,18 +20,18 @@ export type ContributorUploadGateVariant =
 
 export type ContributorUploadAccessResult =
   | { kind: "ALLOW_UPLOAD" }
-  | { kind: "GATE_MODAL"; variant: ContributorUploadGateVariant }
-  | { kind: "FETCH_ERROR" };
+  | { kind: "NAVIGATE_CONTRIBUTOR_REGISTRATION" }
+  | { kind: "GATE_MODAL"; variant: ContributorUploadGateVariant };
 
+/**
+ * Snapshot đăng ký contributor. `status === null`: chưa từng gửi request (backend trả data null).
+ */
 export async function fetchContributorRegistrationSnapshot(): Promise<
-  ContributorRegistrationSnapshot | null | undefined
+  ContributorRegistrationSnapshot | undefined
 > {
   try {
     const response = await axiosClient.get("/contributor/registration-status");
-    if (!response.data?.success) {
-      return null;
-    }
-    const data = response.data.data;
+    const data = response.data?.data;
     if (data == null) {
       return { status: null, submissionCount: 0 };
     }
@@ -47,10 +45,10 @@ export async function fetchContributorRegistrationSnapshot(): Promise<
 }
 
 /**
- * Quyền mở trang đăng tải: chỉ CONTRIBUTOR được phép truy cập trực tiếp.
- * USER: chặn theo trạng thái đăng ký Contributor (gọi API).
+ * Quyền đăng tải / hướng đăng ký contributor: CONTRIBUTOR → upload;
+ * USER có request chưa approved → modal; chưa gửi request → trang đăng ký.
  */
-export async function checkContributorUploadAccess(
+export async function checkContributorAccess(
   user: UserInfo
 ): Promise<ContributorUploadAccessResult> {
   if (hasRole(user, "CONTRIBUTOR")) {
@@ -66,22 +64,13 @@ export async function checkContributorUploadAccess(
 
   const snap = await fetchContributorRegistrationSnapshot();
   if (snap === undefined) {
-    return { kind: "FETCH_ERROR" };
-  }
-  if (snap === null) {
-    return {
-      kind: "GATE_MODAL",
-      variant: ContributorUploadGateVariant.NO_REQUEST,
-    };
+    return { kind: "NAVIGATE_CONTRIBUTOR_REGISTRATION" };
   }
 
   const { status, submissionCount } = snap;
 
   if (status == null) {
-    return {
-      kind: "GATE_MODAL",
-      variant: ContributorUploadGateVariant.NO_REQUEST,
-    };
+    return { kind: "NAVIGATE_CONTRIBUTOR_REGISTRATION" };
   }
 
   switch (status) {
@@ -108,12 +97,12 @@ export async function checkContributorUploadAccess(
         variant: ContributorUploadGateVariant.APPROVED_AWAITING_ROLE,
       };
     default:
-      return {
-        kind: "GATE_MODAL",
-        variant: ContributorUploadGateVariant.NO_REQUEST,
-      };
+      return { kind: "NAVIGATE_CONTRIBUTOR_REGISTRATION" };
   }
 }
+
+/** Alias — cùng logic với {@link checkContributorAccess}. */
+export const checkContributorUploadAccess = checkContributorAccess;
 
 export type ContributorUploadGateModalConfig = {
   title: string;
@@ -128,7 +117,7 @@ export function getContributorUploadGateModalCopy(
   switch (variant) {
     case ContributorUploadGateVariant.PENDING:
       return {
-        title: "Đang chờ duyệt",
+        title: "Yêu cầu đang được xử lý",
         message:
           "Yêu cầu của bạn đang được chờ duyệt, vui lòng đợi thêm để có thể đăng tải tài liệu.",
         primary: { label: "Xem trạng thái", path: "/contributor-status" },
@@ -142,17 +131,10 @@ export function getContributorUploadGateModalCopy(
       };
     case ContributorUploadGateVariant.REJECTED_EXHAUSTED:
       return {
-        title: "Không thể đăng tải",
+        title: "Không thể đăng ký",
         message:
-          "Bạn đã hết lượt để đăng ký trở thành Contributor và không thể thực hiện đăng tải tài liệu. Nếu cần hỗ trợ, vui lòng liên hệ gmail: support@studyit.com",
+          "Bạn đã hết lượt để đăng ký trở thành Contributor. Nếu cần hỗ trợ, vui lòng liên hệ gmail: support@studyit.com",
         closeOnly: true,
-      };
-    case ContributorUploadGateVariant.NO_REQUEST:
-      return {
-        title: "Cần đăng ký Contributor",
-        message:
-          "Bạn cần đăng ký trở thành Contributor để đăng tải tài liệu.",
-        primary: { label: "Đăng ký ngay", path: "/contributor-request" },
       };
     case ContributorUploadGateVariant.APPROVED_AWAITING_ROLE:
       return {
@@ -166,13 +148,6 @@ export function getContributorUploadGateModalCopy(
         title: "Không thể đăng tải",
         message:
           "Tài khoản của bạn không có quyền đăng tải tài liệu trên kênh này.",
-        closeOnly: true,
-      };
-    case ContributorUploadGateVariant.FETCH_ERROR:
-      return {
-        title: "Lỗi kết nối",
-        message:
-          "Không thể kiểm tra trạng thái đăng ký Contributor. Vui lòng thử lại sau.",
         closeOnly: true,
       };
     default:

@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import ContributorUploadGateModal from "../../components/common/ContributorUploadGateModal";
 import UploadDocument from "./UploadDocument";
 import {
-  checkContributorUploadAccess,
+  checkContributorAccess,
   ContributorUploadGateVariant,
   getContributorUploadGateModalCopy,
 } from "../../utils/checkContributorUploadAccess";
@@ -14,7 +14,7 @@ export default function UploadDocumentGate() {
   const navigate = useNavigate();
   const [allowed, setAllowed] = useState(null);
   const [modalConfig, setModalConfig] = useState(() =>
-    getContributorUploadGateModalCopy(ContributorUploadGateVariant.NO_REQUEST)
+    getContributorUploadGateModalCopy(ContributorUploadGateVariant.PENDING)
   );
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function UploadDocumentGate() {
     let cancelled = false;
 
     async function run() {
-      const access = await checkContributorUploadAccess(user);
+      const access = await checkContributorAccess(user);
       if (cancelled) return;
 
       if (access.kind === "ALLOW_UPLOAD") {
@@ -42,13 +42,12 @@ export default function UploadDocumentGate() {
         return;
       }
 
-      if (access.kind === "FETCH_ERROR") {
-        setModalConfig(
-          getContributorUploadGateModalCopy(ContributorUploadGateVariant.FETCH_ERROR)
-        );
-      } else {
-        setModalConfig(getContributorUploadGateModalCopy(access.variant));
+      if (access.kind === "NAVIGATE_CONTRIBUTOR_REGISTRATION") {
+        navigate("/contributor-request", { replace: true });
+        return;
       }
+
+      setModalConfig(getContributorUploadGateModalCopy(access.variant));
       setAllowed(false);
     }
 
@@ -56,7 +55,7 @@ export default function UploadDocumentGate() {
     return () => {
       cancelled = true;
     };
-  }, [user, initializing, loading]);
+  }, [user, initializing, loading, navigate]);
 
   if (initializing || loading) {
     return (

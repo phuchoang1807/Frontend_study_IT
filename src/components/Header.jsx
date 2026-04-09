@@ -7,7 +7,7 @@ import UserPopup from "./UserPopup";
 import UserAvatarDisplay from "./UserAvatarDisplay";
 import ContributorUploadGateModal from "./common/ContributorUploadGateModal";
 import {
-  checkContributorUploadAccess,
+  checkContributorAccess,
   ContributorUploadGateVariant,
   getContributorUploadGateModalCopy,
 } from "../utils/checkContributorUploadAccess";
@@ -25,7 +25,7 @@ export default function Header() {
   const [keyword, setKeyword] = useState("");
   const [uploadGateOpen, setUploadGateOpen] = useState(false);
   const [uploadGateConfig, setUploadGateConfig] = useState(() =>
-    getContributorUploadGateModalCopy(ContributorUploadGateVariant.NO_REQUEST)
+    getContributorUploadGateModalCopy(ContributorUploadGateVariant.PENDING)
   );
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
   const inputRef = useRef(null);
@@ -68,27 +68,17 @@ export default function Header() {
       return;
     }
 
-    try {
-      const access = await checkContributorUploadAccess(user);
-      if (access.kind === "ALLOW_UPLOAD") {
-        navigate("/upload-document");
-        return;
-      }
-      if (access.kind === "FETCH_ERROR") {
-        setUploadGateConfig(
-          getContributorUploadGateModalCopy(ContributorUploadGateVariant.FETCH_ERROR)
-        );
-        setUploadGateOpen(true);
-        return;
-      }
-      setUploadGateConfig(getContributorUploadGateModalCopy(access.variant));
-      setUploadGateOpen(true);
-    } catch {
-      setUploadGateConfig(
-        getContributorUploadGateModalCopy(ContributorUploadGateVariant.FETCH_ERROR)
-      );
-      setUploadGateOpen(true);
+    const access = await checkContributorAccess(user);
+    if (access.kind === "ALLOW_UPLOAD") {
+      navigate("/upload-document");
+      return;
     }
+    if (access.kind === "NAVIGATE_CONTRIBUTOR_REGISTRATION") {
+      navigate("/contributor-request");
+      return;
+    }
+    setUploadGateConfig(getContributorUploadGateModalCopy(access.variant));
+    setUploadGateOpen(true);
   };
 
   return (

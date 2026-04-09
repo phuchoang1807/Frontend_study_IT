@@ -136,8 +136,6 @@ export default function CategoryPage() {
             <tr>
               <th>Tên</th>
               <th>Slug</th>
-              <th>Danh mục cha</th>
-              <th>Thứ tự</th>
               <th>Trạng thái</th>
               <th>Ngày tạo</th>
               <th style={{ minWidth: 160 }}>Thao tác</th>
@@ -152,8 +150,6 @@ export default function CategoryPage() {
                 <td>
                   <code style={{ fontSize: 13 }}>{c.slug || '—'}</code>
                 </td>
-                <td style={{ color: '#667085' }}>{c.parentName?.trim() ? c.parentName : '—'}</td>
-                <td>{c.displayOrder}</td>
                 <td>
                   <span className={st.pillClass}>
                     <span aria-hidden>●</span> {st.label}

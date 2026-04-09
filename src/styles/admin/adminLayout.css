@@ -7,7 +7,8 @@
 
 /* Sidebar Styles */
 .admin-sidebar {
-  width: 260px;
+  width: 304px;
+  flex-shrink: 0;
   background-color: #FFFFFF;
   border-right: 1px solid #E4E7F1;
   display: flex;
@@ -65,6 +66,7 @@
   font-weight: 500;
   border-radius: 8px;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .menu-item:hover {
@@ -98,6 +100,15 @@
   border-radius: 8px;
   padding-right: 8px;
   transition: background-color 0.2s;
+  min-width: 0;
+}
+
+.menu-group-header > svg {
+  flex-shrink: 0;
+}
+
+.menu-item > svg {
+  flex-shrink: 0;
 }
 
 .menu-group-header:hover {
@@ -114,6 +125,9 @@
   padding: 10px 8px;
   margin: 0;
   border-radius: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .menu-item-label {
@@ -123,6 +137,9 @@
   font-weight: 500;
   color: #667085;
   padding: 10px 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .menu-group-toggle {
@@ -223,7 +240,7 @@
 
 .admin-content-wrapper {
   flex: 1;
-  margin-left: 260px;
+  margin-left: 304px;
   display: flex;
   flex-direction: column;
 }

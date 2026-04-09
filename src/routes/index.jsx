@@ -40,6 +40,7 @@ import RolesPage from "../pages/admin/RolesPage";
 import CategoryPage from "../pages/admin/CategoryPage";
 import TagPage from "../pages/admin/TagPage";
 import PermissionsPage from "../pages/admin/PermissionsPage";
+import AdminSettingsPage from "../pages/admin/AdminSettingsPage";
 
 export const router = createBrowserRouter([
   {
@@ -99,6 +100,7 @@ export const router = createBrowserRouter([
           { path: "permissions", element: <PermissionsPage /> },
           { path: "categories", element: <CategoryPage /> },
           { path: "tags", element: <TagPage /> },
+          { path: "config", element: <AdminSettingsPage /> },
         ],
       },
     ],
