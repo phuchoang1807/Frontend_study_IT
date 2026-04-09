@@ -12,7 +12,7 @@ export const ContributorStatusLabel = {
   [ContributorRequestStatus.PENDING]: 'Chờ duyệt',
   [ContributorRequestStatus.APPROVED]: 'Đã duyệt',
   [ContributorRequestStatus.REJECTED]: 'Đã từ chối',
-  [ContributorRequestStatus.NEED_INFO]: 'Yêu cầu bổ sung',
+  [ContributorRequestStatus.NEED_INFO]: 'Chờ xử lý',
 };
 
 export const ContributorStatusClass = {

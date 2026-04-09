@@ -5,7 +5,12 @@ import { useNotification } from "../context/NotificationContext";
 import { useRef, useState, useEffect } from "react";
 import UserPopup from "./UserPopup";
 import UserAvatarDisplay from "./UserAvatarDisplay";
-import { hasRole } from "../utils/permissionUtils";
+import ContributorUploadGateModal from "./common/ContributorUploadGateModal";
+import {
+  checkContributorUploadAccess,
+  ContributorUploadGateVariant,
+  getContributorUploadGateModalCopy,
+} from "../utils/checkContributorUploadAccess";
 
 const navLinkBaseStyle = {
   textAlign: "center",
@@ -18,6 +23,10 @@ export default function Header() {
   const { user, isAuthenticated, logout, initializing, loading } = useAuth();
   const notification = useNotification();
   const [keyword, setKeyword] = useState("");
+  const [uploadGateOpen, setUploadGateOpen] = useState(false);
+  const [uploadGateConfig, setUploadGateConfig] = useState(() =>
+    getContributorUploadGateModalCopy(ContributorUploadGateVariant.NO_REQUEST)
+  );
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
   const inputRef = useRef(null);
   const avatarMenuRef = useRef(null);
@@ -48,27 +57,38 @@ export default function Header() {
     }
   };
 
-  const handleUploadClick = () => {
+  const handleUploadClick = async () => {
     if (!isAuthenticated) {
       notification.info("Vui lòng đăng nhập để tải tài liệu.");
       navigate("/login");
       return;
     }
 
-    if (initializing || loading) {
+    if (initializing || loading || !user) {
       return;
     }
 
-    if (hasRole(user, "CONTRIBUTOR")) {
-      navigate("/upload-document");
-      return;
+    try {
+      const access = await checkContributorUploadAccess(user);
+      if (access.kind === "ALLOW_UPLOAD") {
+        navigate("/upload-document");
+        return;
+      }
+      if (access.kind === "FETCH_ERROR") {
+        setUploadGateConfig(
+          getContributorUploadGateModalCopy(ContributorUploadGateVariant.FETCH_ERROR)
+        );
+        setUploadGateOpen(true);
+        return;
+      }
+      setUploadGateConfig(getContributorUploadGateModalCopy(access.variant));
+      setUploadGateOpen(true);
+    } catch {
+      setUploadGateConfig(
+        getContributorUploadGateModalCopy(ContributorUploadGateVariant.FETCH_ERROR)
+      );
+      setUploadGateOpen(true);
     }
-    if (hasRole(user, "USER")) {
-      navigate("/contributor-request");
-      return;
-    }
-
-    navigate("/contributor-request");
   };
 
   return (
@@ -379,6 +399,15 @@ export default function Header() {
           )}
         </div>
       </div>
+
+      <ContributorUploadGateModal
+        isOpen={uploadGateOpen}
+        onClose={() => setUploadGateOpen(false)}
+        title={uploadGateConfig.title}
+        message={uploadGateConfig.message}
+        primary={uploadGateConfig.primary}
+        closeOnly={uploadGateConfig.closeOnly}
+      />
     </div>
   );
 }

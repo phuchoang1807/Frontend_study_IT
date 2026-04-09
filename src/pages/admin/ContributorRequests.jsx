@@ -19,7 +19,11 @@ const ContributorRequests = () => {
       if (response.data && Array.isArray(response.data.data)) {
         const mappedData = response.data.data.map(req => {
           const status = (req.status || ContributorRequestStatus.PENDING).toUpperCase();
-          
+          const statusLabel =
+            status === ContributorRequestStatus.NEED_INFO
+              ? 'Chờ xử lý'
+              : ContributorStatusLabel[status] || 'Chưa rõ';
+
           return {
             ...req,
             avatar:
@@ -34,7 +38,7 @@ const ContributorRequests = () => {
 
             status: status.toLowerCase(),
             statusKey: status,
-            statusLabel: ContributorStatusLabel[status] || 'Chưa rõ',
+            statusLabel,
             rejectionReason: req.rejectionReason || null, // Ensure rejectionReason is passed
           };
         });
