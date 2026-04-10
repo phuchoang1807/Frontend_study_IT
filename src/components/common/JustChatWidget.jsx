@@ -1,15 +1,16 @@
 import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const SCRIPT_URL = 'https://cdn.jsdelivr.net/npm/@kieng/just-chat/dist/just-chat.umd.js';
 
 const CHAT_CONFIG = {
   webhookUrl:
     'https://phuchoang1807.app.n8n.cloud/webhook-test/9f529345-bae0-4432-822c-6658888fbaef',
-  themeColor: '#1E40AF',
+   themeColor: '#007AFF',
   position: 'bottom-right',
   title: 'Chat with us',
-  welcomeMessage: 'How can we help you today?',
-  history: { enabled: true, clearButton: true },
+  title: 'Hỗ trợ quản trị',
+  welcomeMessage: 'Chào admin, bạn cần hỗ trợ gì hôm nay?',
 };
 
 function loadJustChatScript() {
@@ -43,7 +44,12 @@ function removeChatWidgets() {
 
 /** Khung Chat with us — chỉ mount tại nơi dùng (UserLayout / AdminDashboard). */
 export default function JustChatWidget() {
+  const { pathname } = useLocation();
   useEffect(() => {
+    if (!pathname.startsWith('/admin')) {
+      removeChatWidgets();
+      return undefined;
+    }
     let cancelled = false;
     let widget = null;
 
@@ -65,7 +71,7 @@ export default function JustChatWidget() {
       widget?.remove();
       removeChatWidgets();
     };
-  }, []);
+  }, [pathname]);
 
   return null;
 }
