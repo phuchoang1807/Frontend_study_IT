@@ -10,6 +10,7 @@ import {
   LogoutIcon // Dùng cho icon xóa
 } from "../../components/icons";
 import "../../styles/viewHistory.css";
+import { getDocumentUploaderDisplayName } from "../../utils/documentUploaderDisplay";
 
 const historyData = [
   {
@@ -18,7 +19,7 @@ const historyData = [
     category: "CÔNG NGHỆ",
     categoryColor: "#3b82f6",
     viewTime: "14:30 - 20/10/2023",
-    author: "Nguyễn Văn A",
+    uploader: { fullName: "Nguyễn Văn A" },
     field: "Lập trình di động",
     views: "1.2k",
     downloads: "450",
@@ -30,7 +31,7 @@ const historyData = [
     category: "KINH TẾ",
     categoryColor: "#f59e0b",
     viewTime: "10:15 - 20/10/2023",
-    author: "Trần Thị B",
+    uploader: { fullName: "Trần Thị B" },
     field: "Lập trình web",
     views: "3.8k",
     downloads: "1.1k",
@@ -42,7 +43,7 @@ const historyData = [
     category: "NGHỆ THUẬT",
     categoryColor: "#10b981",
     viewTime: "09:45 - 19/10/2023",
-    author: "Lê Văn C",
+    uploader: { fullName: "Lê Văn C" },
     field: "Thiết kế đồ họa",
     views: "890",
     downloads: "120",
@@ -97,7 +98,7 @@ export default function ViewHistory() {
                 <div className="card-meta">
                   <div className="meta-item">
                     <UsersIcon size={14} />
-                    <span>Tác giả: {item.author}</span>
+                    <span>Đăng bởi: {getDocumentUploaderDisplayName(item) || "—"}</span>
                   </div>
                   <div className="meta-item">
                     <ListIcon size={14} />

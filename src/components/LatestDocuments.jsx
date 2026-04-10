@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import BookmarkButton from "./common/BookmarkButton";
 import { ChevronRightIcon, EyeIcon } from "./icons";
+import { getDocumentUploaderDisplayName } from "../utils/documentUploaderDisplay";
 
 const documents = [
   {
@@ -9,7 +10,7 @@ const documents = [
     image: "https://placehold.co/174x192",
     imageAlt: "React Fullstack",
     title: "React Fullstack Programming Guide from A-Z",
-    author: "Nguyen Van A",
+    uploader: { fullName: "Nguyen Van A" },
     date: "10/10/2023",
     views: "1.2k",
   },
@@ -19,7 +20,7 @@ const documents = [
     image: "https://placehold.co/192x192",
     imageAlt: "C#",
     title: "C# Programming Guide",
-    author: "Tran Thi B",
+    uploader: { fullName: "Tran Thi B" },
     date: "09/10/2023",
     views: "850",
   },
@@ -29,7 +30,7 @@ const documents = [
     image: "https://placehold.co/192x192",
     imageAlt: "HTML",
     title: "Self-study HTML",
-    author: "Le Van C",
+    uploader: { fullName: "Le Van C" },
     date: "08/10/2023",
     views: "2.1k",
   },
@@ -39,7 +40,7 @@ const documents = [
     image: "https://placehold.co/131x189",
     imageAlt: "IT Life",
     title: "IT Life",
-    author: "Pham Minh D",
+    uploader: { fullName: "Pham Minh D" },
     date: "07/10/2023",
     views: "3.4k",
   },
@@ -88,7 +89,7 @@ export default function LatestDocuments() {
       <div style={{ display: "flex", gap: "24px" }}>
         {documents.map((doc) => (
           <div
-            key={`${doc.title}-${doc.author}`}
+            key={`${doc.title}-${getDocumentUploaderDisplayName(doc)}`}
             onClick={() => navigate(`/document/1`)}
             style={{
               flex: 1,
@@ -131,7 +132,7 @@ export default function LatestDocuments() {
 
               <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", color: "#64748B" }}>
                 <img src="https://placehold.co/24x24" style={{ borderRadius: "50%" }} />
-                <span>{doc.author}</span>
+                <span>{getDocumentUploaderDisplayName(doc) || "—"}</span>
                 <span>•</span>
                 <span>{doc.date}</span>
               </div>

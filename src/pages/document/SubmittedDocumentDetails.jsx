@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useMemo, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { useNotification } from "../../context/NotificationContext";
 import { documentService } from "../../services/api";
 import {
@@ -7,23 +8,8 @@ import {
   hasDocumentThumbnailValue,
   onDocumentThumbnailError,
 } from "../../utils/documentThumbnail";
+import { getDocumentPreviewMode } from "../../utils/documentPreview";
 import "../../styles/submittedDocumentDetails.css";
-
-const BookOpenIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-);
-
-const TagIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2 2 0 0 0 2.828 0l7.172-7.172a2 2 0 0 0 0-2.828L12.586 2.586z"></path><circle cx="7" cy="7" r="1"></circle></svg>
-);
-
-const CheckCircleIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-);
-
-const HomeIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-);
 
 const EditIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
@@ -37,40 +23,234 @@ const ArrowLeftIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
 );
 
-const ClockIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+const HomeIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
 );
 
-const InfoIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+const CheckCircleIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
 );
 
-const getStatusLabel = (status) => {
-  if (status === "APPROVED") return "Đã duyệt";
-  if (status === "REJECTED") return "Bị từ chối";
-  return "Chờ duyệt";
-};
+function formatDateTime(value) {
+  if (value == null) return "—";
+  try {
+    let d;
+    if (Array.isArray(value)) {
+      const [y, mo, day, h = 0, mi = 0, s = 0] = value;
+      d = new Date(y, mo - 1, day, h, mi, s);
+    } else {
+      d = new Date(value);
+    }
+    if (Number.isNaN(d.getTime())) return String(value);
+    return d.toLocaleString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return "—";
+  }
+}
 
-const getStatusClassName = (status) => {
-  if (status === "APPROVED") return "approved";
-  if (status === "REJECTED") return "rejected";
-  return "pending";
-};
+function formatFileSizeMb(bytes) {
+  if (bytes == null || bytes === "") return "—";
+  const n = Number(bytes);
+  if (Number.isNaN(n)) return String(bytes);
+  return (n / (1024 * 1024)).toFixed(1);
+}
 
-const SubmittedDocumentDetails = () => {
+function normalizeFromApi(raw) {
+  if (!raw) return null;
+  return {
+    id: raw.id,
+    title: raw.title,
+    description: raw.description,
+    documentUrl: raw.documentUrl,
+    thumbnailUrl: raw.thumbnailUrl,
+    fileName: raw.fileName,
+    fileType: raw.fileType,
+    fileSizeBytes: raw.fileSizeBytes,
+    categoryName: raw.categoryName,
+    tags: Array.isArray(raw.tags) ? raw.tags : [],
+    status: raw.status,
+    rejectReason: raw.rejectReason ?? null,
+    createdAt: raw.createdAt,
+  };
+}
+
+function normalizeFromState(d) {
+  if (!d) return null;
+  return {
+    id: d.id,
+    title: d.title,
+    description: d.description,
+    documentUrl: d.documentUrl,
+    thumbnailUrl: d.thumbnailUrl,
+    fileName: d.fileName,
+    fileType: d.fileType,
+    fileSizeBytes: d.fileSizeBytes ?? d.fileSize,
+    categoryName: d.categoryName || d.category,
+    tags: Array.isArray(d.tags) ? d.tags : [],
+    status: d.status,
+    rejectReason: d.rejectReason ?? null,
+    createdAt: d.createdAt ?? d.uploadDate,
+  };
+}
+
+function statusMeta(status) {
+  const s = (status || "").toUpperCase();
+  if (s === "APPROVED") {
+    return {
+      label: "Đã được duyệt",
+      className: "submitted-hero-badge--approved",
+      heroClass: "submitted-hero--approved",
+    };
+  }
+  if (s === "REJECTED") {
+    return {
+      label: "Bị từ chối",
+      className: "submitted-hero-badge--rejected",
+      heroClass: "submitted-hero--rejected",
+    };
+  }
+  return {
+    label: "Đang chờ duyệt",
+    className: "submitted-hero-badge--pending",
+    heroClass: "submitted-hero--pending",
+  };
+}
+
+function FilePreviewSection({ fileUrl, fileType, fileName }) {
+  const mode = useMemo(
+    () => getDocumentPreviewMode(fileType, fileUrl, fileName),
+    [fileType, fileUrl, fileName]
+  );
+
+  const iframeStyle = {
+    width: "100%",
+    height: 560,
+    border: "1px solid #e4e7ec",
+    borderRadius: 12,
+    background: "#f9fafb",
+  };
+
+  if (!fileUrl?.trim()) {
+    return (
+      <div className="submitted-preview-empty">
+        <p>Không có liên kết file để xem trước.</p>
+      </div>
+    );
+  }
+
+  if (mode === "pdf") {
+    return <iframe title="Xem trước PDF" src={fileUrl} style={iframeStyle} />;
+  }
+  if (mode === "image") {
+    return (
+      <img
+        src={fileUrl}
+        alt="Xem trước"
+        style={{ maxWidth: "100%", borderRadius: 12, display: "block" }}
+      />
+    );
+  }
+  if (mode === "gview") {
+    const src = `https://docs.google.com/gview?url=${encodeURIComponent(fileUrl)}&embedded=true`;
+    return <iframe title="Xem trước tài liệu" src={src} style={iframeStyle} />;
+  }
+  return (
+    <div className="submitted-preview-empty">
+      <p className="submitted-preview-fallback-text">
+        Không xem trước trực tiếp được định dạng này trong trình duyệt.
+      </p>
+      <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="submitted-btn-primary">
+        Mở file
+      </a>
+    </div>
+  );
+}
+
+export default function SubmittedDocumentDetails() {
+  const { submissionId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const notification = useNotification();
-  const { document } = location.state || {};
+  const stateDoc = location.state?.document;
+
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const effectiveId = submissionId || stateDoc?.id;
+
+  const {
+    data: apiRaw,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["my-document-detail", submissionId],
+    queryFn: () => documentService.getMyDocumentDetail(submissionId),
+    enabled: Boolean(submissionId),
+  });
+
+  const document = useMemo(() => {
+    if (submissionId) {
+      if (apiRaw) return normalizeFromApi(apiRaw);
+      return null;
+    }
+    return normalizeFromState(stateDoc);
+  }, [submissionId, apiRaw, stateDoc]);
+
+  const meta = statusMeta(document?.status);
+
+  if (!effectiveId) {
+    return (
+      <div className="no-data-container">
+        <h2>Không tìm thấy tài liệu</h2>
+        <p>Vui lòng mở từ trang &quot;Tài liệu của tôi&quot; hoặc đăng tải tài liệu mới.</p>
+        <button type="button" onClick={() => navigate("/manage-documents")}>
+          Về danh sách tài liệu
+        </button>
+      </div>
+    );
+  }
+
+  if (submissionId && isLoading && !apiRaw) {
+    return (
+      <div className="submitted-details-container">
+        <div className="submitted-details-content">
+          <p className="submitted-loading-text">Đang tải thông tin tài liệu…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (submissionId && isError) {
+    return (
+      <div className="submitted-details-container">
+        <div className="submitted-details-content">
+          <p className="submitted-error-text">
+            {error?.response?.data?.message || error?.message || "Không tải được tài liệu."}
+          </p>
+          <button type="button" className="submitted-btn-secondary" onClick={() => refetch()}>
+            Thử lại
+          </button>
+          <button type="button" className="submitted-btn-ghost" onClick={() => navigate("/manage-documents")}>
+            Về danh sách
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (!document) {
     return (
       <div className="no-data-container">
-        <h2>Không có dữ liệu tài liệu đã gửi</h2>
-        <p>Vui lòng mở tài liệu từ trang My documents hoặc đăng tải tài liệu mới.</p>
-        <button onClick={() => navigate("/manage-documents")}>Quay lại My documents</button>
+        <h2>Không có dữ liệu</h2>
+        <button type="button" onClick={() => navigate("/manage-documents")}>Quay lại</button>
       </div>
     );
   }
@@ -79,77 +259,28 @@ const SubmittedDocumentDetails = () => {
     id,
     title,
     description,
-    category,
-    categoryName,
-    tags,
+    documentUrl,
     thumbnailUrl,
     fileName,
-    fileSize,
-    uploadDate,
-    documentUrl,
-    createdAt,
+    fileType,
+    fileSizeBytes,
+    categoryName,
+    tags,
     status,
+    rejectReason,
+    createdAt,
   } = document;
 
-  const getFileType = (urlOrName) => {
-    const lower = String(urlOrName || "").toLowerCase();
-    if (lower.includes(".pdf")) return "PDF";
-    if (lower.includes(".docx") || lower.includes(".doc")) return "DOCX";
-    if (lower.includes(".pptx") || lower.includes(".ppt")) return "PPTX";
-    return "FILE";
-  };
-
-  const formatDateTime = (value) => {
-    if (!value) return null;
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return value;
-    return date.toLocaleString("vi-VN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const documentFileType = getFileType(documentUrl || fileName);
-  const statusLabel = getStatusLabel(status);
-  const documentCode = id ? `#DOC-${String(id).slice(0, 8).toUpperCase()}` : "Tài liệu cá nhân";
-  const historyItems = [
-    {
-      title: "Gửi tài liệu lần đầu",
-      time: formatDateTime(createdAt) || uploadDate,
-      tone: "primary",
-    },
-    hasDocumentThumbnailValue(thumbnailUrl)
-      ? {
-          title: "Đã đính kèm ảnh minh họa",
-          time: "Hình ảnh bìa đã sẵn sàng",
-          tone: "neutral",
-        }
-      : null,
-    {
-      title: statusLabel,
-      time:
-        status === "PENDING"
-          ? "Đang chờ hệ thống kiểm duyệt"
-          : status === "APPROVED"
-          ? "Tài liệu đã sẵn sàng hiển thị"
-          : "Cần cập nhật lại nội dung trước khi gửi tiếp",
-      tone: status === "REJECTED" ? "danger" : "neutral",
-    },
-  ].filter(Boolean);
+  const documentCode = id ? `#DOC-${String(id).slice(0, 8).toUpperCase()}` : "—";
 
   const handleDeleteDocument = async () => {
     try {
       setIsDeleting(true);
-      await documentService.deleteMyDocument(document.id);
-      notification.success("Xóa tài liệu thành công!");
+      await documentService.deleteMyDocument(id);
+      notification.success("Đã xóa tài liệu.");
       navigate("/manage-documents");
-    } catch (error) {
-      notification.error(
-        error?.response?.data?.message || "Không thể xóa tài liệu."
-      );
+    } catch (err) {
+      notification.error(err?.response?.data?.message || "Không thể xóa tài liệu.");
     } finally {
       setIsDeleting(false);
       setShowDeleteConfirm(false);
@@ -157,162 +288,172 @@ const SubmittedDocumentDetails = () => {
   };
 
   const handleEditDocument = () => {
-    navigate("/upload-document", { state: { documentToEdit: document } });
+    navigate("/upload-document", {
+      state: {
+        documentToEdit: {
+          id: document.id,
+          title: document.title,
+          description: document.description,
+          category: categoryName,
+          tags: document.tags || [],
+          documentUrl,
+          thumbnailUrl,
+          fileName,
+          fileSizeBytes,
+          fileSize: `${formatFileSizeMb(fileSizeBytes)}`,
+        },
+      },
+    });
   };
+
+  const statusUpper = (status || "").toUpperCase();
 
   return (
     <div className="submitted-details-container">
       <div className="submitted-details-content">
-        <button className="details-back-link" onClick={() => navigate("/manage-documents")}>
+        <button type="button" className="details-back-link" onClick={() => navigate("/manage-documents")}>
           <ArrowLeftIcon />
           Quay lại danh sách tài liệu
         </button>
 
-        <header className="details-header">
-          <div className="details-header-main">
-            <div className="details-header-copy">
-              <div className="details-meta-row">
-                <div className={`status-badge ${getStatusClassName(status)}`}>{statusLabel}</div>
-                <span className="details-document-code">Mã tài liệu: {documentCode}</span>
-              </div>
-              <h1 className="details-title">{title}</h1>
-              <p className="details-subtitle">Theo dõi trạng thái xử lý, xem lại thông tin và quản lý tài liệu bạn đã đăng tải.</p>
+        <header className={`submitted-hero-card ${meta.heroClass}`}>
+          <div className="submitted-hero-top">
+            <div>
+              <span className={`submitted-hero-badge ${meta.className}`}>{meta.label}</span>
+              <p className="submitted-hero-code">Mã tài liệu: {documentCode}</p>
+              <h1 className="submitted-hero-title">{title}</h1>
+              <p className="submitted-hero-date">
+                Gửi lúc: <strong>{formatDateTime(createdAt)}</strong>
+              </p>
             </div>
-
-            <div className="details-header-actions">
-              <button className="action-btn edit" onClick={handleEditDocument}>
-                <EditIcon /> Chỉnh sửa tài liệu
+            <div className="submitted-hero-actions">
+              <button type="button" className="action-btn edit" onClick={handleEditDocument}>
+                <EditIcon /> Chỉnh sửa
               </button>
-              <button className="action-btn delete" onClick={() => setShowDeleteConfirm(true)}>
-                <Trash2Icon /> Xóa tài liệu
+              <button type="button" className="action-btn delete" onClick={() => setShowDeleteConfirm(true)}>
+                <Trash2Icon /> Xóa
               </button>
             </div>
           </div>
         </header>
 
-        <div className="details-main-card">
-          <div className="details-top-grid">
-            <div className="details-preview-card">
-              <div className="thumbnail-wrapper">
+        <div className="submitted-two-col">
+          <section className="submitted-panel submitted-panel--preview">
+            <h2 className="submitted-panel-title">Xem trước tệp</h2>
+            <FilePreviewSection fileUrl={documentUrl} fileType={fileType} fileName={fileName} />
+          </section>
+
+          <div className="submitted-side-stack">
+            <section className="submitted-panel">
+              <h2 className="submitted-panel-title">Thông tin duyệt</h2>
+              {statusUpper === "REJECTED" && rejectReason?.trim() ? (
+                <div className="submitted-moderation rejected">
+                  <h3>Tài liệu chưa được duyệt</h3>
+                  <p className="submitted-moderation-label">Lý do từ chối</p>
+                  <p className="submitted-reject-reason">{rejectReason.trim()}</p>
+                </div>
+              ) : null}
+              {statusUpper === "APPROVED" ? (
+                <div className="submitted-moderation approved">
+                  <h3>Đã duyệt</h3>
+                  <p>Tài liệu đã được duyệt và có thể hiển thị công khai trên hệ thống (theo cấu hình).</p>
+                </div>
+              ) : null}
+              {statusUpper === "PENDING" ? (
+                <div className="submitted-moderation pending">
+                  <h3>Đang chờ</h3>
+                  <p>Tài liệu đang chờ admin kiểm duyệt. Bạn sẽ thấy cập nhật trạng thái tại đây sau khi có kết quả.</p>
+                </div>
+              ) : null}
+            </section>
+
+            <section className="submitted-panel">
+              <h2 className="submitted-panel-title">Thông tin tệp</h2>
+              <div className="submitted-info-grid">
+                <div className="submitted-info-cell">
+                  <span className="submitted-info-label">Định dạng</span>
+                  <strong>{fileType || "—"}</strong>
+                </div>
+                <div className="submitted-info-cell">
+                  <span className="submitted-info-label">Kích thước</span>
+                  <strong>{formatFileSizeMb(fileSizeBytes)} MB</strong>
+                </div>
+                <div className="submitted-info-cell submitted-info-cell--wide">
+                  <span className="submitted-info-label">Tên tệp</span>
+                  <strong className="submitted-info-filename">{fileName || "—"}</strong>
+                </div>
+                <div className="submitted-info-cell submitted-info-cell--wide">
+                  <span className="submitted-info-label">Danh mục</span>
+                  <span className="category-tag">{categoryName || "—"}</span>
+                </div>
+              </div>
+            </section>
+
+            {hasDocumentThumbnailValue(thumbnailUrl) ? (
+              <section className="submitted-panel submitted-panel--thumb">
+                <h2 className="submitted-panel-title">Ảnh bìa</h2>
                 <img
                   src={getDocumentThumbnailUrl({ thumbnailUrl })}
-                  alt={title}
-                  className="document-thumbnail-large"
+                  alt=""
+                  className="submitted-cover-thumb"
                   onError={onDocumentThumbnailError}
                 />
-                <div className="file-type-overlay">{documentFileType}</div>
-              </div>
-            </div>
-
-            <section className="details-support-card">
-              <div className="support-icon-shell">
-                <CheckCircleIcon />
-              </div>
-              <div className="support-copy">
-                <h3>Bạn cần hỗ trợ về tài liệu này?</h3>
-                <p>Vui lòng liên hệ đội ngũ Admin qua kênh phản hồi hoặc chỉnh sửa lại nội dung trước khi gửi duyệt lại.</p>
-              </div>
-            </section>
-          </div>
-
-          <div className="details-grid">
-            <section className="details-panel">
-              <h3 className="section-label"><InfoIcon />Thông tin tệp tin</h3>
-              <div className="info-card-grid">
-                <div className="info-box">
-                  <span className="info-box-label">Định dạng</span>
-                  <strong className="info-box-value">{documentFileType} (Digital)</strong>
-                </div>
-                <div className="info-box">
-                  <span className="info-box-label">Kích thước</span>
-                  <strong className="info-box-value">{fileSize} MB</strong>
-                </div>
-                <div className="info-box">
-                  <span className="info-box-label">Tên tệp</span>
-                  <strong className="info-box-value info-box-file">{fileName}</strong>
-                </div>
-                <div className="info-box">
-                  <span className="info-box-label">Ngày đăng tải</span>
-                  <strong className="info-box-value">{uploadDate}</strong>
-                </div>
-                <div className="info-box info-box-wide">
-                  <span className="info-box-label">Danh mục</span>
-                  <span className="category-tag">{categoryName || category}</span>
-                </div>
-              </div>
-            </section>
-
-            <section className="details-panel">
-              <h3 className="section-label"><ClockIcon />Lịch sử cập nhật</h3>
-              <div className="history-timeline">
-                {historyItems.map((item, index) => (
-                  <div key={`${item.title}-${index}`} className={`history-item ${item.tone || "neutral"}`}>
-                    <span className="history-dot" />
-                    <div className="history-content">
-                      <strong>{item.title}</strong>
-                      <span>{item.time}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          </div>
-
-          <div className="details-sections-stack">
-            <section className="details-panel">
-              <h3 className="section-label"><BookOpenIcon />Mô tả</h3>
-              <p className="description-text">{description}</p>
-            </section>
-
-            <section className="details-panel">
-              <h3 className="section-label"><TagIcon />Từ khóa liên quan</h3>
-              <div className="tags-container">
-                {(tags || []).map((tag, index) => (
-                  <span key={index} className="detail-tag">{tag}</span>
-                ))}
-              </div>
-            </section>
-          </div>
-
-          <div className="details-footer-actions">
-            <button className="action-btn primary" onClick={() => navigate("/manage-documents")}>
-              <CheckCircleIcon /> Quản lý tài liệu
-            </button>
-            <button className="action-btn secondary" onClick={() => navigate("/")}>
-              <HomeIcon /> Về trang chủ
-            </button>
+              </section>
+            ) : null}
           </div>
         </div>
 
-        <div className="process-info-box">
-          <div className="info-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        <section className="submitted-panel">
+          <h2 className="submitted-panel-title">Mô tả</h2>
+          <p className="submitted-description">{description?.trim() || "—"}</p>
+        </section>
+
+        <section className="submitted-panel">
+          <h2 className="submitted-panel-title">Từ khóa</h2>
+          <div className="tags-container">
+            {(tags || []).length ? (
+              tags.map((tag, index) => (
+                <span key={index} className="detail-tag">{tag}</span>
+              ))
+            ) : (
+              <span className="submitted-muted">Chưa có từ khóa</span>
+            )}
           </div>
+        </section>
+
+        <div className="details-footer-actions">
+          <button type="button" className="action-btn primary" onClick={() => navigate("/manage-documents")}>
+            <CheckCircleIcon /> Tài liệu của tôi
+          </button>
+          <button type="button" className="action-btn secondary" onClick={() => navigate("/")}>
+            <HomeIcon /> Về trang chủ
+          </button>
+        </div>
+
+        <div className="process-info-box">
           <div className="info-text">
             <h4>Quy trình phê duyệt</h4>
-            <p>Tài liệu của bạn sẽ được đội ngũ kiểm duyệt xem xét trong vòng 24h. Bạn sẽ nhận được thông báo ngay khi có kết quả.</p>
+            <p>Đội ngũ kiểm duyệt sẽ xem xét tài liệu. Kết quả được phản ánh bằng trạng thái và (nếu bị từ chối) lý do cụ thể phía trên.</p>
           </div>
         </div>
       </div>
 
-      {showDeleteConfirm && (
+      {showDeleteConfirm ? (
         <div className="confirmation-modal-overlay">
-          <div className="confirmation-modal-content" onClick={(event) => event.stopPropagation()}>
+          <div className="confirmation-modal-content" role="dialog" onClick={(e) => e.stopPropagation()}>
             <h3>Xác nhận xóa tài liệu</h3>
-            <p>Bạn có chắc chắn muốn xóa tài liệu này? Hành động này không thể hoàn tác.</p>
+            <p>Bạn có chắc muốn xóa tài liệu này? Hành động không thể hoàn tác.</p>
             <div className="modal-actions">
-              <button className="modal-btn confirm" onClick={handleDeleteDocument} disabled={isDeleting}>
-                {isDeleting ? "Đang xóa..." : "Xác nhận xóa"}
+              <button type="button" className="modal-btn confirm" onClick={handleDeleteDocument} disabled={isDeleting}>
+                {isDeleting ? "Đang xóa…" : "Xóa"}
               </button>
-              <button className="modal-btn cancel" onClick={() => setShowDeleteConfirm(false)} disabled={isDeleting}>
-                Hủy bỏ
+              <button type="button" className="modal-btn cancel" onClick={() => setShowDeleteConfirm(false)} disabled={isDeleting}>
+                Hủy
               </button>
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
-};
-
-export default SubmittedDocumentDetails;
+}

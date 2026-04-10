@@ -25,6 +25,7 @@ import {
   getDocumentThumbnailUrl,
   onDocumentThumbnailError,
 } from "../../utils/documentThumbnail";
+import { getDocumentUploaderDisplayName } from "../../utils/documentUploaderDisplay";
 import DocumentPreview from "../../components/document/DocumentPreview";
 
 function formatFileSize(bytes) {
@@ -92,11 +93,7 @@ export default function DocumentDetail() {
   const [replyingToId, setReplyingToId] = useState(null);
   const [replyBody, setReplyBody] = useState("");
 
-  useEffect(() => {
-    if (!id) return;
-    documentService.view(id).catch(() => {});
-  }, [id]);
-
+  // Record view then load detail so stats match DB; view() coalesces duplicate calls (StrictMode).
   useEffect(() => {
     if (!id) return;
     let cancelled = false;
@@ -104,6 +101,7 @@ export default function DocumentDetail() {
       setLoading(true);
       setError(null);
       try {
+        await documentService.view(id).catch(() => {});
         const data = await documentService.getDocumentById(id);
         if (!cancelled) setDetail(data);
       } catch (e) {
@@ -168,6 +166,27 @@ export default function DocumentDetail() {
       redirectTo: id ? `/documents/${id}` : "/documents",
     });
   }, [id, requestLogin]);
+
+  const loginRedirectTo = location.pathname + location.search;
+
+  const handleReportClick = useCallback(() => {
+    if (!requestLogin({ redirectTo: loginRedirectTo })) return;
+  }, [requestLogin, loginRedirectTo]);
+
+  const goToQuizPreview = useCallback(
+    (quizId) => {
+      if (!quizId || !id) return;
+      if (!requestLogin({ redirectTo: loginRedirectTo })) return;
+      navigate(`/quiz/${quizId}/preview`, { state: { documentId: id } });
+    },
+    [id, navigate, requestLogin, loginRedirectTo]
+  );
+
+  const goToDocumentQuizzes = useCallback(() => {
+    if (!id) return;
+    if (!requestLogin({ redirectTo: loginRedirectTo })) return;
+    navigate(`/documents/${id}/quizzes`);
+  }, [id, navigate, requestLogin, loginRedirectTo]);
 
   const patchComment = useCallback((commentId, patch) => {
     const cid = String(commentId);
@@ -377,16 +396,12 @@ export default function DocumentDetail() {
       );
       await downloadFileViaFetch(fileUrl, suggestedName);
       notification.success("Đang tải xuống tài liệu.");
-      setDetail((prev) => {
-        if (!prev?.stats) return prev;
-        return {
-          ...prev,
-          stats: {
-            ...prev.stats,
-            totalDownloads: Number(prev.stats.totalDownloads ?? 0) + 1,
-          },
-        };
-      });
+      try {
+        const fresh = await documentService.getDocumentById(id);
+        setDetail(fresh);
+      } catch {
+        /* counters stay stale until next visit; download already succeeded */
+      }
     } catch (e) {
       notification.error(getApiErrorMessage(e));
     }
@@ -613,7 +628,9 @@ export default function DocumentDetail() {
                   <img src="https://placehold.co/40x40" alt="Author" className="user-avatar" />
                   <div className="author-name-wrapper">
                     <span className="posted-by">Đăng bởi</span>
-                    <span className="author-name">{info?.authorName || "—"}</span>
+                    <span className="author-name">
+                      {getDocumentUploaderDisplayName(info) || "—"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -645,7 +662,12 @@ export default function DocumentDetail() {
               </button>
 
               <div className="secondary-actions">
-                <button type="button" className="secondary-btn report" style={{ flex: 1 }}>
+                <button
+                  type="button"
+                  className="secondary-btn report"
+                  style={{ flex: 1 }}
+                  onClick={handleReportClick}
+                >
                   <AlertIcon size={16} />
                   Báo cáo
                 </button>
@@ -665,19 +687,8 @@ export default function DocumentDetail() {
                     className="exercise-item"
                     role="button"
                     tabIndex={0}
-                    onClick={() =>
-                      ex.id &&
-                      navigate(`/quiz/${ex.id}/preview`, {
-                        state: { documentId: id },
-                      })
-                    }
-                    onKeyDown={(e) =>
-                      e.key === "Enter" &&
-                      ex.id &&
-                      navigate(`/quiz/${ex.id}/preview`, {
-                        state: { documentId: id },
-                      })
-                    }
+                    onClick={() => goToQuizPreview(ex.id)}
+                    onKeyDown={(e) => e.key === "Enter" && goToQuizPreview(ex.id)}
                     style={{ cursor: "pointer" }}
                   >
                     <div className="exercise-name">{ex.title}</div>
@@ -693,16 +704,14 @@ export default function DocumentDetail() {
                   </div>
                 ))}
                 {quizzes.length === 0 ? (
-                  <div style={{ fontSize: 13, color: "#64748b" }}>Chưa có bài đánh giá</div>
+                  <div style={{ fontSize: 13, color: "#64748b" }}>Chưa có bài tập</div>
                 ) : null}
               </div>
-              <button
-                type="button"
-                className="view-all-btn"
-                onClick={() => id && navigate(`/documents/${id}/quizzes`)}
-              >
-                Xem tất cả bài đánh giá
-              </button>
+              {quizzes.length > 0 ? (
+                <button type="button" className="view-all-btn" onClick={goToDocumentQuizzes}>
+                  Xem tất cả bài tập
+                </button>
+              ) : null}
             </div>
 
             {/* Related Documents */}

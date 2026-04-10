@@ -427,3 +427,14 @@ align-items: center;
 .social-button.github:hover {
   border-color: #333;
 }
+
+/* Document cards: home + document list */
+.document-card--interactive {
+  transition: box-shadow 0.22s ease, transform 0.22s ease;
+}
+
+.document-card--interactive:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px -14px rgba(15, 23, 42, 0.16);
+  z-index: 1;
+}

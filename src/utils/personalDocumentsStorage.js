@@ -26,6 +26,7 @@ const normalizeDocument = (document) => {
     category: document.category || "",
     tags: Array.isArray(document.tags) ? document.tags : [],
     documentUrl: document.documentUrl || "",
+    storagePath: document.storagePath || "",
     thumbnailUrl: document.thumbnailUrl || "",
     fileName: document.fileName || "",
     fileSize: document.fileSize || "0.0",

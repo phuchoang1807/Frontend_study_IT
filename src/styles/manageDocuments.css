@@ -1,4 +1,4 @@
-﻿.personal-docs-page {
+.personal-docs-page {
   min-height: calc(100vh - 145px);
   background: #f8fafc;
   padding: 31px 0 22px;
@@ -137,6 +137,20 @@
   padding: 18px 16px;
   border-top: 1px solid #f1f5f9;
   vertical-align: middle;
+}
+
+.personal-docs-row-clickable {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.personal-docs-row-clickable:hover {
+  background: #f8fafc;
+}
+
+.personal-docs-row-clickable:focus-visible {
+  outline: 2px solid #0a84ff;
+  outline-offset: -2px;
 }
 
 .personal-docs-title-cell {

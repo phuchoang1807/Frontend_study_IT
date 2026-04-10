@@ -172,3 +172,9 @@ export function findAssignableRoleIdByName(roleOptions, roleName) {
   const match = roleOptions.find((o) => String(o.label).toUpperCase() === target);
   return match?.id ?? null;
 }
+
+/** GET /users/dashboard — thống kê bảng điều khiển cá nhân (đã đăng nhập). */
+export async function getUserDashboard() {
+  const res = await axiosClient.get('/users/dashboard');
+  return pickData(res);
+}

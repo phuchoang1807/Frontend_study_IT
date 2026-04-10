@@ -14,6 +14,7 @@ import {
   getDocumentThumbnailUrl,
   onDocumentThumbnailError,
 } from "../../utils/documentThumbnail";
+import { getDocumentUploaderDisplayName } from "../../utils/documentUploaderDisplay";
 import "../../styles/favoriteDocuments.css";
 
 // Local Trash Icon
@@ -138,7 +139,7 @@ export default function FavoriteDocuments() {
                     <div className="card-meta">
                       <div className="meta-item">
                         <UsersIcon size={16} />
-                        <span>Tác giả: {item.authorName || "—"}</span>
+                        <span>Đăng bởi: {getDocumentUploaderDisplayName(item) || "—"}</span>
                       </div>
                       <div className="meta-item">
                         <ListIcon size={16} />

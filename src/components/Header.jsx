@@ -1,4 +1,4 @@
-import { BellIcon, SearchIcon, UploadIcon } from "./icons";
+import { SearchIcon, UploadIcon } from "./icons";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useNotification } from "../context/NotificationContext";
@@ -244,39 +244,6 @@ export default function Header() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
- <button
-            type="button"
-            aria-label="Notifications"
-            style={{
-              width: "36px",
-              height: "36px",
-              padding: "0",
-              position: "relative",
-              border: "none",
-              background: "transparent",
-              borderRadius: "9999px",
-              color: "#1E2A78",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-            }}
-          >
-            <BellIcon size={20} strokeWidth={1.7} />
-            <span
-              style={{
-                width: "8px",
-                height: "8px",
-                background: "#EF4444",
-                borderRadius: "9999px",
-                border: "2px solid white",
-                position: "absolute",
-                right: "6px",
-                top: "6px",
-              }}
-            />
-          </button>
-
           <div
             role="button"
             tabIndex={0}

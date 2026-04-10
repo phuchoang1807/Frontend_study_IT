@@ -24,6 +24,7 @@ import {
   getDocumentThumbnailUrl,
   onDocumentThumbnailError,
 } from "../utils/documentThumbnail";
+import { getDocumentUploaderDisplayName } from "../utils/documentUploaderDisplay";
 
 const SORT_OPTIONS = [
   { label: "Phổ biến", value: "popular" },
@@ -299,13 +300,13 @@ export default function DocumentsList() {
       }
       const suggestedName = buildDocumentDownloadName(doc.title, doc.fileType);
       await downloadFileViaFetch(fileUrl, suggestedName);
-      setDocuments((prev) =>
-        prev.map((d) =>
-          d.id === doc.id
-            ? { ...d, downloadCount: Number(d.downloadCount || 0) + 1 }
-            : d
-        )
-      );
+      await fetchDocuments({
+        nextPage: page,
+        keyword: appliedKeyword,
+        categoryId: appliedCategoryId,
+        tagIds: appliedTagIds,
+        sort: appliedSort,
+      });
     } catch (e) {
       const msg = getApiErrorMessage(e);
       setError(msg);
@@ -853,6 +854,7 @@ export default function DocumentsList() {
                   key={doc.id}
                   role="button"
                   tabIndex={0}
+                  className="document-card--interactive"
                   onClick={() => doc.id != null && navigate(`/documents/${doc.id}`)}
                   onKeyDown={(e) =>
                     e.key === "Enter" && doc.id != null && navigate(`/documents/${doc.id}`)
@@ -1056,7 +1058,7 @@ export default function DocumentsList() {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          {doc.authorName || "Không rõ"}
+                          {getDocumentUploaderDisplayName(doc) || "Không rõ"}
                         </div>
                       </div>
                     </div>

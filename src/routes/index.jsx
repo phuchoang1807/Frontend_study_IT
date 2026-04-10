@@ -42,6 +42,7 @@ import TagPage from "../pages/admin/TagPage";
 import PermissionsPage from "../pages/admin/PermissionsPage";
 import AdminSettingsPage from "../pages/admin/AdminSettingsPage";
 import ContentModeratorPage from "../pages/admin/ContentModeratorPage";
+import AdminDocumentDetailPage from "../pages/admin/AdminDocumentDetailPage";
 import UserReportsPage from "../pages/admin/UserReportsPage";
 
 export const router = createBrowserRouter([
@@ -61,6 +62,7 @@ export const router = createBrowserRouter([
       { path: "profile", element: <Profile /> },
       { path: "manage-documents", element: <ManageDocuments /> },
       { path: "upload-document", element: <UploadDocumentGate /> },
+      { path: "documents/submitted/:submissionId", element: <SubmittedDocumentDetails /> },
       { path: "submitted-document-details", element: <SubmittedDocumentDetails /> },
       { path: "document/:id", element: <DocumentDetail /> },
       { path: "view-history", element: <ViewHistory /> },
@@ -97,6 +99,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "dashboard", element: <AdminDashboard /> },
           { path: "documents/pending", element: <ContentModeratorPage /> },
+          { path: "documents/:documentId", element: <AdminDocumentDetailPage /> },
           { path: "contributor-requests", element: <ContributorRequests /> },
           { path: "users", element: <UsersPage /> },
           { path: "roles", element: <RolesPage /> },

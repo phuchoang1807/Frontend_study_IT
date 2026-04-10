@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../../context/NotificationContext";
 import { documentService } from "../../services/api";
@@ -6,8 +6,8 @@ import "../../styles/manageDocuments.css";
 
 const TABS = [
   { key: "ALL", label: "Tất cả" },
-  { key: "APPROVED", label: "Approved" },
-  { key: "PENDING", label: "Awaiting approval" },
+  { key: "APPROVED", label: "Đã duyệt" },
+  { key: "PENDING", label: "Đang chờ duyệt" },
   { key: "REJECTED", label: "Bị từ chối" },
 ];
 
@@ -66,10 +66,17 @@ const ChevronIcon = ({ direction = "left" }) => (
 );
 
 const getStatusLabel = (status) => {
-  if (status === "APPROVED") return "Approved";
+  if (status === "APPROVED") return "Đã duyệt";
   if (status === "REJECTED") return "Bị từ chối";
-  return "Awaiting approval";
+  return "Đang chờ duyệt";
 };
+
+function formatSizeMb(bytes) {
+  if (bytes == null || bytes === "") return "—";
+  const n = Number(bytes);
+  if (Number.isNaN(n)) return String(bytes);
+  return (n / (1024 * 1024)).toFixed(1);
+}
 
 const getStatusClassName = (status) => {
   if (status === "APPROVED") return "approved";
@@ -134,8 +141,8 @@ export default function ManageDocuments() {
   const startItem = filteredDocuments.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
   const endItem = filteredDocuments.length === 0 ? 0 : Math.min(currentPage * PAGE_SIZE, filteredDocuments.length);
 
-  const handleViewDetails = (document) => {
-    navigate("/submitted-document-details", { state: { document } });
+  const handleViewDetails = (doc) => {
+    if (doc?.id) navigate(`/documents/submitted/${doc.id}`);
   };
 
   const handleEditDocument = (document) => {
@@ -164,14 +171,14 @@ export default function ManageDocuments() {
       <div className="personal-docs-shell">
         <div className="personal-docs-header-row">
           <div>
-            <h1 className="personal-docs-title">My documents</h1>
+            <h1 className="personal-docs-title">Tài liệu của tôi</h1>
             <p className="personal-docs-subtitle">
-              Manage and track the status of the documents you have uploaded.
+              Quản lý và theo dõi trạng thái các tài liệu bạn đã đăng tải.
             </p>
           </div>
           <button type="button" className="personal-docs-upload-btn" onClick={() => navigate("/upload-document")}>
             <PlusIcon />
-            <span>Upload new documents</span>
+            <span>Tải lên tài liệu mới</span>
           </button>
         </div>
 
@@ -194,12 +201,12 @@ export default function ManageDocuments() {
             <table className="personal-docs-table">
               <thead>
                 <tr>
-                  <th>DOCUMENT TITLE</th>
-                  <th>DATE OF PUBLICATION</th>
-                  <th>STATUS</th>
-                  <th>VIEW</th>
-                  <th>DOWNLOADS</th>
-                  <th>ACT</th>
+                  <th>TÊN TÀI LIỆU</th>
+                  <th>NGÀY ĐĂNG</th>
+                  <th>TRẠNG THÁI</th>
+                  <th>LƯỢT XEM</th>
+                  <th>TẢI XUỐNG</th>
+                  <th>THAO TÁC</th>
                 </tr>
               </thead>
               <tbody>
@@ -207,7 +214,7 @@ export default function ManageDocuments() {
                   <tr>
                     <td colSpan="6" className="personal-docs-empty-cell">
                       <div className="personal-docs-empty-state">
-                        <h3>Loading documents...</h3>
+                        <h3>Đang tải danh sách…</h3>
                       </div>
                     </td>
                   </tr>
@@ -215,25 +222,37 @@ export default function ManageDocuments() {
                   <tr>
                     <td colSpan="6" className="personal-docs-empty-cell">
                       <div className="personal-docs-empty-state">
-                        <h3>There are no documents in this section.</h3>
-                        <p>Upload your first document here to begin managing it.</p>
+                        <h3>Chưa có tài liệu trong mục này.</h3>
+                        <p>Hãy tải lên tài liệu đầu tiên để bắt đầu quản lý.</p>
                         <button type="button" className="personal-docs-upload-btn" onClick={() => navigate("/upload-document")}>
                           <PlusIcon />
-                          <span>Upload new documents</span>
+                          <span>Tải lên tài liệu mới</span>
                         </button>
                       </div>
                     </td>
                   </tr>
                 ) : (
                   paginatedDocuments.map((document) => (
-                    <tr key={document.id}>
+                    <tr
+                      key={document.id}
+                      className="personal-docs-row-clickable"
+                      onClick={() => handleViewDetails(document)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleViewDetails(document);
+                        }
+                      }}
+                    >
                       <td>
                         <div className="personal-docs-title-cell">
                           <DocumentTypeIcon fileType={document.fileType} />
                           <div className="personal-docs-title-group">
                             <div className="personal-docs-document-name">{document.title}</div>
                             <div className="personal-docs-document-meta">
-                              {document.fileType} • {document.fileSize} MB
+                              {document.fileType} • {formatSizeMb(document.fileSize)} MB
                             </div>
                           </div>
                         </div>
@@ -248,13 +267,37 @@ export default function ManageDocuments() {
                       <td className="personal-docs-number-cell">{Number(document.downloads || 0).toLocaleString("en-US")}</td>
                       <td>
                         <div className="personal-docs-actions">
-                          <button type="button" className="personal-docs-action-btn" title="View details" onClick={() => handleViewDetails(document)}>
+                          <button
+                            type="button"
+                            className="personal-docs-action-btn"
+                            title="Xem chi tiết"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleViewDetails(document);
+                            }}
+                          >
                             <EyeIcon />
                           </button>
-                          <button type="button" className="personal-docs-action-btn" title="Edit document" onClick={() => handleEditDocument(document)}>
+                          <button
+                            type="button"
+                            className="personal-docs-action-btn"
+                            title="Chỉnh sửa"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditDocument(document);
+                            }}
+                          >
                             <EditIcon />
                           </button>
-                          <button type="button" className="personal-docs-action-btn" title="Delete document" onClick={() => setDocumentToDelete(document)}>
+                          <button
+                            type="button"
+                            className="personal-docs-action-btn"
+                            title="Xóa"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDocumentToDelete(document);
+                            }}
+                          >
                             <TrashIcon />
                           </button>
                         </div>
@@ -268,7 +311,7 @@ export default function ManageDocuments() {
 
           <div className="personal-docs-footer">
             <p className="personal-docs-footer-text">
-              Show {startItem} - {endItem} out of {filteredDocuments.length} documents
+              Hiển thị {startItem}–{endItem} / {filteredDocuments.length} tài liệu
             </p>
             <div className="personal-docs-pagination">
               <button
@@ -276,7 +319,7 @@ export default function ManageDocuments() {
                 className="personal-docs-page-arrow"
                 onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
                 disabled={currentPage === 1}
-                aria-label="Previous page"
+                aria-label="Trang trước"
               >
                 <ChevronIcon direction="left" />
               </button>
@@ -297,7 +340,7 @@ export default function ManageDocuments() {
                 className="personal-docs-page-arrow"
                 onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
                 disabled={currentPage === totalPages}
-                aria-label="Next page"
+                aria-label="Trang sau"
               >
                 <ChevronIcon direction="right" />
               </button>
@@ -309,14 +352,14 @@ export default function ManageDocuments() {
       {documentToDelete && (
         <div className="personal-docs-modal-overlay" onClick={() => setDocumentToDelete(null)}>
           <div className="personal-docs-modal" onClick={(event) => event.stopPropagation()}>
-            <h3>Delete document</h3>
-            <p>Are you sure you want to delete "{documentToDelete.title}" from your personal documents?</p>
+            <h3>Xóa tài liệu</h3>
+            <p>Bạn có chắc muốn xóa &quot;{documentToDelete.title}&quot; khỏi danh sách tài liệu cá nhân?</p>
             <div className="personal-docs-modal-actions">
               <button type="button" className="personal-docs-modal-btn personal-docs-modal-cancel" onClick={() => setDocumentToDelete(null)}>
-                Cancel
+                Hủy
               </button>
               <button type="button" className="personal-docs-modal-btn personal-docs-modal-confirm" onClick={handleDeleteDocument}>
-                Delete document
+                Xóa tài liệu
               </button>
             </div>
           </div>

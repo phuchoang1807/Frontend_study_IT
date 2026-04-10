@@ -20,6 +20,7 @@ import {
   getDocumentThumbnailUrl,
   onDocumentThumbnailError,
 } from "../../utils/documentThumbnail";
+import { getDocumentUploaderDisplayName } from "../../utils/documentUploaderDisplay";
 
 const lineClampTitle = {
   display: "-webkit-box",
@@ -416,6 +417,13 @@ export default function Home() {
               {(latest || []).map((doc) => (
                 <div
                   key={doc.id}
+                  role="button"
+                  tabIndex={0}
+                  className="document-card--interactive"
+                  onClick={() => doc.id != null && navigate(`/documents/${doc.id}`)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && doc.id != null && navigate(`/documents/${doc.id}`)
+                  }
                   style={{
                     flex: 1,
                     background: "white",
@@ -426,9 +434,10 @@ export default function Home() {
                     overflow: "hidden",
                     cursor: "pointer",
                   }}
-                  onClick={() => navigate(`/documents?keyword=${encodeURIComponent(doc.title || "")}`)}
                 >
-                  <div style={{ height: "192px", position: "relative", background: "#E2E8F0", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  <div
+                    style={{ height: "192px", position: "relative", background: "#E2E8F0", display: "flex", justifyContent: "center", alignItems: "center" }}
+                  >
                     <img
                       src={getDocumentThumbnailUrl(doc)}
                       alt={doc.title || "thumbnail"}
@@ -459,16 +468,24 @@ export default function Home() {
                     </div>
 
                     <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", color: "#64748B" }}>
-                      <img src="https://placehold.co/24x24" style={{ borderRadius: "50%" }} alt="avatar" />
-                      <span>{doc.authorName || "Không xác định"}</span>
+                      <span>{getDocumentUploaderDisplayName(doc) || "Không xác định"}</span>
                       <span>•</span>
                       <span>{formatDateDDMMYYYY(doc.createdAt)}</span>
                     </div>
 
                     <div style={{ marginTop: "auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "12px", color: "#94A3B8" }}>
-                        <EyeIcon size={13} />
-                        {formatCompactNumber(doc.viewCount)}
+                      <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                        <EyeIcon size={25} color="#64748B" />
+                        <span
+                          style={{
+                            color: "#64748B",
+                            fontSize: "16px",
+                            fontFamily: "Inter",
+                            fontWeight: 500,
+                          }}
+                        >
+                          {formatCompactNumber(doc.viewCount)}
+                        </span>
                       </div>
 
                       <DocumentBookmarkControl
@@ -559,6 +576,13 @@ export default function Home() {
               return (
                 <div
                   key={doc.id}
+                  role="button"
+                  tabIndex={0}
+                  className="document-card--interactive"
+                  onClick={() => doc.id != null && navigate(`/documents/${doc.id}`)}
+                  onKeyDown={(e) =>
+                    e.key === "Enter" && doc.id != null && navigate(`/documents/${doc.id}`)
+                  }
                   style={{
                     width: "389.33px",
                     alignSelf: "stretch",
@@ -573,7 +597,6 @@ export default function Home() {
                     display: "flex",
                     cursor: "pointer",
                   }}
-                  onClick={() => navigate(`/documents?keyword=${encodeURIComponent(doc.title || "")}`)}
                 >
                   <div
                     style={{
@@ -626,7 +649,7 @@ export default function Home() {
                       </div>
                       <div style={{ alignSelf: "stretch", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "flex" }}>
                         <div style={{ alignSelf: "stretch", justifyContent: "center", display: "flex", flexDirection: "column", color: "#64748B", fontSize: "12px", fontWeight: 400, lineHeight: "16px" }}>
-                          Đăng bởi: {doc.authorName || "Không xác định"}
+                          Đăng bởi: {getDocumentUploaderDisplayName(doc) || "Không xác định"}
                         </div>
                       </div>
                     </div>
@@ -640,13 +663,18 @@ export default function Home() {
                         gap: "12px",
                       }}
                     >
-                      <div style={{ justifyContent: "flex-start", alignItems: "center", gap: "4px", display: "flex" }}>
-                        <div style={{ flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start", display: "inline-flex" }}>
-                          <div style={{ color: "#94A3B8" }}><EyeIcon size={12} /></div>
-                        </div>
-                        <div style={{ minWidth: "48px", height: "16px", justifyContent: "center", display: "flex", flexDirection: "column", color: "#94A3B8", fontSize: "12px", fontWeight: 600, lineHeight: "16px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                        <EyeIcon size={25} color="#64748B" />
+                        <span
+                          style={{
+                            color: "#64748B",
+                            fontSize: "16px",
+                            fontFamily: "Inter",
+                            fontWeight: 500,
+                          }}
+                        >
                           {formatCompactNumber(doc.viewCount)}
-                        </div>
+                        </span>
                       </div>
                       <DocumentBookmarkControl
                         documentId={doc.id}

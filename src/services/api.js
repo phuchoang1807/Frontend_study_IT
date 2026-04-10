@@ -18,6 +18,9 @@ function toErrorMessage(err) {
   );
 }
 
+/** Coalesce concurrent POST /view for the same id (e.g. React StrictMode double effect). */
+const documentViewPostById = new Map();
+
 function parseFilenameFromContentDisposition(header) {
   if (!header || typeof header !== "string") return null;
   const star = /filename\*=\s*UTF-8''([^;\s]+)/i.exec(header);
@@ -135,8 +138,21 @@ export const documentService = {
     return unwrapApiResponse(res);
   },
   async view(documentId) {
-    const res = await axiosClient.post(`/documents/${documentId}/view`);
-    return unwrapApiResponse(res);
+    const key = String(documentId);
+    let pending = documentViewPostById.get(key);
+    if (pending) {
+      return pending;
+    }
+    pending = (async () => {
+      try {
+        const res = await axiosClient.post(`/documents/${documentId}/view`);
+        return unwrapApiResponse(res);
+      } finally {
+        queueMicrotask(() => documentViewPostById.delete(key));
+      }
+    })();
+    documentViewPostById.set(key, pending);
+    return pending;
   },
   async download(documentId) {
     const res = await axiosClient.post(`/documents/${documentId}/download`);
@@ -162,6 +178,11 @@ export const documentService = {
   },
   async getMyDocuments() {
     const res = await axiosClient.get("/my-documents");
+    return unwrapApiResponse(res);
+  },
+  /** Chi tiết tài liệu của chính user (có rejectReason, documentUrl Supabase). */
+  async getMyDocumentDetail(documentId) {
+    const res = await axiosClient.get(`/my-documents/${documentId}`);
     return unwrapApiResponse(res);
   },
   async createMyDocument(payload) {

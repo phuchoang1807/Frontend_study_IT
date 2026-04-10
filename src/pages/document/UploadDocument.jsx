@@ -58,19 +58,21 @@ const EMPTY_FORM = {
   existingFileName: null,
   existingFileSize: null,
   existingFileSizeBytes: null,
+  existingStoragePath: null,
 };
 
 function toMb(sizeBytes) {
   return ((sizeBytes || 0) / (1024 * 1024)).toFixed(1);
 }
 
-function toPayload(formData, docUrl, thumbUrl, fileName, fileSizeBytes) {
+function toPayload(formData, docUrl, thumbUrl, fileName, fileSizeBytes, storagePath) {
   return {
     title: formData.title.trim(),
     description: formData.description.trim(),
     category: formData.category,
     tags: formData.tags,
     documentUrl: docUrl,
+    storagePath: storagePath ?? "",
     thumbnailUrl: thumbUrl,
     fileName,
     fileSizeBytes,
@@ -99,7 +101,7 @@ export default function UploadDocument() {
     setFormData({
       title: documentToEdit.title || "",
       description: documentToEdit.description || "",
-      category: documentToEdit.category || "",
+      category: documentToEdit.category || documentToEdit.categoryName || "",
       tags: documentToEdit.tags || [],
       documentFile: null,
       thumbnailFile: null,
@@ -110,6 +112,7 @@ export default function UploadDocument() {
       existingFileName: documentToEdit.fileName || null,
       existingFileSize: documentToEdit.fileSize || null,
       existingFileSizeBytes: documentToEdit.fileSizeBytes || null,
+      existingStoragePath: documentToEdit.storagePath || null,
     });
   }, [documentToEdit]);
 
@@ -206,6 +209,7 @@ export default function UploadDocument() {
             existingFileName: null,
             existingFileSize: null,
             existingFileSizeBytes: null,
+            existingStoragePath: null,
           }
         : {
             existingThumbnailUrl: null,
@@ -223,6 +227,7 @@ export default function UploadDocument() {
             existingFileName: null,
             existingFileSize: null,
             existingFileSizeBytes: null,
+            existingStoragePath: null,
           }
         : {
             existingThumbnailUrl: null,
@@ -247,6 +252,7 @@ export default function UploadDocument() {
       );
 
       let docUrl = formData.existingDocumentUrl;
+      let docStoragePath = formData.existingStoragePath;
       let thumbUrl = formData.existingThumbnailUrl;
       let docFileName = formData.existingFileName;
       let docFileSizeBytes = formData.existingFileSizeBytes;
@@ -257,6 +263,7 @@ export default function UploadDocument() {
           "assets/UploadedDocuments"
         );
         docUrl = docResult.url;
+        docStoragePath = docResult.path;
         docFileName = formData.documentFile.name;
         docFileSizeBytes = formData.documentFile.size;
       }
@@ -273,12 +280,17 @@ export default function UploadDocument() {
         throw new Error("Thiếu dữ liệu tài liệu sau khi tải file lên.");
       }
 
+      if (!formData.isEditing && (!docStoragePath || String(docStoragePath).trim() === "")) {
+        throw new Error("Thiếu storage path sau khi upload (cần cho DocumentFile).");
+      }
+
       const payload = toPayload(
         formData,
         docUrl,
         thumbUrl,
         docFileName,
-        docFileSizeBytes || 0
+        docFileSizeBytes || 0,
+        docStoragePath
       );
 
       const savedDocument = formData.isEditing && documentToEdit?.id
@@ -291,11 +303,12 @@ export default function UploadDocument() {
           : "Đăng tải tài liệu thành công!"
       );
 
-      navigate("/submitted-document-details", {
-        state: {
-          document: savedDocument,
-        },
-      });
+      const sid = savedDocument?.id;
+      if (sid) {
+        navigate(`/documents/submitted/${sid}`);
+      } else {
+        navigate("/submitted-document-details", { state: { document: savedDocument } });
+      }
     } catch (error) {
       notification.error(
         error?.response?.data?.message || error.message || "Không thể gửi tài liệu."

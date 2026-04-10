@@ -44,6 +44,8 @@ export type UserInfo = {
   id: string;
   email: string;
   fullName: string;
+  phone?: string | null;
+  bio?: string | null;
   avatar?: string | null;
   status: string;
   emailVerified: boolean;
